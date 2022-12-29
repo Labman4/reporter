@@ -1,9 +1,9 @@
  name: Codecy coverage reporter
  on:
    workflow_call:
-     secrets:
-       coverage_reporter:
-         required: true
+#      secrets:
+#        coverage_reporter:
+#          required: true
 
  jobs:
    codacy_coverage:
