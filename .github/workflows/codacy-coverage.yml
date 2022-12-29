@@ -2,7 +2,7 @@
  on:
    workflow_call:
      secrets:
-       envPAT:
+       coverage_reporter:
          required: true
 
  jobs:
