@@ -9,6 +9,11 @@
    coverage_reporter:
      runs-on: ubuntu-latest
      steps:
+     - name: Download report artifact
+       uses: actions/download-artifact@v3
+       with:
+         name: test
+         
      - uses: mikepenz/action-junit-report@v3
        if: always() # always run even if the previous step fails
        with:
