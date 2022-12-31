@@ -1,4 +1,4 @@
- name: JUnit Report Action
+ name: Coverage Report
  on:
    workflow_call:
    workflow_run:
