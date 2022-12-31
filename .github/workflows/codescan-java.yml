@@ -9,8 +9,5 @@ jobs:
   codeql:
     uses: Labman4/workflow/.github/workflows/codeql-java.yml@codeql-java
 
-  coverage:  
-    uses: Labman4/workflow/.github/workflows/coverage-reporter.yml@coverage
-  
   pmd:  
     uses: Labman4/workflow/.github/workflows/pmd.yml@pmd
