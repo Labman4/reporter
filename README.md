@@ -1,2 +1,2 @@
-# reporter
-reporter workflows
+# workflow
+workflow collections
