@@ -1,0 +1,9 @@
+ name: Create Pull Request (Self)
+ on:
+   workflow_call:
+   
+ jobs:
+   pull_request:
+     runs-on: self-hosted
+     steps:
+     - uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
