@@ -2,8 +2,16 @@ name: "Pull Request Labeler"
 on:
 #   pull_request_target:
   workflow_call:
+    inputs:
+      configuration-path:
+        description: 'label rulers'
+        default: '.github/labeler.yml'
+        required: false
+        type: string
+        
   pull_request:
     types: [ opened, synchronize, reopened ]
+    
 jobs:
   label:
     permissions:
