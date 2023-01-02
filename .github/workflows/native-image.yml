@@ -80,6 +80,9 @@ jobs:
           configuration-path: ${{ inputs.configuration-path }}
 
   label:
+    permissions:
+      contents: read
+      pull-requests: write
     needs: test
     uses: Labman4/workflow/.github/workflows/labeler.yml@labeler 
     with:
