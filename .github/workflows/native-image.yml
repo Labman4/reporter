@@ -32,7 +32,15 @@ jobs:
       - name: Web test
         run: |
           mvn -Pnative,nativeTest -Dagent=true test  
-       
+          
+      - name: Cache local Maven repository
+        uses: actions/cache@v3.2.2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven- 
+            
       - name: Merge native config
         run: |
           native-image --macro:native-image-configure-launcher
