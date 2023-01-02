@@ -27,7 +27,10 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
           native-image-pr-reports: 'true'
-          
+         
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
+        
       - name: Env
         run: |
           echo "GRAALVM_HOME: $GRAALVM_HOME"
