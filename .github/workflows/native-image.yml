@@ -68,7 +68,9 @@ jobs:
     
   label:
     needs: test
-    uses: Labman4/workflow/.github/workflows/labeler.yml@labeler   
+    uses: Labman4/workflow/.github/workflows/labeler.yml@labeler 
+    with:
+      config-path: .github/labeler.yml
  
   automerge:
     needs: label
