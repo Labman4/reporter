@@ -5,8 +5,8 @@ on:
     inputs:
       configuration-path:
         description: 'label rulers'
-        default: '.github/labeler.yml'
-        required: false
+#         default: '.github/labeler.yml'
+        required: true
         type: string
         
   pull_request:
@@ -22,3 +22,5 @@ jobs:
     - uses: actions/labeler@v4
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
+        configuration-path: ${{ configuration-path }}
+
