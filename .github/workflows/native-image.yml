@@ -11,6 +11,7 @@ on:
     
 jobs:
   test:
+    environment: native-image
     runs-on: [ubuntu-latest]
     steps:
       - name: Checkout Code
@@ -53,7 +54,10 @@ jobs:
         with:
           name: test
           path: '**/target/surefire-reports/TEST-*.xml'
-          
+           
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
+
   merge:  
     needs: test
     uses: Labman4/workflow/.github/workflows/pull-request.yml@pull-request
