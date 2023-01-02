@@ -23,6 +23,6 @@ jobs:
       env:
         PR_NUMBER: ${{ github.event.pull_request.number }}
       with:
-        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
         configuration-path: ${{ inputs.configuration-path }}
 
