@@ -27,9 +27,16 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
           native-image-pr-reports: 'true'
-         
-#       - name: Build with Maven
-#         run: mvn -B package --file pom.xml
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.1
+        with:
+          name: native
+          path: |
+            src/
+            target/
+            pom.xml
+          retention-days: 3
         
       - name: Env
         run: |
