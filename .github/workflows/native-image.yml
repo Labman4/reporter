@@ -19,7 +19,7 @@ jobs:
   test:
     permissions:
       contents: read
-      pull-requests: write
+      pull-requests: write|read
     environment: native-image
     runs-on: [ubuntu-latest]
     steps:
