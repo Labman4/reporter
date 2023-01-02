@@ -21,7 +21,7 @@ jobs:
     steps:
     - uses: actions/labeler@v4
       env:
-        PR_NUMBER: ${{ github.event.number }}
+        PULL_REQUEST_NUMBER: ${{ github.event.number }}
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
         configuration-path: ${{ inputs.configuration-path }}
