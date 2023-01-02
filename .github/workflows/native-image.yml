@@ -10,7 +10,7 @@ on:
     - native-image
     
 jobs:
-  init:
+  test:
     runs-on: [ubuntu-latest]
     steps:
       - name: Checkout Code
@@ -27,53 +27,27 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
           native-image-pr-reports: 'true'
-
-      - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v3.1.1
-        with:
-          name: native
-          path: |
-            src/
-            target/
-            pom.xml
-          retention-days: 3
-        
-      - name: Env
-        run: |
-          echo "GRAALVM_HOME: $GRAALVM_HOME"
-          echo "JAVA_HOME: $JAVA_HOME"
-          java --version
-          gu --version
-          native-image --version    
-          
-  test:
-    needs: init
-    runs-on: [ubuntu-latest] 
-    steps:        
-      - name: Env
-        run: |
-          echo "GRAALVM_HOME: $GRAALVM_HOME"
-          echo "JAVA_HOME: $JAVA_HOME"
-          java --version
-          gu --version
-          native-image --version    
           
       - name: Web test
         run: |
-          mvn -Pnative,nativeTest -Dagent=true test 
-      
-      - name: Upload junit report artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: test
-          path: '**/target/surefire-reports/TEST-*.xml'
-          
+          mvn -Pnative,nativeTest -Dagent=true test  
+       
       - name: Merge native config
         run: |
           native-image --macro:native-image-configure-launcher
           native-image-configure generate --input-dir=target/native/agent-output/test --output-dir=src/main/resources/META-INF/native-image
           #--input-dir=target/native/agent-output/main 
           
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.1
+        with:
+          name: build
+          path: |
+            src/
+            target/
+            pom.xml
+          retention-days: 3  
+    
   merge:  
     needs: test
     uses: Labman4/workflow/.github/workflows/pull-request.yml@pull-request
