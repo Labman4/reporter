@@ -12,7 +12,6 @@ on:
     - develop
     
   pull_request:
-    types: [ opened, synchronize, reopened ]
     branches:
     - native-image
     
