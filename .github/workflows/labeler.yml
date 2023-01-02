@@ -11,8 +11,6 @@ on:
         
   pull_request:
     types: [ opened, synchronize, reopened ]
-env:
-  PR_NUMBER: ${{ github.event.number }}
    
 jobs:
   label:
@@ -22,6 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/labeler@v4
+      env:
+        PR_NUMBER: ${{ github.event.number }}
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
         configuration-path: ${{ inputs.configuration-path }}
