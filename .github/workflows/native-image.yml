@@ -48,6 +48,12 @@ jobs:
             pom.xml
           retention-days: 3  
           
+      - name: Upload test report
+        uses: actions/upload-artifact@v3.1.1
+        with:
+          name: ${{ env.name }}-test
+          path: '**/target/surefire-reports/TEST-*.xml'
+          
   merge:  
     needs: test
     uses: Labman4/workflow/.github/workflows/pull-request.yml@pull-request
