@@ -94,7 +94,7 @@ jobs:
     uses: Labman4/workflow/.github/workflows/automerge.yml@automerge
    
   pre-build:
-    uses: Labman4/workflow/.github/workflows/build-native-image.yml@native-image
+    uses: Labman4/workflow/.github/workflows/pre-build.yml@native-image
     
   build:
     needs: automerge
