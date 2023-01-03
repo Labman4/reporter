@@ -1,23 +1,9 @@
 name: Native image
 on:
   workflow_call:
-    inputs:
-      configuration-path:
-        description: 'label rulers'
-#         default: '.github/labeler.yml'
-        required: true
-        type: string
-  push:
-    branches:
-    - develop
-    
-  pull_request:
-    branches:
-    - native-image
-    
+        
 jobs:
   test:
-    environment: native-image
     runs-on: [ubuntu-latest]
     steps:
       - name: Checkout Code
@@ -77,26 +63,6 @@ jobs:
            
       - name: Create pull request
         uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
-      
-      - uses: actions/labeler@v4
-        env: 
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          configuration-path: ${{ inputs.configuration-path }}
-
-  label:
-    permissions:
-      contents: read
-      pull-requests: write
-    needs: test
-    uses: Labman4/workflow/.github/workflows/labeler.yml@labeler 
-    with:
-      configuration-path: .github/labeler.yml
- 
-  automerge:
-    needs: label
-    uses: Labman4/workflow/.github/workflows/automerge.yml@automerge
    
 #   pre-build:
 #     uses: Labman4/workflow/.github/workflows/pre-build.yml@native-image
@@ -108,9 +74,6 @@ jobs:
   buildpacks:
     needs: test
     uses: Labman4/workflow/.github/workflows/buildpacks.yml@buildpacks
-    
-  codescan:
-    uses: Labman4/workflow/.github/workflows/codescan-java.yml@codescan-java
     
   coverage:  
     needs: test
