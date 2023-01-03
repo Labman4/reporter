@@ -2,14 +2,21 @@ on:
   workflow_call:
   
 jobs:
-  build:
+  buildpacks:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: init env
+      run: |
+         native_config = 'BP_JVM_VERSION=17.0.5 BP_NATIVE_IMAGE=true BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-build-time=ch.qos.logback.classic.Logger '
+         maven_config = 'BP_MAVEN_BUILD_ARGUMENTS=-Pnative,nativeTest package -DskipTests -P prod'
+         echo ${native_config} maven_config > envs
+         cat envs
     - name: Build image
       uses: mamezou-tech/buildpacks-action@master
       with:
         image: 'registry.elpsykongroo.com/library/demo'
 #         path: 'samples/apps/java-maven/'
         builder: 'paketobuildpacks/builder:0.1.303-tiny'
-        env: 'BP_JVM_VERSION=17.0.5 BP_NATIVE_IMAGE=true BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-build-time=ch.qos.logback.classic.Logger'
+        env_files: envs
+'
