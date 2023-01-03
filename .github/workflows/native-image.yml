@@ -90,7 +90,6 @@ jobs:
     needs: test
     uses: Labman4/workflow/.github/workflows/labeler.yml@labeler 
     with:
-      repo-token: ${{ secrets.GITHUB_TOKEN }}
       configuration-path: .github/labeler.yml
  
   automerge:
