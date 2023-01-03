@@ -65,7 +65,7 @@ jobs:
         uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
    
   pre-build:
-    uses: Labman4/workflow/.github/workflows/build-native-online.yml@native-image
+    uses: Labman4/workflow/.github/workflows/buildpacks-native-pre.yml@buildpacks
     
   buildpacks:
     needs: test
