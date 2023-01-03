@@ -5,7 +5,6 @@ jobs:
   buildpacks:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
 #     - name: init env
 #       run: |
 #          touch  env
@@ -18,6 +17,7 @@ jobs:
         name:  ${{ env.name }}-build
         
     - name: Build image
+#       uses: mamezou-tech/buildpacks-action@master
       uses: labman4/buildpacks-action@0.27.0
       with:
         image: 'registry.elpsykongroo.com/library/demo'
@@ -27,5 +27,5 @@ jobs:
         map_env: 'BP_MAVEN_BUILD_ARGUMENTS=package -Pnative,nativeTest -DskipTests'
         
     - name: Show build command
-      run: echo ${{ steps.build.outputs.command }}
+      run: echo ${{ steps.buildpacks.outputs.command }}
  
