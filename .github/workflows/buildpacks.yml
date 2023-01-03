@@ -16,6 +16,9 @@ jobs:
       with:
         name:  ${{ env.name }}-build
         
+    - name: Docker Layer Caching
+      uses: satackey/action-docker-layer-caching@v0.0.11
+      
     - name: Build image
 #       uses: mamezou-tech/buildpacks-action@master
       uses: labman4/buildpacks-action@0.27.0
@@ -32,8 +35,7 @@ jobs:
     - name: Push To Registry
       uses: redhat-actions/push-to-registry@v2.7
       with:
-        image: library/demo
-        registry: registry.elpsykongroo.com
+        image: registry.elpsykongroo.com/library/demo
         username: admin
         password: Elpsy4783
 
