@@ -36,6 +36,7 @@ jobs:
       uses: redhat-actions/push-to-registry@v2.7
       with:
         image: registry.elpsykongroo.com/library/demo
+        tags: "native"
         username: admin
         password: Elpsy4783
 
