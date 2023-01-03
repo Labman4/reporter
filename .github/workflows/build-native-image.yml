@@ -1,4 +1,4 @@
-name: Native builder
+name: Build on host
 on: 
   workflow_call:
   
@@ -9,4 +9,4 @@ jobs:
     steps:      
       - name: Build native image
         run: |
-          mvn -Pnative,nativeTest package -DskipTests  -P prod
+          mvn -Pnative,nativeTest package -DskipTests
