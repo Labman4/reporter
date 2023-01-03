@@ -5,6 +5,8 @@ jobs:
   buildpacks:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v2.6.0
+
 #     - name: init env
 #       run: |
 #          touch  env
