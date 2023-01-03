@@ -28,4 +28,12 @@ jobs:
         
     - name: Show build command
       run: echo ${{ steps.buildpacks.outputs.command }}
- 
+      
+    - name: Push To Registry
+      uses: redhat-actions/push-to-registry@v2.7
+      with:
+        image: registry.elpsykongroo.com/library/demo
+        registry: registry.elpsykongroo.com
+        username: admin
+        password: Elpsy4783
+
