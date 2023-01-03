@@ -10,7 +10,7 @@ jobs:
       run: |
          touch  env
          echo -e ' BP_NATIVE_IMAGE=true BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-build-time=ch.qos.logback.classic.Logger \c' |cat >> env
-         echo -e 'BP_MAVEN_BUILD_ARGUMENTS=-Pnative nativeTest package -DskipTests -P prod BP_JVM_VERSION=17.0.5 \c' |cat >> env
+         echo -e ' BP_MAVEN_BUILD_ARGUMENTS=-Pnative nativeTest package -DskipTests -P prod BP_JVM_VERSION=17.0.5 \c' |cat >> env
          cat env
     - name: Build image
       uses: mamezou-tech/buildpacks-action@master
