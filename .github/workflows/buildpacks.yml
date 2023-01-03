@@ -32,7 +32,7 @@ jobs:
     - name: Push To Registry
       uses: redhat-actions/push-to-registry@v2.7
       with:
-        image: registry.elpsykongroo.com/library/demo
+        image: library/demo
         registry: registry.elpsykongroo.com
         username: admin
         password: Elpsy4783
