@@ -23,7 +23,7 @@ jobs:
 #       uses: mamezou-tech/buildpacks-action@master
       uses: labman4/buildpacks-action@0.27.0
       with:
-        image: 'registry.elpsykongroo.com/library/demo'
+        image: 'demo'
         tag: native
 #         path: 'samples/apps/java-maven/'
         builder: 'paketobuildpacks/builder:0.1.303-tiny'
