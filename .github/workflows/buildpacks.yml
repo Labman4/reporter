@@ -8,15 +8,17 @@ jobs:
     - uses: actions/checkout@v3
     - name: init env
       run: |
-         native_config = 'BP_JVM_VERSION=17.0.5 BP_NATIVE_IMAGE=true BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-build-time=ch.qos.logback.classic.Logger '
-         maven_config = 'BP_MAVEN_BUILD_ARGUMENTS=-Pnative,nativeTest package -DskipTests -P prod'
-         echo ${native_config} maven_config > envs
-         cat envs
+         cat > nativenv
+         cat > mavenv
+         cat 'BP_JVM_VERSION=17.0.5 BP_NATIVE_IMAGE=true BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-build-time=ch.qos.logback.classic.Logger >> nativenv
+         cat 'BP_MAVEN_BUILD_ARGUMENTS=-Pnative,nativeTest package -DskipTests -P prod' >> mavenv
+         cat mavenv >> nativenv
+         cat nativenv
     - name: Build image
       uses: mamezou-tech/buildpacks-action@master
       with:
         image: 'registry.elpsykongroo.com/library/demo'
 #         path: 'samples/apps/java-maven/'
         builder: 'paketobuildpacks/builder:0.1.303-tiny'
-        env_files: envs
+        env_files: nativenv
 
