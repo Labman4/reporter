@@ -1,0 +1,38 @@
+on: 
+  workflow_call:
+  
+jobs:
+  buildpacks:
+    runs-on: ubuntu-latest
+    steps:
+#     - name: init env
+#       run: |
+#          touch  env
+#          echo -e ' BP_NATIVE_IMAGE=true BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-build-time=ch.qos.logback.classic.Logger \c' |cat >> env
+#          echo -e ' BP_MAVEN_BUILD_ARGUMENTS=-Pnative nativeTest package -DskipTests -P prod BP_JVM_VERSION=17.0.5 \c' |cat >> env
+#          cat env
+    - name: Docker Layer Caching
+      uses: satackey/action-docker-layer-caching@v0.0.11
+      
+    - name: Build image
+#       uses: mamezou-tech/buildpacks-action@master
+      uses: labman4/buildpacks-action@0.27.0
+      with:
+        image: 'demo'
+        tag: native
+#         path: 'samples/apps/java-maven/'
+        builder: 'paketobuildpacks/builder:0.1.303-tiny'
+        env: 'BP_JVM_VERSION=17.0.5 JAVA_TOOL_OPTIONS=-agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ BP_NATIVE_IMAGE=true BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-build-time=ch.qos.logback.classic.Logger'
+        map_env: 'BP_MAVEN_BUILD_ARGUMENTS=package -Pnative,nativeTest -DskipTests'
+        
+    - name: Show build command
+      run: echo ${{ steps.buildpacks.outputs.command }}
+      
+    - name: Push To Registry
+      uses: redhat-actions/push-to-registry@v2.7
+      with:
+        image: demo
+        registry: registry.elpsykongroo.com/library
+        tags: "native"
+        username: admin
+        password: Elpsy4783
