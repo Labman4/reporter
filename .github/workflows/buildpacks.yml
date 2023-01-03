@@ -18,5 +18,5 @@ jobs:
         image: 'registry.elpsykongroo.com/library/demo'
 #         path: 'samples/apps/java-maven/'
         builder: 'paketobuildpacks/builder:0.1.303-tiny'
-        env: 'BP_JVM_VERSION=17.0.5 BP_MAVEN_BUILD_ARGUMENTS=-Pnative,nativeTest package -DskipTests -P prod BP_NATIVE_IMAGE=true BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-build-time=ch.qos.logback.classic.Logger'
+        env: 'BP_JVM_VERSION=17.0.5 BP_MAVEN_BUILD_ARGUMENTS=-Pnative,nativeTest -DskipTests -P prod BP_NATIVE_IMAGE=true BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-build-time=ch.qos.logback.classic.Logger'
 
