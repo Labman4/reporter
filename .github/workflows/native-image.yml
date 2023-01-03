@@ -45,7 +45,7 @@ jobs:
             
       - name: trace agent
         run: |
-          mvn package -DskipTest
+          mvn package -DskipTests
           java -agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ -jar target/demo-0.0.2.jar      
             
       - name: Web test
