@@ -35,7 +35,8 @@ jobs:
     - name: Push To Registry
       uses: redhat-actions/push-to-registry@v2.7
       with:
-        image: registry.elpsykongroo.com/library/demo
+        image: demo
+        registry: registry.elpsykongroo.com/library
         tags: "native"
         username: admin
         password: Elpsy4783
