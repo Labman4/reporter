@@ -43,11 +43,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven- 
             
-      - name: trace agent
-        run: |
-          mvn package -DskipTests
-          java -agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ -jar target/demo-0.0.2.jar     
-          echo -e '\003'
+#       - name: trace agent
+#         run: |
+#           mvn package -DskipTests
+#           java -agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ -jar target/demo-0.0.2.jar     
+#           echo -e '\003'
             
       - name: Web test
         run: |
