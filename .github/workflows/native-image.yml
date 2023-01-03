@@ -46,6 +46,10 @@ jobs:
       - name: Web test
         run: |
           mvn -Pnative,nativeTest -Dagent=true test  
+          
+      - name: trace agent
+        run: |
+          java -agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ 
             
       - name: Merge native config
         run: |
@@ -86,6 +90,7 @@ jobs:
     needs: test
     uses: Labman4/workflow/.github/workflows/labeler.yml@labeler 
     with:
+      repo-token: ${{ secrets.GITHUB_TOKEN }}
       configuration-path: .github/labeler.yml
  
   automerge:
@@ -95,9 +100,9 @@ jobs:
 #   pre-build:
 #     uses: Labman4/workflow/.github/workflows/pre-build.yml@native-image
     
-  build:
-    needs: automerge
-    uses: Labman4/workflow/.github/workflows/build-native-image.yml@native-image
+#   build:
+#     needs: automerge
+#     uses: Labman4/workflow/.github/workflows/build-native-image.yml@native-image
     
   buildpacks:
     needs: test
