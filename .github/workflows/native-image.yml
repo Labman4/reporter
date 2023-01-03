@@ -76,6 +76,7 @@ jobs:
         env: 
           PR_NUMBER: ${{ github.event.pull_request.number }}
         with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
           configuration-path: ${{ inputs.configuration-path }}
 
   label:
@@ -99,7 +100,7 @@ jobs:
     uses: Labman4/workflow/.github/workflows/build-native-image.yml@native-image
     
   buildpacks:
-    needs: automerge
+    needs: test
     uses: Labman4/workflow/.github/workflows/buildpacks.yml@buildpacks
     
   codescan:
