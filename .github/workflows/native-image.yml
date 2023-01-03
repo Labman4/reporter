@@ -69,7 +69,7 @@ jobs:
     
   buildpacks:
     needs: test
-    uses: Labman4/workflow/.github/workflows/buildpacks.yml@buildpacks
+    uses: Labman4/workflow/.github/workflows/buildpacks-native.yml@buildpacks
     
   coverage:  
     needs: test
