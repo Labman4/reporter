@@ -36,6 +36,6 @@ jobs:
         image: demo
         registry: registry.elpsykongroo.com/library
         tags: "native"
-        username: admin
-        password: Elpsy4783
+        username: "{{ secrets.REGISTRY_NAME }}"
+        password: "{{ secrets.REGISTRY_PASS }}"
 
