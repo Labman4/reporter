@@ -36,7 +36,7 @@ jobs:
       - name: Build native image
         env: 
           vault.token: ${{ secrets.vaultToken }}
-          vault.uri: ${{ secrets vaultUri }}
+          vault.uri: ${{ secrets.vaultUri }}
           vault.path: ${{ secrets.vaultPath }}
           SECRET_PATH: ${{ secrets.secretsPath }}
         run: |
