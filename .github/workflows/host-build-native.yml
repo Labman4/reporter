@@ -3,10 +3,24 @@ on:
   workflow_call:
     inputs:
       vault_token: 
+        description: 'vault_token'
+        required: false
+        type: string
+
       vault_uri:
+        description: 'vault_uri'
+        required: false
+        type: string
+
       vault_path:
+        description: 'vault_path'
+        required: false
+        type: string
+
       secrets_path:
-        
+        description: 'secrets_path'
+        required: false
+        type: string 
   
 jobs:
   host_build:
