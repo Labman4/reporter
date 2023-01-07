@@ -38,6 +38,6 @@ jobs:
           vault.token: ${{ secrets.vaultToken }}
           vault.uri: ${{ secrets.vaultUri }}
           vault.path: ${{ secrets.vaultPath }}
-          SECRET_PATH: ${{ secrets.secretsPath }}
+          SECRETS_PATH: ${{ secrets.secretsPath }}
         run: |
           mvn -Pnative,nativeTest package -DskipTests
