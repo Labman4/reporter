@@ -40,4 +40,4 @@ jobs:
           vaultPath: ${{ secrets.VAULT_PATH }}
           SECRETS_PATH: ${{ secrets.SECRETS_PATH }}
         run: |
-          mvn -P native,nativeTest package -DskipTests
+          mvn package -DskipTests
