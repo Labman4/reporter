@@ -2,19 +2,19 @@ name: Build on host
 on: 
   workflow_call:
     secrets:
-      vaultToken: 
+      VAULT_TOKEN: 
         description: 'vault.token'
         required: true
 
-      vaultUri:
+      VAULT_URI:
         description: 'vault.uri'
         required: true
 
-      vaultPath:
+      VAULT_PATH:
         description: 'vault.path'
         required: true
 
-      secretsPath:
+      SECRETS_PATH:
         description: 'SECRETS_PATH'
         required: true
   
