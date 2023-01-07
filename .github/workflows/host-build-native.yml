@@ -35,9 +35,9 @@ jobs:
        
       - name: Build native image
         env: 
-          vault.token: ${{ secrets.vaultToken }}
-          vault.uri: ${{ secrets.vaultUri }}
-          vault.path: ${{ secrets.vaultPath }}
-          SECRETS_PATH: ${{ secrets.secretsPath }}
+          vault.token: ${{ secrets.VAULT_TOKEN }}
+          vault.uri: ${{ secrets.VAULT_URI }}
+          vault.path: ${{ secrets.VAULT_PATH }}
+          SECRETS_PATH: ${{ secrets.SECRETS_PATH }}
         run: |
           mvn -Pnative,nativeTest package -DskipTests
