@@ -86,7 +86,7 @@ jobs:
     needs: pr_number
     uses: Labman4/workflow/.github/workflows/labeler.yml@labeler
     with: 
-      configuration-path: .github/labeler.yml 
+      configuration-path:  Labman4/demo/.github/labeler.yml@native-image
     
   automerge:
     needs: labeler
