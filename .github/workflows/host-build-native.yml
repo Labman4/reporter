@@ -1,6 +1,12 @@
 name: Build on host
 on: 
   workflow_call:
+    inputs:
+      vault_token: 
+      vault_uri:
+      vault_path:
+      secrets_path:
+        
   
 jobs:
   host_build:
@@ -10,6 +16,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3.3.0
         
+      - name: Set env
+        run: |
+          echo "vault.token=${{ inputs.vault_token }}" >> $GITHUB.ENV
+          echo "vault.token=${{ inputs.vault_token }}" >> $GITHUB.ENV
+          echo "vault.token=${{ inputs.vault_token }}" >> $GITHUB.ENV
+          echo "vault.token=${{ inputs.vault_token }}" >> $GITHUB.ENV
+       
       - name: Build native image
         run: |
           mvn -Pnative,nativeTest package -DskipTests
