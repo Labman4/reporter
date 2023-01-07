@@ -2,20 +2,20 @@ name: Build on host
 on: 
   workflow_call:
     secrets:
-      vault_token: 
-        description: 'vault_token'
+      vaultToken: 
+        description: 'vault.token'
         required: true
 
-      vault_uri:
-        description: 'vault_uri'
+      vaultUri:
+        description: 'vault.uri'
         required: true
 
-      vault_path:
-        description: 'vault_path'
+      vaultPath:
+        description: 'vault.path'
         required: true
 
-      secrets_path:
-        description: 'secrets_path'
+      secretsPath:
+        description: 'SECRETS_PATH'
         required: true
   
 jobs:
@@ -35,9 +35,9 @@ jobs:
        
       - name: Build native image
         env: 
-          vault.token: ${{ secrets.vault_token }}
-          vault.uri: ${{ secrets vault_uri }}
-          vault.path: ${{ secrets.vault_path }}
-          SECRET_PATH: ${{ secrets.secrets_path }}
+          vault.token: ${{ secrets.vaultToken }}
+          vault.uri: ${{ secrets vaultUri }}
+          vault.path: ${{ secrets.vaultPath }}
+          SECRET_PATH: ${{ secrets.secretsPath }}
         run: |
           mvn -Pnative,nativeTest package -DskipTests
