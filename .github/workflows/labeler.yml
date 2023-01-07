@@ -2,12 +2,12 @@ name: "Labeler"
 on:
 #   pull_request_target:
   workflow_call:
-    inputs:
-      configuration-path:
-        description: 'label rulers'
-#         default: '.github/labeler.yml'
-        required: true
-        type: string
+#     inputs:
+#       configuration-path:
+#         description: 'label rulers'
+# #         default: '.github/labeler.yml'
+#         required: true
+#         type: string
         
   pull_request:
     types: [ opened, synchronize, reopened ]
