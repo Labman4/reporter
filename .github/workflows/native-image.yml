@@ -1,7 +1,22 @@
 name: Native image
 on:
   workflow_call:
-        
+    secrets:
+      VAULT_TOKEN: 
+        description: 'vault.token'
+        required: true
+
+      VAULT_URI:
+        description: 'vault.uri'
+        required: true
+
+      VAULT_PATH:
+        description: 'vault.path'
+        required: true
+
+      SECRETS_PATH:
+        description: 'SECRETS_PATH'
+        required: true 
 jobs:
   test:
     runs-on: [ubuntu-latest]
@@ -40,7 +55,8 @@ jobs:
             
       - name: Web test
         run: |
-          mvn -Pnative,nativeTest -Dagent=true test  
+          mvn -DvaultToken={{secrets.VAULT_TOKEN}} -DvaultPath={{secrets.VAULT_PATH}} -DvaultUri={{secrets.VAULT_URI}}  -DSECRETS_PATH={{secrets.SECRETS_PATH}} -P native,nativeTest -Dagent=true test
+         # mvn -Pnative,nativeTest -Dagent=true test  
             
       - name: Merge native config
         run: |
