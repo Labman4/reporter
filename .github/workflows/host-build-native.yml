@@ -33,4 +33,4 @@ jobs:
           vaultPath: ${{ secrets.VAULT_PATH }}
           SECRETS_PATH: ${{ secrets.SECRETS_PATH }}
         run: |
-          mvn -DvaultToken={{secrets.VAULT_TOKEN}} -DvaultPath={{secrets.VAULT_PATH}} -DvaultUri={{secrets.VAULT_URI}} -P native,nativeTest package -DskipTests 
+          mvn -DvaultToken={{secrets.VAULT_TOKEN}} -DvaultPath={{secrets.VAULT_PATH}} -DvaultUri={{secrets.VAULT_URI}}  -DSECRETS_PATH={{secrets.SECRETS_PATH}} -P native,nativeTest package -DskipTests 
