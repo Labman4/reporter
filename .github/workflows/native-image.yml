@@ -109,10 +109,10 @@ jobs:
     needs: test
     uses: Labman4/workflow/.github/workflows/host-build-native-from-pre.yml@native-image
     secrets: 
-      VAULT_TOKEN: ${{secrets.VAULT_TOKEN}}
-      VAULT_PATH: ${{secrets.VAULT_PATH}}
-      VAULT_URI: ${{secrets.VAULT_URI}}
-      SECRETS_PATH: ${{secrets.SECRET_PATH}}
+      VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
+      VAULT_PATH: ${{ secrets.VAULT_PATH }}
+      VAULT_URI: ${{ secrets.VAULT_URI }}
+      SECRETS_PATH: ${{ secrets.SECRETS_PATH }}
    
   pre-build:
     uses: Labman4/workflow/.github/workflows/buildpacks-native-pre.yml@buildpacks
