@@ -27,6 +27,6 @@ jobs:
          with:
            name:  ${{ env.name }}-build
        
-      - name: Build native image
-        run: |
-          mvn -DvaultToken={{secrets.VAULT_TOKEN}} -DvaultPath={{secrets.VAULT_PATH}} -DvaultUri={{secrets.VAULT_URI}}  -DSECRETS_PATH={{secrets.SECRETS_PATH}} -P native,nativeTest package -DskipTests 
+       - name: Build native image
+         run: |
+           mvn -DvaultToken={{secrets.VAULT_TOKEN}} -DvaultPath={{secrets.VAULT_PATH}} -DvaultUri={{secrets.VAULT_URI}}  -DSECRETS_PATH={{secrets.SECRETS_PATH}} -P native,nativeTest package -DskipTests 
