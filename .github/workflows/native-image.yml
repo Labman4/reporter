@@ -19,6 +19,7 @@ on:
         required: true 
 jobs:
   test:
+    environment: ${{ github.event.inputs.environment || 'native-image' }}
     runs-on: [ubuntu-latest]
     steps:
       - name: Checkout Code
@@ -55,11 +56,6 @@ jobs:
           
         
       - name: Web test
-        env: 
-          vaultToken: ${{ secrets.VAULT_TOKEN }}
-          vaultUri: ${{ secrets.VAULT_URI }}
-          vaultPath: ${{ secrets.VAULT_PATH }}
-          SECRETS_PATH: ${{ secrets.SECRETS_PATH }}
         run: |
           mvn -DvaultToken={{secrets.VAULT_TOKEN}} -DvaultPath={{secrets.VAULT_PATH}} -DvaultUri={{secrets.VAULT_URI}}  -DSECRETS_PATH={{secrets.SECRETS_PATH}} -P native,nativeTest -Dagent=true test
          # mvn -Pnative,nativeTest -Dagent=true test  
