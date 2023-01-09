@@ -57,7 +57,7 @@ jobs:
         
       - name: Web test
         run: |
-          mvn -DvaultToken={{secrets.VAULT_TOKEN}} -DvaultPath={{secrets.VAULT_PATH}} -DvaultUri={{secrets.VAULT_URI}}  -DSECRETS_PATH={{secrets.SECRETS_PATH}} -P native,nativeTest -Dagent=true test
+          mvn -DvaultToken=${{secrets.VAULT_TOKEN}} -DvaultPath=${{secrets.VAULT_PATH}} -DvaultUri=${{secrets.VAULT_URI}}  -DSECRETS_PATH=${{secrets.SECRETS_PATH}} -P native,nativeTest -Dagent=true test
          # mvn -Pnative,nativeTest -Dagent=true test  
             
       - name: Merge native config
