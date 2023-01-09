@@ -52,8 +52,14 @@ jobs:
 #           mvn package -DskipTests
 #           java -agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ -jar target/demo-0.0.2.jar     
 #           echo -e '\003'
-            
+          
+        
       - name: Web test
+        env: 
+          vaultToken: ${{ secrets.VAULT_TOKEN }}
+          vaultUri: ${{ secrets.VAULT_URI }}
+          vaultPath: ${{ secrets.VAULT_PATH }}
+          SECRETS_PATH: ${{ secrets.SECRETS_PATH }}
         run: |
           mvn -DvaultToken={{secrets.VAULT_TOKEN}} -DvaultPath={{secrets.VAULT_PATH}} -DvaultUri={{secrets.VAULT_URI}}  -DSECRETS_PATH={{secrets.SECRETS_PATH}} -P native,nativeTest -Dagent=true test
          # mvn -Pnative,nativeTest -Dagent=true test  
