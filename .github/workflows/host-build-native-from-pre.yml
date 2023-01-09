@@ -20,7 +20,6 @@ on:
   
 jobs:
   host_build:
-    environment: ${{ github.event.inputs.environment || 'native-image' }}
     runs-on: [self-hosted]
     steps:      
        - name: Download a Build Artifact
