@@ -79,6 +79,8 @@ jobs:
            
       - name: Create pull request
         uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
+        with:
+          base: native-image
       
 #   pr_number:
 #     needs: test
