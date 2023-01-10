@@ -5,15 +5,12 @@ on:
       VAULT_TOKEN: 
         description: 'vault.token'
         required: true
-
       VAULT_URI:
         description: 'vault.uri'
         required: true
-
       VAULT_PATH:
         description: 'vault.path'
         required: true
-
       SECRETS_PATH:
         description: 'SECRETS_PATH'
         required: true 
@@ -53,12 +50,10 @@ jobs:
 #           mvn package -DskipTests
 #           java -agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ -jar target/demo-0.0.2.jar     
 #           echo -e '\003'
-          
         
       - name: Web test
         run: |
           mvn -DvaultToken=${{secrets.VAULT_TOKEN}} -DvaultPath=${{secrets.VAULT_PATH}} -DvaultUri=${{secrets.VAULT_URI}}  -DSECRETS_PATH=${{secrets.SECRETS_PATH}} -P native,nativeTest -Dagent=true test
-         # mvn -Pnative,nativeTest -Dagent=true test  
             
       - name: Merge native config
         run: |
@@ -85,20 +80,20 @@ jobs:
       - name: Create pull request
         uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
       
-  pr_number:
-    needs: test
-    runs-on: ubuntu-latest
-#     if: ${{ github.event_name == 'push' }}
-    steps:
-      - uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
-        with:
-          fetch-depth: 0
-      - name: Get Pull Request Number
-        id: pr
-        run: echo "::set-output name=pull_request_number::$(gh pr view --json number -q .number || echo "")"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: echo ${{ steps.pr.outputs.pull_request_number }}
+#   pr_number:
+#     needs: test
+#     runs-on: ubuntu-latest
+# #     if: ${{ github.event_name == 'push' }}
+#     steps:
+#       - uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
+#         with:
+#           fetch-depth: 0
+#       - name: Get Pull Request Number
+#         id: pr
+#         run: echo "::set-output name=pull_request_number::$(gh pr view --json number -q .number || echo "")"
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#       - run: echo ${{ steps.pr.outputs.pull_request_number }}
 
     
 #   automerge:
@@ -114,15 +109,15 @@ jobs:
 #       VAULT_URI: ${{ secrets.VAULT_URI }}
 #       SECRETS_PATH: ${{ secrets.SECRETS_PATH }}
    
-  pre-build:
-    uses: Labman4/workflow/.github/workflows/buildpacks-native-pre.yml@buildpacks
+#   pre-build:
+#     uses: Labman4/workflow/.github/workflows/buildpacks-native-pre.yml@buildpacks
     
-  buildpacks:
-    needs: test
-    uses: Labman4/workflow/.github/workflows/buildpacks-native.yml@buildpacks
+#   buildpacks:
+#     needs: test
+#     uses: Labman4/workflow/.github/workflows/buildpacks-native.yml@buildpacks
     
-  coverage:  
-    needs: test
-    uses: Labman4/workflow/.github/workflows/coverage-reporter.yml@coverage
+#   coverage:  
+#     needs: test
+#     uses: Labman4/workflow/.github/workflows/coverage-reporter.yml@coverage
     
   
