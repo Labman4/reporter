@@ -26,13 +26,15 @@ jobs:
        
       - id: build 
         run: |
-          mvn -DvaultToken={{secrets.VAULT_TOKEN}} -DvaultPath={{secrets.VAULT_PATH}} -DvaultUri={{secrets.VAULT_URI}}  -DSECRETS_PATH={{secrets.SECRETS_PATH}} -P native,nativeTest package -DskipTests
+          mvn -DvaultToken=${{secrets.VAULT_TOKEN}} -DvaultPath=${{secrets.VAULT_PATH}} -DvaultUri=${{secrets.VAULT_URI}}  -DSECRETS_PATH=${{secrets.SECRETS_PATH}} -P native,nativeTest package -DskipTests
           echo "build=success" >> $GITHUB_OUTPUT
   deploy:
     needs: host_build
-    if: needs.host-build.outputs.result == 'success'
+#     if: needs.host_build.outputs.result == 'success'
     runs-on: [self-hosted]
     steps:
+      - run: echo ${{needs.host_build.outputs.result}} 
+
       - name: depoly with helm
         run: |
           helm upgrade -n demo demo ~/code/helm/charts/demo
