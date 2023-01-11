@@ -89,51 +89,6 @@ jobs:
         uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
         with:
           base: native-image
- 
-  package:
-    environment: ${{ github.event.inputs.environment || 'native-image' }}
-    runs-on: [ubuntu-latest]
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
-            
-      - name: Set up Graalvm
-        uses: graalvm/setup-graalvm@d01f5f519f35cf82b318133761fd8b674632a8fe
-        with:
-          version: 'latest'
-          java-version: '17'
-          set-java-home: 'true'
-          cache: maven
-          components: 'native-image'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-       
-      - name: Cache local Maven repository
-        uses: actions/cache@v3.2.2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-        
-        
-#       - name: trace agent
-#         run: |
-#           mvn package -DskipTests
-#           java -agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ -jar target/demo-0.0.2.jar     
-#           echo -e '\003'
-        
-      - name: package
-        run: |
-          mvn -P native package -DskipTests
-         
-      - name: Upload a package
-        uses: actions/upload-artifact@v3.1.1
-        with:
-          name: ${{ env.name }}-package
-          path: |
-            src/
-            target/
-            pom.xml
-          retention-days: 3  
           
   pr_number:
     needs: test
@@ -156,16 +111,16 @@ jobs:
 #     needs: labeler
 #     uses: Labman4/workflow/.github/workflows/automerge.yml@automerge
 
-  build:
-    needs: test
-    uses: Labman4/workflow/.github/workflows/host-build-native-from-pre.yml@native-image
-    secrets: inherit
+#   build:
+#     needs: test
+#     uses: Labman4/workflow/.github/workflows/host-build-native-from-pre.yml@native-image
+#     secrets: inherit
    
-#   pre-build:
-#     uses: Labman4/workflow/.github/workflows/buildpacks-native-pre.yml@buildpacks
+  pre-build:
+    uses: Labman4/workflow/.github/workflows/buildpacks-native-pre.yml@buildpacks
     
   buildpacks:
-    needs: package
+    needs: test
     uses: Labman4/workflow/.github/workflows/buildpacks-native.yml@buildpacks
     
 #   coverage:  
