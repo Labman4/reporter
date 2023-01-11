@@ -123,7 +123,7 @@ jobs:
     secrets: inherit
    
   pre-build:
-    uses: Labman4/workflow/.github/workflows/buildpacks-native-pre.yml@buildpacks
+    uses: Labman4/workflow/.github/workflows/buildpacks-native.yml@buildpacks
     
 #   buildpacks:
 #     needs: test
