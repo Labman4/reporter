@@ -4,32 +4,52 @@ on:
 jobs:
   pre:
     environment: ${{ github.event.inputs.environment || 'native-image' }}
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-latest]
     steps:
-    - uses: actions/checkout@v2.6.0
-    
-    - name: Docker Layer Caching
-      uses: satackey/action-docker-layer-caching@v0.0.11
-      
-    - name: Build image
-#       uses: mamezou-tech/buildpacks-action@master
-      uses: labman4/buildpacks-action@0.27.0
-      with:
-        image: 'demo'
-        tag: native
-#         path: 'samples/apps/java-maven/'
-        builder: 'paketobuildpacks/builder:0.1.303-tiny'
-        env: 'BP_JVM_VERSION=17.0.5 JAVA_TOOL_OPTIONS=-agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ BP_NATIVE_IMAGE=true BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-build-time=ch.qos.logback.classic.Logger'
-        map_env: 'BP_MAVEN_BUILD_ARGUMENTS=package -Pnative,nativeTest -DskipTests'
+      - name: Checkout Code
+        uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
+            
+      - name: Set up Graalvm
+        uses: graalvm/setup-graalvm@d01f5f519f35cf82b318133761fd8b674632a8fe
+        with:
+          version: 'latest'
+          java-version: '17'
+          set-java-home: 'true'
+          cache: maven
+          components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+       
+      - name: Cache local Maven repository
+        uses: actions/cache@v3.2.2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-        
         
-    - name: Show build command
-      run: echo ${{ steps.buildpacks.outputs.command }}
+      - name: package
+        run: |
+          mvn -P native package -DskipTests
+          
+      - name: Docker Layer Caching
+        uses: satackey/action-docker-layer-caching@v0.0.11
       
-    - name: Push To Registry
-      uses: redhat-actions/push-to-registry@v2.7
-      with:
-        image: demo
-        registry: registry.elpsykongroo.com/library
-        tags: "native"
-        username: "{{ secrets.REGISTRY_NAME }}"
-        password: "{{ secrets.REGISTRY_PASS }}"
+      - name: Build image
+  #       uses: mamezou-tech/buildpacks-action@master
+        uses: labman4/buildpacks-action@0.27.0
+        with:
+          image: 'demo'
+          tag: native
+  #         path: 'samples/apps/java-maven/'
+          builder: 'paketobuildpacks/builder:0.1.303-tiny'
+          env: 'BP_JVM_VERSION=17.0.5 JAVA_TOOL_OPTIONS=-agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ BP_NATIVE_IMAGE=true BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-build-time=ch.qos.logback.classic.Logger'
+          map_env: 'BP_MAVEN_BUILD_ARGUMENTS=package -Pnative,nativeTest -DskipTests'
+              
+      - name: Push To Registry
+        uses: redhat-actions/push-to-registry@v2.7
+        with:
+          image: demo
+          registry: registry.elpsykongroo.com/library
+          tags: "native"
+          username: "{{ secrets.REGISTRY_NAME }}"
+          password: "{{ secrets.REGISTRY_PASS }}"
