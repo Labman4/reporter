@@ -3,16 +3,11 @@ on:
   
 jobs:
   pre:
+    environment: ${{ github.event.inputs.environment || 'native-image' }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2.6.0
-
-#     - name: init env
-#       run: |
-#          touch  env
-#          echo -e ' BP_NATIVE_IMAGE=true BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-build-time=ch.qos.logback.classic.Logger \c' |cat >> env
-#          echo -e ' BP_MAVEN_BUILD_ARGUMENTS=-Pnative nativeTest package -DskipTests -P prod BP_JVM_VERSION=17.0.5 \c' |cat >> env
-#          cat env
+    
     - name: Docker Layer Caching
       uses: satackey/action-docker-layer-caching@v0.0.11
       
