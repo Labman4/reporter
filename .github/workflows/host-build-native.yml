@@ -28,6 +28,11 @@ jobs:
         run: |
           mvn -DvaultToken={{secrets.VAULT_TOKEN}} -DvaultPath={{secrets.VAULT_PATH}} -DvaultUri={{secrets.VAULT_URI}}  -DSECRETS_PATH={{secrets.SECRETS_PATH}} -P native,nativeTest package -DskipTests
           echo "build=success" >> $GITHUB_OUTPUT
+  deploy:
+    needs: host-build
+    if: needs.host-build.outputs.result == 'success'
+    run: |
+      helm upgrade -n demo demo ~/code/helm/charts/demo
 
 #   label:
 #     needs: host-build
