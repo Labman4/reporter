@@ -82,20 +82,21 @@ jobs:
         with:
           base: native-image
       
-#   pr_number:
-#     needs: test
-#     runs-on: ubuntu-latest
-# #     if: ${{ github.event_name == 'push' }}
-#     steps:
-#       - uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
-#         with:
-#           fetch-depth: 0
-#       - name: Get Pull Request Number
-#         id: pr
-#         run: echo "::set-output name=pull_request_number::$(gh pr view --json number -q .number || echo "")"
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#       - run: echo ${{ steps.pr.outputs.pull_request_number }}
+  pr_number:
+    needs: test
+    environment: ${{ github.event.inputs.environment || 'native-image' }}
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' }}
+    steps:
+      - uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
+        with:
+          fetch-depth: 0
+      - name: Get Pull Request Number
+        id: pr
+        run: echo "::set-output name=pull_request_number::$(gh pr view --json number -q .number || echo "")"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo ${{ steps.pr.outputs.pull_request_number }}
 
     
 #   automerge:
@@ -106,13 +107,9 @@ jobs:
     needs: test
     uses: Labman4/workflow/.github/workflows/host-build-native-from-pre.yml@native-image
     secrets: inherit
-#       VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
-#       VAULT_PATH: ${{ secrets.VAULT_PATH }}
-#       VAULT_URI: ${{ secrets.VAULT_URI }}
-#       SECRETS_PATH: ${{ secrets.SECRETS_PATH }}
    
-#   pre-build:
-#     uses: Labman4/workflow/.github/workflows/buildpacks-native-pre.yml@buildpacks
+  pre-build:
+    uses: Labman4/workflow/.github/workflows/buildpacks-native-pre.yml@buildpacks
     
 #   buildpacks:
 #     needs: test
