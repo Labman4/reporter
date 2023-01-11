@@ -1,6 +1,10 @@
 on: 
   workflow_call:
-  
+    secrets: 
+      REGISTRY_NAME:
+        required: true
+      REGISTRY_PASS:
+        required: true    
 jobs:
   pre:
     environment: ${{ github.event.inputs.environment || 'native-image' }}
@@ -49,7 +53,7 @@ jobs:
         uses: redhat-actions/push-to-registry@v2.7
         with:
           image: demo
-          registry: registry.elpsykongroo.com/library
+          registry: docker.io/labman4
           tags: "native"
-          username: robot$github_bot
-          password: j66oKThoa2LjsC2apALotdN9Q11NV5UB
+          username:  ${{ secrets.REGISTRY_NAME }}
+          password:  ${{ secrets.REGISTRY_PASS }}
