@@ -32,6 +32,6 @@ jobs:
         image: demo
         registry: registry.elpsykongroo.com/library
         tags: "native"
-        username: "{{ secrets.REGISTRY_NAME }}"
-        password: "{{ secrets.REGISTRY_PASS }}"
+        username:  ${{ secrets.REGISTRY_NAME }}
+        password:  ${{ secrets.REGISTRY_PASS }}
 
