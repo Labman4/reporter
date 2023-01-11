@@ -29,7 +29,7 @@ jobs:
           mvn -DvaultToken={{secrets.VAULT_TOKEN}} -DvaultPath={{secrets.VAULT_PATH}} -DvaultUri={{secrets.VAULT_URI}}  -DSECRETS_PATH={{secrets.SECRETS_PATH}} -P native,nativeTest package -DskipTests
           echo "build=success" >> $GITHUB_OUTPUT
   deploy:
-    needs: host-build
+    needs: host_build
     if: needs.host-build.outputs.result == 'success'
     runs-on: [self-hosted]
     steps:
@@ -38,7 +38,7 @@ jobs:
           helm upgrade -n demo demo ~/code/helm/charts/demo
 
 #   label:
-#     needs: host-build
+#     needs: host_build
 #     if: needs.host-build.outputs.result == 'success'
 #     environment: ${{ github.event.inputs.environment || 'native-image' }}
 #     uses: Labman4/workflow/.github/workflows/labeler.yml@labeler
