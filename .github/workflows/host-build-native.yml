@@ -31,8 +31,11 @@ jobs:
   deploy:
     needs: host-build
     if: needs.host-build.outputs.result == 'success'
-    run: |
-      helm upgrade -n demo demo ~/code/helm/charts/demo
+    runs-on: [self-hosted]
+    steps:
+      - name: depoly with helm
+        run: |
+          helm upgrade -n demo demo ~/code/helm/charts/demo
 
 #   label:
 #     needs: host-build
