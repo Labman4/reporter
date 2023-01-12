@@ -107,10 +107,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: echo ${{ steps.pr.outputs.pull_request_number }}
 
+  labeler:
+    needs: pr_number
+    uses: Labman4/workflow/.github/workflows/labeler.yml@labeler
+    secrets: inherit
+
     
-#   automerge:
-#     needs: labeler
-#     uses: Labman4/workflow/.github/workflows/automerge.yml@automerge
+  automerge:
+    needs: labeler
+    uses: Labman4/workflow/.github/workflows/automerge.yml@automerge
+    secrets: inherit
 
 #   build:
 #     needs: test
