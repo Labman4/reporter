@@ -6,17 +6,19 @@ on:
       configuration-path:
         description: 'label rulers'
 #         default: '.github/labeler.yml'
-        required: true
+        required: false
         type: string
         
   pull_request:
     types: [ opened, synchronize, reopened ]
+  push:
    
 jobs:
   label:
     permissions:
       contents: read
       pull-requests: write
+    environment: ${{ github.event.inputs.environment || 'native-image' }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/labeler@v4
