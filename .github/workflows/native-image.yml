@@ -110,6 +110,8 @@ jobs:
   labeler:
     needs: pr_number
     uses: Labman4/workflow/.github/workflows/labeler.yml@labeler
+    with: 
+      configuration-path: .github/labeler.yml@labeler
     secrets: inherit
 
     
