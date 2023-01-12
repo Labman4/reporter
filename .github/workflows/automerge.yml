@@ -20,6 +20,7 @@ on:
   status: {}
 jobs:
   automerge:
+    environment: ${{ github.event.inputs.environment || 'native-image' }}
     runs-on: ubuntu-latest
     steps:
       - id: automerge
