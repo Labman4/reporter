@@ -43,7 +43,7 @@ jobs:
         uses: labman4/buildpacks-action@0.27.0
         with:
           image: 'demo'
-          tag: native
+          tag: pre
   #         path: 'samples/apps/java-maven/'
           builder: 'paketobuildpacks/builder:0.1.303-tiny'
           env: 'BP_JVM_VERSION=17.0.5 JAVA_TOOL_OPTIONS=-agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ BP_NATIVE_IMAGE=true BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-build-time=ch.qos.logback.classic.Logger'
