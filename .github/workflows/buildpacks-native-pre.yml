@@ -54,6 +54,6 @@ jobs:
         with:
           image: demo
           registry: docker.io/labman4
-          tags: "native"
+          tags: "pre"
           username:  ${{ secrets.REGISTRY_NAME }}
           password:  ${{ secrets.REGISTRY_PASS }}
