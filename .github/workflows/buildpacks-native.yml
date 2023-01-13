@@ -15,7 +15,7 @@ jobs:
     - name: Download a Build Artifact
       uses: actions/download-artifact@v3.0.1
       with:
-        name:  ${{ env.name }}-package
+        name:  ${{ env.name }}-build
         
     - name: Docker Layer Caching
       uses: satackey/action-docker-layer-caching@v0.0.11
