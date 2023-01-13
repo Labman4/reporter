@@ -27,7 +27,7 @@ jobs:
       - id: build 
         run: |
           mvn -DvaultToken=${{secrets.VAULT_TOKEN}} -DvaultPath=${{secrets.VAULT_PATH}} -DvaultUri=${{secrets.VAULT_URI}}  -DSECRETS_PATH=${{secrets.SECRETS_PATH}} -P native,nativeTest package -DskipTests
-          podman tag docker.io/library/demo:latest demo:native
+          podman tag docker.io/library/demo:native demo:native
           echo "build=success" >> $GITHUB_OUTPUT
           
       - name: Push To Registry
