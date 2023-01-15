@@ -33,6 +33,7 @@ jobs:
         
       - name: package
         run: |
+          cd demo
           mvn -P native package -DskipTests
           
       - name: Docker Layer Caching
