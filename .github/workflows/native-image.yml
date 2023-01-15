@@ -34,6 +34,10 @@ jobs:
           native-image-job-reports: 'true'
           native-image-pr-reports: 'true'
        
+      - name: location
+        run: |
+          echo "path=$(pwd)" >> $GITHUB_ENV
+          
       - name: Cache local Maven repository
         uses: actions/cache@v3.2.2
         with:
@@ -45,8 +49,14 @@ jobs:
       - name: Docker Layer Caching
         uses: satackey/action-docker-layer-caching@v0.0.11   
       
+      - name: package client
+        run: | 
+          cd ${{ env.path }}/redis/redis-client
+          mvn jar:jar install:install
+          
       - name: Web test
         run: |
+          cd ${{ env.path }}/demo
           mvn clean -DvaultToken=${{secrets.VAULT_TOKEN}} -DvaultPath=${{secrets.VAULT_PATH}} -DvaultUri=${{secrets.VAULT_URI}}  -DSECRETS_PATH=${{secrets.SECRETS_PATH}} -P native,nativeTest -Dagent=true test    
        
       - name: Merge native config
@@ -60,9 +70,7 @@ jobs:
         with:
           name: ${{ env.name }}-build
           path: |
-            src/
-            target/
-            pom.xml
+            ${{ env.path }}demo/
           retention-days: 3  
           
       - name: package
@@ -74,10 +82,8 @@ jobs:
         with:
           name: ${{ env.name }}-package
           path: |
-            src/
-            target/
-            pom.xml
-            !target/**/*.jar
+            ${{ env.path }}demo/
+            !demo/**/*.jar
           retention-days: 3  
           
       - name: Upload test report
