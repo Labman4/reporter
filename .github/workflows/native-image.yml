@@ -51,12 +51,11 @@ jobs:
           
       - name: package client
         run: | 
-          cd ${{ env.path }}/redis/
           mvn compile jar:jar install:install
           
       - name: Web test
         run: |
-          cd ${{ env.path }}/demo
+          cd ${{ env.path }}/gateway
           mvn clean -DvaultToken=${{secrets.VAULT_TOKEN}} -DvaultPath=${{secrets.VAULT_PATH}} -DvaultUri=${{secrets.VAULT_URI}}  -DSECRETS_PATH=${{secrets.SECRETS_PATH}} -P native,nativeTest -Dagent=true test    
        
       - name: Merge native config
@@ -70,12 +69,12 @@ jobs:
         with:
           name: ${{ env.name }}-build
           path: |
-            ${{ env.path }}demo/
+            ${{ env.path }}gateway/
           retention-days: 3  
           
       - name: package
         run: |
-          cd ${{ env.path }}/demo
+          cd ${{ env.path }}/gateway
           mvn -P native package -DskipTests
          
       - name: Upload a package
@@ -83,8 +82,8 @@ jobs:
         with:
           name: ${{ env.name }}-package
           path: |
-            ${{ env.path }}demo/
-            !demo/**/*.jar
+            ${{ env.path }}/gateway
+            !gateway/**/*.jar
           retention-days: 3  
           
       - name: Upload test report
