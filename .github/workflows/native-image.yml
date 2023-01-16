@@ -61,7 +61,7 @@ jobs:
       - name: Merge native config
         run: |
           native-image --macro:native-image-configure-launcher
-          native-image-configure generate --input-dir=${{ env.path }}/demo/target/native/agent-output/test --output-dir=${{ env.path }}/demo/src/main/resources/META-INF/native-image
+          native-image-configure generate --input-dir=${{ env.path }}/gateway/target/native/agent-output/test --output-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image
           #--input-dir=target/native/agent-output/main 
           
       - name: Upload a Build Artifact
