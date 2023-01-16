@@ -75,6 +75,7 @@ jobs:
           
       - name: package
         run: |
+          cd ${{ env.path }}/demo
           mvn -P native package -DskipTests
          
       - name: Upload a package
