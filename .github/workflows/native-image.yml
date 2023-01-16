@@ -51,9 +51,8 @@ jobs:
           
       - name: package client
         run: | 
-          cd ${{ env.path }}/redis/redis-client
-          mvn compile
-          mvn jar:jar install:install
+          cd ${{ env.path }}/redis/
+          mvn compile jar:jar install:install
           
       - name: Web test
         run: |
