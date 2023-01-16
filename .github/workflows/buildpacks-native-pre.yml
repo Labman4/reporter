@@ -31,9 +31,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-        
         
+      - name: pwd
+        run: |
+          echo "path=$(pwd)" >> $GITHUB_ENV
+          
+      - name: package client
+        run: | 
+          cd ${{ env.path }}/redis/redis-client
+          mvn compile
+          mvn jar:jar install:install
+          
       - name: package
         run: |
-          cd demo
+          cd ${{ env.path }}/demo
           mvn -P native package -DskipTests
           
       - name: Docker Layer Caching
