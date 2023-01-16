@@ -33,10 +33,6 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
           native-image-pr-reports: 'true'
-       
-      - name: location
-        run: |
-          echo "path=$(pwd)" >> $GITHUB_ENV
           
       - name: Cache local Maven repository
         uses: actions/cache@v3.2.2
@@ -49,6 +45,10 @@ jobs:
       - name: Docker Layer Caching
         uses: satackey/action-docker-layer-caching@v0.0.11   
       
+      - name: pwd
+        run: |
+          echo "path=$(pwd)" >> $GITHUB_ENV
+          
       - name: package client
         run: | 
           cd ${{ env.path }}/redis/redis-client
