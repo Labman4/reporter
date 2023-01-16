@@ -37,12 +37,11 @@ jobs:
           
       - name: package client
         run: | 
-          cd ${{ env.path }}/redis
           mvn compile jar:jar install:install
           
       - name: package
         run: |
-          cd ${{ env.path }}/demo
+          cd ${{ env.path }}/gateway
           mvn -P native package -DskipTests
           
       - name: Docker Layer Caching
@@ -52,9 +51,9 @@ jobs:
   #       uses: mamezou-tech/buildpacks-action@master
         uses: labman4/buildpacks-action@0.27.0
         with:
-          image: 'demo'
+          image: 'gateway'
           tag: pre
-          path: '${{ env.path }}/demo/'
+          path: '${{ env.path }}/gateway/'
           builder: 'paketobuildpacks/builder:0.1.303-tiny'
           env: 'BP_JVM_VERSION=17.0.5 JAVA_TOOL_OPTIONS=-agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ BP_NATIVE_IMAGE=true BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-build-time=ch.qos.logback.classic.Logger'
           map_env: 'BP_MAVEN_BUILD_ARGUMENTS=package -Pnative,nativeTest -DskipTests'
@@ -62,7 +61,7 @@ jobs:
       - name: Push To Registry
         uses: redhat-actions/push-to-registry@v2.7
         with:
-          image: demo
+          image: gateway
           registry: docker.io/labman4
           tags: "pre"
           username:  ${{ secrets.REGISTRY_NAME }}
