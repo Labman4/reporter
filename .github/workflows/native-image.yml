@@ -49,14 +49,13 @@ jobs:
         run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
           
-      - name: package client
+      - name: package 
         run: | 
-          mvn compile jar:jar install:install
+          mvn package -DskipTests
           
       - name: Web test
         run: |
-          cd ${{ env.path }}/gateway
-          mvn clean -DvaultToken=${{secrets.VAULT_TOKEN}} -DvaultPath=${{secrets.VAULT_PATH}} -DvaultUri=${{secrets.VAULT_URI}}  -DSECRETS_PATH=${{secrets.SECRETS_PATH}} -P native,nativeTest -Dagent=true test    
+          mvn -DvaultToken=${{secrets.VAULT_TOKEN}} -DvaultPath=${{secrets.VAULT_PATH}} -DvaultUri=${{secrets.VAULT_URI}}  -DSECRETS_PATH=${{secrets.SECRETS_PATH}} -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/gateway/pom.xml 
        
       - name: Merge native config
         run: |
@@ -64,26 +63,17 @@ jobs:
           native-image-configure generate --input-dir=${{ env.path }}/gateway/target/native/agent-output/test --output-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image
           #--input-dir=target/native/agent-output/main 
           
-      - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v3.1.1
-        with:
-          name: ${{ env.name }}-build
-          path: |
-            ${{ env.path }}gateway/
-          retention-days: 3  
-          
-      - name: package
+      - name: package 
         run: |
           cd ${{ env.path }}/gateway
-          mvn -P native package -DskipTests
+          mvn -P native package -DskipTests -f  ${{ env.path }}/gateway/pom.xml 
          
       - name: Upload a package
         uses: actions/upload-artifact@v3.1.1
         with:
           name: ${{ env.name }}-package
           path: |
-            ${{ env.path }}/gateway
-            !gateway/**/*.jar
+            !**/*.jar
           retention-days: 3  
           
       - name: Upload test report
