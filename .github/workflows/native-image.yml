@@ -73,7 +73,9 @@ jobs:
         with:
           name: ${{ env.name }}-package
           path: |
-            !**/*.jar
+            '~/.m2/repository/com/elpsykongroo'
+            ${{ env.path }}/
+            !${{ env.path }}/**/*.jar
           retention-days: 3  
           
       - name: Upload test report
