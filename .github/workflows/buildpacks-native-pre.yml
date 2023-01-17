@@ -37,12 +37,11 @@ jobs:
           
       - name: package client
         run: | 
-          mvn compile jar:jar install:install
-          
+          mvn package -DskipTests
+        
       - name: package
         run: |
-          cd ${{ env.path }}/gateway
-          mvn -P native package -DskipTests
+          mvn -P native package -DskipTests -f  ${{ env.path }}/gateway/pom.xml 
           
       - name: Docker Layer Caching
         uses: satackey/action-docker-layer-caching@v0.0.11
@@ -56,7 +55,7 @@ jobs:
           path: '${{ env.path }}/gateway/'
           builder: 'paketobuildpacks/builder:0.1.303-tiny'
           env: 'BP_JVM_VERSION=17.0.5 JAVA_TOOL_OPTIONS=-agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ BP_NATIVE_IMAGE=true BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-build-time=ch.qos.logback.classic.Logger'
-          map_env: 'BP_MAVEN_BUILD_ARGUMENTS=package -Pnative,nativeTest -DskipTests'
+          map_env: 'BP_MAVEN_BUILD_ARGUMENTS=package -Pnative -DskipTests -f  ${{ env.path }}/gateway/pom.xml'
               
       - name: Push To Registry
         uses: redhat-actions/push-to-registry@v2.7
