@@ -77,13 +77,14 @@ jobs:
      
       - name: agent trace   
         run: |
-          nohup java -agentlib:native-image-agent=config-merge-dir=gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar > /dev/null 2>&1  & echo "pid=$!" >> GITHUB_ENV       
-        
+          nohup java -agentlib:native-image-agent=config-merge-dir=gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar > /dev/null 2>&1  & echo "pid=$!" >> GITHUB_ENV  
+          stopMarker=$(uuidgen)
+ 
       - run: |
           native-image --macro:native-image-configure-launcher
           
       - run: |
-          kill -9 ${{ env.pid }}
+          echo "::stop-commands::$stopMarker"
 
       - name: Merge native config
         run: |
