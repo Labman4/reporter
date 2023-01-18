@@ -78,7 +78,7 @@ jobs:
       - name: agent trace   
         run: |
           nohup java -agentlib:native-image-agent=config-merge-dir=gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar > /dev/null 2>&1  & echo "pid=$!" >> GITHUB_ENV  
-          echo "stopMarker=$(uuidgen) " >> $GITHUB_ENV
+          echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
  
       - run: |
           native-image --macro:native-image-configure-launcher
@@ -101,9 +101,10 @@ jobs:
         with:
           name: ${{ env.name }}-package
           path: |
-            ${{ env.home}}/.m2/repository/com/elpsykongroo
-            ${{ env.path }}/
-            !**/*.jar
+            ${{ env.home}}/.m2/repository/com/elpsykongroo/**/*-client-*.jar
+            ${{ env.home}}/.m2/repository/com/elpsykongroo/**/*.pom
+            ${{ env.path }}/work
+            !${{ env.path }}/**/*.jar
           retention-days: 3  
           
       - name: Upload test report
