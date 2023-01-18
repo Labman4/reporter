@@ -10,7 +10,7 @@ jobs:
   buildpacks:
     environment: ${{ github.event.inputs.environment || 'native-image' }}
     runs-on: ubuntu-latest
-    steps:
+    steps: 
     
     - name: Download a Build Artifact
       uses: actions/download-artifact@v3.0.1
@@ -20,19 +20,20 @@ jobs:
     - name: Docker Layer Caching
       uses: satackey/action-docker-layer-caching@v0.0.11
 
-    - name: pwd
-      run: |
+    - run: |
         echo "path=$(pwd)" >> $GITHUB_ENV
-        
+        echo "home=$HOME" >> $GITHUB_ENV
+   
     - name: Build image
 #       uses: mamezou-tech/buildpacks-action@master
-      uses: labman4/buildpacks-action@0.27.0
+      uses: labman4/buildpacks-action@master
       with:
         image: 'gateway'
         tag: native
+        path: '${{ env.path }}/gateway/'
         builder: 'paketobuildpacks/builder:0.1.303-tiny'
-        env: 'BP_JVM_VERSION=17.0.5 JAVA_TOOL_OPTIONS=-agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ BP_NATIVE_IMAGE=true BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-build-time=ch.qos.logback.classic.Logger'
-        map_env: 'BP_MAVEN_BUILD_ARGUMENTS=package -Pnative -DskipTests -f  ${{ env.path }}/gateway/pom.xml '
+        env: 'BP_JVM_VERSION=17.0.5 JAVA_TOOL_OPTIONS=-agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ BP_NATIVE_IMAGE=true'
+        volume: ${{ env.home}}
       
     - name: Push To Registry
       uses: redhat-actions/push-to-registry@v2.7
