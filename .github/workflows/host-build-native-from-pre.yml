@@ -26,9 +26,8 @@ jobs:
        - name: Download a Build Artifact
          uses: actions/download-artifact@v3.0.1
          with:
-           name:  ${{ env.name }}-build
+           name:  ${{ env.name }}-package
        
        - name: Build native image
          run: |
-           cd demo
            mvn -DvaultToken=${{secrets.VAULT_TOKEN}} -DvaultPath=${{secrets.VAULT_PATH}} -DvaultUri=${{secrets.VAULT_URI}}  -DSECRETS_PATH=${{secrets.SECRETS_PATH}} -P native,nativeTest package -DskipTests 
