@@ -37,11 +37,12 @@ jobs:
           
       - name: package client
         run: | 
-          mvn package -DskipTests
+          mvn package install -DskipTests
         
       - name: package
         run: |
           mvn -P native package -DskipTests -f  ${{ env.path }}/gateway/pom.xml 
+    
           
       - name: Docker Layer Caching
         uses: satackey/action-docker-layer-caching@v0.0.11
