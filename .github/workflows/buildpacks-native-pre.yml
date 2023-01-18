@@ -52,7 +52,7 @@ jobs:
 
       - name: Build image
   #       uses: mamezou-tech/buildpacks-action@master
-        uses: labman4/buildpacks-action@0.27.0
+        uses: labman4/buildpacks-action@master
         with:
           image: 'gateway'
           tag: pre
