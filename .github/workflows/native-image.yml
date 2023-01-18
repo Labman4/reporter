@@ -20,6 +20,9 @@ jobs:
     environment: ${{ github.event.inputs.environment || 'native-image' }}
     runs-on: [ubuntu-latest]
     steps:
+      - name: Docker Layer Caching
+        uses: satackey/action-docker-layer-caching@v0.0.11   
+      
       - name: Configure sysctl limits
         run: |
           sudo swapoff -a
@@ -50,9 +53,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven- 
             
-      - name: Docker Layer Caching
-        uses: satackey/action-docker-layer-caching@v0.0.11   
-      
       - name: pwd
         run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
