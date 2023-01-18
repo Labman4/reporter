@@ -103,7 +103,7 @@ jobs:
           path: |
             ${{ env.home}}/.m2/repository/com/elpsykongroo/**/*-client-*.jar
             ${{ env.home}}/.m2/repository/com/elpsykongroo/**/*.pom
-            ${{ env.path }}/work
+            ${{ env.path }}/
             !${{ env.path }}/**/*.jar
           retention-days: 3  
           
