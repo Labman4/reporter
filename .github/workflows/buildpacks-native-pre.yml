@@ -55,7 +55,7 @@ jobs:
 #           path: '${{ env.path }}/gateway/'
           builder: 'paketobuildpacks/builder:0.1.303-tiny'
           env: 'BP_JVM_VERSION=17.0.5 JAVA_TOOL_OPTIONS=-agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ BP_NATIVE_IMAGE=true BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-build-time=ch.qos.logback.classic.Logger'
-          map_env: 'BP_MAVEN_BUILD_ARGUMENTS=--batch-mode -Dmaven.test.skip=true --no-transfer-progress package -f  gateway/pom.xml'
+          map_env: 'BP_MAVEN_BUILD_ARGUMENTS="-Dmaven.test.skip=true --no-transfer-progress package -f  gateway/pom.xml"'
               
       - name: Push To Registry
         uses: redhat-actions/push-to-registry@v2.7
