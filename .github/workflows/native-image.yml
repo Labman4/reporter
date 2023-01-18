@@ -79,11 +79,13 @@ jobs:
         run: |
           nohup java -agentlib:native-image-agent=config-merge-dir=gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar > /dev/null 2>&1  & echo "pid=$!" >> GITHUB_ENV  
           stopMarker=$(uuidgen)
+          echo $stopMarker
  
       - run: |
           native-image --macro:native-image-configure-launcher
           
       - run: |
+          echo $stopMarker
           echo "::stop-commands::$stopMarker"
 
       - name: Merge native config
