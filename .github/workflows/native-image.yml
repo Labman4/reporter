@@ -51,7 +51,7 @@ jobs:
           
       - name: package 
         run: | 
-          mvn package -DskipTests
+          mvn package install -DskipTests
           
       - name: Web test
         run: |
