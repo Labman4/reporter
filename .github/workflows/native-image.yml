@@ -16,7 +16,7 @@ on:
         required: true 
 jobs:
   test:
-    needs: pre-build
+#     needs: pre-build
     environment: ${{ github.event.inputs.environment || 'native-image' }}
     runs-on: [ubuntu-latest]
     steps:
@@ -49,6 +49,7 @@ jobs:
       - name: pwd
         run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
+          echo "home=$HOME" >> $GITHUB_ENV
           
       - name: package 
         run: | 
@@ -74,7 +75,7 @@ jobs:
         with:
           name: ${{ env.name }}-package
           path: |
-            '~/.m2/repository/com/elpsykongroo'
+            ${{ env.home}}/.m2/repository/com/elpsykongroo
             ${{ env.path }}/
             !${{ env.path }}/**/*.jar
           retention-days: 3  
