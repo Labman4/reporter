@@ -24,6 +24,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3.3.0
        
+      - name: package 
+        run: | 
+          mvn package install -DskipTests
+          
+      - name: agent trace   
+        run: |
+          nohup java -agentlib:native-image-agent=config-merge-dir=gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
+        #  echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
+          
       - id: build 
         run: |
           mvn -DvaultToken=${{secrets.VAULT_TOKEN}} -DvaultPath=${{secrets.VAULT_PATH}} -DvaultUri=${{secrets.VAULT_URI}}  -DSECRETS_PATH=${{secrets.SECRETS_PATH}} -P native,nativeTest package -DskipTests
