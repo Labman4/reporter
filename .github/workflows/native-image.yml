@@ -80,8 +80,8 @@ jobs:
           
       - name: agent trace   
         run: |
-             java -agentlib:native-image-agent=config-merge-dir=gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar 
-     #     nohup java -agentlib:native-image-agent=config-merge-dir=gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
+          #   java -agentlib:native-image-agent=config-merge-dir=gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar 
+          nohup java -agentlib:native-image-agent=config-merge-dir=gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
         #  echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
  
       - run: |
