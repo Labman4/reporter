@@ -24,6 +24,8 @@ jobs:
         echo "path=$(pwd)" >> $GITHUB_ENV
         echo "home=$HOME" >> $GITHUB_ENV
    
+    - run: |
+      
     - name: Build image
       uses: labman4/buildpacks-action@master
       with:
@@ -33,7 +35,7 @@ jobs:
         builder: 'paketobuildpacks/builder:0.1.303-tiny'
         env: 'BP_JVM_VERSION=17.0.5 JAVA_TOOL_OPTIONS=-agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ BP_NATIVE_IMAGE=true'
         map_env: 'BP_MAVEN_BUILD_ARGUMENTS="-Dmaven.test.skip=true --no-transfer-progress package "'
-        volume: ${{ env.home }}
+        volume: ${{ env.path }}
       
     - name: Push To Registry
       uses: redhat-actions/push-to-registry@v2.7
