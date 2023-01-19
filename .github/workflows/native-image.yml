@@ -82,8 +82,10 @@ jobs:
  
       - run: |
           native-image --macro:native-image-configure-launcher
+        
+      - run: |
           kill -2 ${{ env.pid }}
-          
+
       - name: Upload test report
         uses: actions/upload-artifact@v3.1.1
         with:
@@ -92,6 +94,7 @@ jobs:
 
       - run: |
           docker image rm elasticsearch:7.6.1 labman4/redis-cluster:7.0.7 labman4/redis-cluster:7.0
+          
      # - run: |
      #     echo "::stop-commands::${{ env.stopMarker}}"
 
