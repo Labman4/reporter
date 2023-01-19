@@ -34,19 +34,20 @@ jobs:
          
       - name: agent trace   
         run: |
-          nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  ${{ env.path }}/gateway/target/gateway-0.0.2.jar > nohup.out 2> nohup.err < /dev/null & echo "pid=$!" >> $GITHUB_ENV  
-          #java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar 
-          echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
-       
+          #nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  ${{ env.path }}/gateway/target/gateway-0.0.2.jar > nohup.out 2> nohup.err < /dev/null & echo "pid=$!" >> $GITHUB_ENV  
+          java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar 
+          #echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
+        continue-on-error: true 
+
       
-      - run: |
-          kill -s 2 ${{ env.pid }}
+      #- run: |
+          #kill -s 2 ${{ env.pid }}
           #echo "::stop-commands::${{ env.stopMarker}}"
           #curl -X POST http://localhost:8080/actuator/shutdown
           
-      - run: |    
-          cat ${{ env.path }}/gateway/src/main/resources/META-INF/native-image/.lock
-          ps -ef |grep ${{ env.pid }}
+      #- run: |    
+      #    cat ${{ env.path }}/gateway/src/main/resources/META-INF/native-image/.lock
+      #    ps -ef |grep ${{ env.pid }}
           
       - id: build 
         run: |
