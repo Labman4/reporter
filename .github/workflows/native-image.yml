@@ -84,6 +84,7 @@ jobs:
           java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar 
           #echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
         timeout-minutes: 1
+        continue-on-error: true
           
       - run: |
           native-image --macro:native-image-configure-launcher
