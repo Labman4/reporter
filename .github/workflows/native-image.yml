@@ -93,12 +93,16 @@ jobs:
       - run: |
           kill -2 ${{ env.pid }}
           #echo "::stop-commands::${{ env.stopMarker}}"
-          
+      
       - name: Upload test report
         uses: actions/upload-artifact@v3.1.1
         with:
           name: test
           path: '**/target/surefire-reports/TEST-*.xml'
+          
+      - run: |    
+          cat ${{ env.path }}/gateway/src/main/resources/META-INF/native-image/.lock
+          ps -ef |grep ${{ env.pid}}
 
       - name: Merge native config
         run: |
