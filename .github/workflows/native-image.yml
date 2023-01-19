@@ -90,6 +90,8 @@ jobs:
           name: test
           path: '**/target/surefire-reports/TEST-*.xml'
 
+      - run: |
+          docker image rm elasticsearch:7.6.1 labman4/redis-cluster:7.0.7 labman4/redis-cluster:7.0
      # - run: |
      #     echo "::stop-commands::${{ env.stopMarker}}"
 
