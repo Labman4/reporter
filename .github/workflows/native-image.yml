@@ -91,7 +91,7 @@ jobs:
           cat ${{ env.path }}/gateway/src/main/resources/META-INF/native-image/.lock
 
       - run: |
-          kill -2 ${{ env.pid }}
+          kill  ${{ env.pid }}
           #echo "::stop-commands::${{ env.stopMarker}}"
       
       - name: Upload test report
