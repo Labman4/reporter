@@ -85,7 +85,7 @@ jobs:
           
       - run: |
           #kill -9 ${{ env.pid }}
-          #rm gateway/src/main/resources/META-INF/native-image/.lock
+          rm gateway/src/main/resources/META-INF/native-image/.lock
           echo "::stop-commands::${{ env.stopMarker}}"
 
       - name: Merge native config
