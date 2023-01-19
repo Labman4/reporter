@@ -37,15 +37,19 @@ jobs:
           nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
           #java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar 
           #echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
-          
+       
+      
       - run: |
           kill -s 2 ${{ env.pid }}
           #echo "::stop-commands::${{ env.stopMarker}}"
           #curl -X POST http://localhost:8080/actuator/shutdown
           
+      - run: |    
+          cat ${{ env.path }}/gateway/src/main/resources/META-INF/native-image/.lock
+          ps -ef |grep ${{ env.pid }}
+          
       - id: build 
         run: |
-          cd gateway
           mvn -DvaultToken=${{secrets.VAULT_TOKEN}} -DvaultPath=${{secrets.VAULT_PATH}} -DvaultUri=${{secrets.VAULT_URI}}  -DSECRETS_PATH=${{secrets.SECRETS_PATH}} -P native,nativeTest package -DskipTests -f ${{ env.path }}/gateway/pom.xml
           podman tag registry.elpsykongroo.com/library/gateway:native gateway:native
           echo "build=success" >> $GITHUB_OUTPUT
@@ -58,6 +62,7 @@ jobs:
           tags: "native"
           username:  ${{ secrets.REGISTRY_PRIVATE_NAME }}
           password:  ${{ secrets.REGISTRY_PRIVATE_PASS }}
+          
   deploy:
     environment: ${{ github.event.inputs.environment || 'native-image' }}
     needs: host_build
