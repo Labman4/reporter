@@ -157,10 +157,10 @@ jobs:
 #     uses: Labman4/workflow/.github/workflows/automerge.yml@automerge
 #     secrets: inherit
 
-  build:
-    needs: test
-    uses: Labman4/workflow/.github/workflows/host-build-native-from-pre.yml@native-image
-    secrets: inherit
+#   build:
+#     needs: test
+#     uses: Labman4/workflow/.github/workflows/host-build-native-from-pre.yml@native-image
+#     secrets: inherit
    
 #   pre-build:
 #     uses: Labman4/workflow/.github/workflows/buildpacks-native-pre.yml@buildpacks
