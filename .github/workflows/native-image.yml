@@ -118,6 +118,12 @@ jobs:
       - run: |
           git status
           
+      - name: Create pull request
+        id: cpr
+        uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
+        with:
+          base: native-image
+          
       - name: package 
         run: |
           mvn -P native package -DskipTests -f  ${{ env.path }}/gateway/pom.xml 
@@ -135,12 +141,6 @@ jobs:
             ${{ env.path }}/
             !${{ env.path }}/**/*.jar
           retention-days: 3  
-           
-      - name: Create pull request
-        id: cpr
-        uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
-        with:
-          base: native-image
           
 #       - run: |
 #           echo ${{ github.context.payload.pull_request }}
