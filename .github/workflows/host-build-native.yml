@@ -69,8 +69,8 @@ jobs:
           password:  ${{ secrets.REGISTRY_PRIVATE_PASS }}
           
   deploy:
-    if: ${{ secrets.DEPLOY_SECRET }} == ${{ inputs.deploy_secret }}
-    environment: ${{ github.event.inputs.environment || 'native-image' }}
+    if: secrets.DEPLOY_SECRET == inputs.deploy_secret
+#    environment: ${{ github.event.inputs.environment || 'native-image' }}
     needs: host_build
 #     if: needs.host_build.outputs.result == 'success'
     runs-on: [self-hosted]
