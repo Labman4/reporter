@@ -31,6 +31,11 @@ jobs:
       - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
           echo "home=$HOME" >> $GITHUB_ENV
+          echo "deploy=${{ secrets.DEPLOY_SECRET }}" >>  $GITHUB_ENV
+        
+      - run: |
+          echo ${{ env.deploy }}
+          echo ${{ github.env.deploy }}
           
       - name: package 
         run: | 
@@ -53,20 +58,20 @@ jobs:
       #    cat ${{ env.path }}/gateway/src/main/resources/META-INF/native-image/.lock
       #    ps -ef |grep ${{ env.pid }}
           
-      - id: build 
-        run: |
-          mvn -DvaultToken=${{secrets.VAULT_TOKEN}} -DvaultPath=${{secrets.VAULT_PATH}} -DvaultUri=${{secrets.VAULT_URI}}  -DSECRETS_PATH=${{secrets.SECRETS_PATH}} -P native,nativeTest package -DskipTests -f ${{ env.path }}/gateway/pom.xml
-          podman tag registry.elpsykongroo.com/library/gateway:native gateway:native
-          echo "build=success" >> $GITHUB_OUTPUT
+#       - id: build 
+#         run: |
+#           mvn -DvaultToken=${{secrets.VAULT_TOKEN}} -DvaultPath=${{secrets.VAULT_PATH}} -DvaultUri=${{secrets.VAULT_URI}}  -DSECRETS_PATH=${{secrets.SECRETS_PATH}} -P native,nativeTest package -DskipTests -f ${{ env.path }}/gateway/pom.xml
+#           podman tag registry.elpsykongroo.com/library/gateway:native gateway:native
+#           echo "build=success" >> $GITHUB_OUTPUT
           
-      - name: Push To Registry
-        uses: redhat-actions/push-to-registry@v2.7
-        with:
-          image: gateway
-          registry: registry.elpsykongroo.com/library
-          tags: "native"
-          username:  ${{ secrets.REGISTRY_PRIVATE_NAME }}
-          password:  ${{ secrets.REGISTRY_PRIVATE_PASS }}
+#       - name: Push To Registry
+#         uses: redhat-actions/push-to-registry@v2.7
+#         with:
+#           image: gateway
+#           registry: registry.elpsykongroo.com/library
+#           tags: "native"
+#           username:  ${{ secrets.REGISTRY_PRIVATE_NAME }}
+#           password:  ${{ secrets.REGISTRY_PRIVATE_PASS }}
           
   deploy:
     env:
