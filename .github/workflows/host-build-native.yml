@@ -92,10 +92,13 @@ jobs:
   deploy:
     environment: ${{ github.event.inputs.environment || 'native-image' }}
     needs: host_build
-    if: needs.host_build.outputs.deploy == enable
+#    if: needs.host_build.outputs.deploy == enable
     runs-on: [self-hosted]
     steps:
       - name: depoly with helm
+        env:
+          deploy: ${{ secrets.DEPLOY_SECRET }}
+        if: ${{ env.deploy == inputs.deploy_secret }}
         run: |
           helm upgrade -n demo demo ~/code/helm/charts/demo
 
