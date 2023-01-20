@@ -12,10 +12,16 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
     
-    - name: Download a Build Artifact
+    - name: Download .m2
       uses: actions/download-artifact@v3.0.1
       with:
-        name:  ${{ env.name }}-package
+        name:  m2
+        path: /home/cnb/.m2/repository/com/elpsykongroo
+        
+    - name: Download package
+      uses: actions/download-artifact@v3.0.1
+      with:
+        name:  package
         
     - name: Cache Docker images.
       uses: ScribeMD/docker-cache@0.2.7
