@@ -62,7 +62,7 @@ jobs:
           echo "path=$(pwd)" >> $GITHUB_ENV
           echo "home=$HOME" >> $GITHUB_ENV
           
-      - name: package 
+      - name: install 
         run: | 
           mvn package install -DskipTests
           
@@ -127,19 +127,19 @@ jobs:
       
       - run: |
           git status
-          
-      - name: Create pull request
-        id: cpr
-        uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
-        with:
-          base: native-image
-          
+        
       - name: package 
         run: |
           mvn -P native package -DskipTests -f  ${{ env.path }}/gateway/pom.xml 
         
       - run: |
           git status
+          
+      - name: Create pull request
+        id: cpr
+        uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
+        with:
+          base: native-image
           
       - name: Upload a package
         uses: actions/upload-artifact@v3.1.1
