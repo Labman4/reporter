@@ -19,7 +19,7 @@ jobs:
       uses: actions/download-artifact@v3.0.1
       with:
         name:  m2
-        path: ${{ env.home }}.m2/repository/com/elpsykongroo
+        path: ${{ env.home }}/.m2/repository/com/elpsykongroo
         
     - name: Download package
       uses: actions/download-artifact@v3.0.1
