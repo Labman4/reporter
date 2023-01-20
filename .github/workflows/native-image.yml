@@ -20,8 +20,8 @@ jobs:
     environment: ${{ github.event.inputs.environment || 'native-image' }}
     runs-on: [ubuntu-latest]
     steps:
-      - name: Docker Layer Caching
-        uses: satackey/action-docker-layer-caching@v0.0.11   
+#       - name: Docker Layer Caching
+#         uses: satackey/action-docker-layer-caching@v0.0.11   
       
       - run: |
           docker image rm demo:native elasticsearch:7.6.1 labman4/redis-cluster:7.0.7 labman4/redis-cluster:7.0
@@ -118,7 +118,10 @@ jobs:
         run: |
           cd ${{ env.path }}/gateway
           mvn -P native package -DskipTests -f  ${{ env.path }}/gateway/pom.xml 
-         
+       
+      - run: |
+          git status
+          
 #       - name: Upload a package
 #         uses: actions/upload-artifact@v3.1.1
 #         with:
