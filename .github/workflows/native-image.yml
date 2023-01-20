@@ -88,18 +88,6 @@ jobs:
 #           node port: 9300
 #           discovery type: 'single-node'
                     
-      - name: agent trace   
-        run: |
-          #nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
-          java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar 
-          echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
-        continue-on-error: true 
-        
-#       - run: |
-#           docker image rm demo:native elasticsearch:7.6.1 labman4/redis-cluster:7.0.7 labman4/redis-cluster:7.0
-          
-      - run: |
-          git status
           
       - run: |
           native-image --macro:native-image-configure-launcher
@@ -127,6 +115,21 @@ jobs:
       
       - run: |
           git status
+      
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
+        with:
+          base: native-image
+         
+      - name: agent trace   
+        run: |
+          #nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
+          java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar 
+          echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
+        continue-on-error: true 
+          
+      - run: |
+          git status
           
       - name: Create pull request
         id: cpr
@@ -152,7 +155,11 @@ jobs:
             ${{ env.path }}/
             !${{ env.path }}/**/*.jar
           retention-days: 3  
-          
+   
+
+#       - run: |
+#           docker image rm demo:native elasticsearch:7.6.1 labman4/redis-cluster:7.0.7 labman4/redis-cluster:7.0
+
 #       - run: |
 #           echo ${{ github.context.payload.pull_request }}
 #           echo ${{ steps.cpr.outputs.pull-request-number }}
@@ -186,19 +193,19 @@ jobs:
 #     uses: Labman4/workflow/.github/workflows/automerge.yml@automerge
 #     secrets: inherit
 
-  build:
-    needs: test
-    uses: Labman4/workflow/.github/workflows/host-build-native-from-pre.yml@native-image
-    secrets: inherit
+#   build:
+#     needs: test
+#     uses: Labman4/workflow/.github/workflows/host-build-native-from-pre.yml@native-image
+#     secrets: inherit
    
-  pre-build:
-    uses: Labman4/workflow/.github/workflows/buildpacks-native-pre.yml@buildpacks
-    secrets: inherit
+#   pre-build:
+#     uses: Labman4/workflow/.github/workflows/buildpacks-native-pre.yml@buildpacks
+#     secrets: inherit
     
-  buildpacks:
-    needs: test
-    uses: Labman4/workflow/.github/workflows/buildpacks-native.yml@buildpacks
-    secrets: inherit
+#   buildpacks:
+#     needs: test
+#     uses: Labman4/workflow/.github/workflows/buildpacks-native.yml@buildpacks
+#     secrets: inherit
     
 #   coverage:  
 #     needs: test
