@@ -106,10 +106,10 @@ jobs:
          # ps -ef |grep ${{ env.pid }}
          # cat ${{ env.path }}/gateway/src/main/resources/META-INF/native-image/.lock
 
-      - name: Merge native config
-        run: |
-          native-image-configure generate --input-dir=${{ env.path }}/gateway/target/native/agent-output/test --output-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image
-          #--input-dir=target/native/agent-output/main 
+#       - name: Merge native config
+#         run: |
+#           native-image-configure generate --input-dir=${{ env.path }}/gateway/target/native/agent-output/test --output-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image
+#           #--input-dir=target/native/agent-output/main 
       
       - run: |
           git status
