@@ -13,6 +13,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
             
+      - name: Cache Docker images
+        uses: ScribeMD/docker-cache@0.2.7
+        with:
+          key: docker-${{ runner.os }}-{hash}
+          
       - name: Set up Graalvm
         uses: graalvm/setup-graalvm@d01f5f519f35cf82b318133761fd8b674632a8fe
         with:
@@ -42,9 +47,6 @@ jobs:
       - name: package
         run: |
           mvn -P native package -DskipTests -f  ${{ env.path }}/gateway/pom.xml 
-          
-      - name: Docker Layer Caching
-        uses: satackey/action-docker-layer-caching@v0.0.11
       
       - name: Build image
         uses: labman4/buildpacks-action@master
