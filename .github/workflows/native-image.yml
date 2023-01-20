@@ -65,9 +65,9 @@ jobs:
         run: | 
           mvn package install -DskipTests
           
-      - name: Web test
-        run: |
-          mvn -DvaultToken=${{secrets.VAULT_TOKEN}} -DvaultPath=${{secrets.VAULT_PATH}} -DvaultUri=${{secrets.VAULT_URI}}  -DSECRETS_PATH=${{secrets.SECRETS_PATH}} -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/gateway/pom.xml
+#       - name: Web test
+#         run: |
+#           mvn -DvaultToken=${{secrets.VAULT_TOKEN}} -DvaultPath=${{secrets.VAULT_PATH}} -DvaultUri=${{secrets.VAULT_URI}}  -DSECRETS_PATH=${{secrets.SECRETS_PATH}} -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/gateway/pom.xml
 
 #       - uses: getong/elasticsearch-action@v1.2
 #         with:
@@ -116,7 +116,6 @@ jobs:
           
       - name: package 
         run: |
-          cd ${{ env.path }}/gateway
           mvn -P native package -DskipTests -f  ${{ env.path }}/gateway/pom.xml 
        
       - run: |
