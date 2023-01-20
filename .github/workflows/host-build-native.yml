@@ -36,6 +36,7 @@ jobs:
       - run: |
           echo ${{ env.deploy }}
           echo ${{ github.env.deploy }}
+          echo ${{ inputs.deploy_secret }}
           
       - name: package 
         run: | 
@@ -76,7 +77,7 @@ jobs:
   deploy:
     env:
       deploy: ${{ secrets.DEPLOY_SECRET }}
-    if: github.env.deploy == inputs.deploy_secret
+    if: env.deploy == inputs.deploy_secret
 #    environment: ${{ github.event.inputs.environment || 'native-image' }}
     needs: host_build
 #     if: needs.host_build.outputs.result == 'success'
