@@ -17,8 +17,10 @@ jobs:
       with:
         name:  ${{ env.name }}-package
         
-    - name: Docker Layer Caching
-      uses: satackey/action-docker-layer-caching@v0.0.11
+    - name: Cache Docker images.
+      uses: ScribeMD/docker-cache@0.2.7
+      with:
+        key: docker-${{ runner.os }}-{hash}
 
     - run: |
         echo "path=$(pwd)" >> $GITHUB_ENV
