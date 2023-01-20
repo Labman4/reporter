@@ -84,7 +84,7 @@ jobs:
   deploy:
 #    environment: ${{ github.event.inputs.environment || 'native-image' }}
     needs: host_build
-    if: needs.host_build.outputs.deploy == true
+    if: needs.host_build.outputs.deploy == "true"
     runs-on: [self-hosted]
     steps:
       - name: depoly with helm
