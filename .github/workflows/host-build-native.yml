@@ -34,15 +34,15 @@ jobs:
           echo "home=$HOME" >> $GITHUB_ENV
           echo "deploy=${{ secrets.DEPLOY_SECRET }}" >>  $GITHUB_ENV
         
-      - id: deploy_enable
-        run: |
+#       - id: deploy_enable
+#         run: |
           
-          if [[ ${{ inputs.deploy_secret }} == ${{ secrets.DEPLOY_SECRET }} ]];
-          then         
-            echo "deploy=enable" >> $GITHUB_OUTPUT
-          fi
-          echo ${{ env.deploy }}
-          echo ${{ inputs.deploy_secret }}
+#           if [[ ${{ inputs.deploy_secret }} == ${{ secrets.DEPLOY_SECRET }} ]];
+#           then         
+#             echo "deploy=enable" >> $GITHUB_OUTPUT
+#           fi
+#           echo ${{ env.deploy }}
+#           echo ${{ inputs.deploy_secret }}
 
           
       - name: package 
@@ -81,12 +81,12 @@ jobs:
 #           username:  ${{ secrets.REGISTRY_PRIVATE_NAME }}
 #           password:  ${{ secrets.REGISTRY_PRIVATE_PASS }}
     
-  verify:
-    environment: ${{ github.event.inputs.environment || 'native-image' }}
-    runs-on: ubuntu-latest
-    needs: host_build
-    steps:
-      - run: echo ${{needs.host_build.outputs.deploy}}
+#   verify:
+#     environment: ${{ github.event.inputs.environment || 'native-image' }}
+#     runs-on: ubuntu-latest
+#     needs: host_build
+#     steps:
+#       - run: echo ${{needs.host_build.outputs.deploy}}
     
   
   deploy:
