@@ -24,6 +24,7 @@ jobs:
     runs-on: [self-hosted]
     outputs:
       result: ${{ steps.build.outputs.build }}
+      deploy: ${{ steps.build.outputs.deploy_enable }}
     steps:      
       - name: Checkout
         uses: actions/checkout@v3.3.0   
@@ -33,9 +34,14 @@ jobs:
           echo "home=$HOME" >> $GITHUB_ENV
           echo "deploy=${{ secrets.DEPLOY_SECRET }}" >>  $GITHUB_ENV
         
-      - run: |
+      - id: deploy_enable
+        run: |
+          if ${{ inputs.deploy_secret }} == ${{ secrets.DEPLOY_SECRET }}
+          then         
+            echo "deploy=true" >> $GITHUB_OUTPUT
+
+          fi
           echo ${{ env.deploy }}
-          echo ${{ github.env.deploy }}
           echo ${{ inputs.deploy_secret }}
           
       - name: package 
@@ -73,14 +79,12 @@ jobs:
 #           tags: "native"
 #           username:  ${{ secrets.REGISTRY_PRIVATE_NAME }}
 #           password:  ${{ secrets.REGISTRY_PRIVATE_PASS }}
-          
+    
+  
   deploy:
-    env:
-      deploy: ${{ secrets.DEPLOY_SECRET }}
-    if: env.deploy == inputs.deploy_secret
 #    environment: ${{ github.event.inputs.environment || 'native-image' }}
     needs: host_build
-#     if: needs.host_build.outputs.result == 'success'
+    if: needs.host_build.outputs.deploy == true
     runs-on: [self-hosted]
     steps:
       - name: depoly with helm
