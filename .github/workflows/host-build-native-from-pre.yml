@@ -23,11 +23,30 @@ jobs:
     environment: ${{ github.event.inputs.environment || 'native-image' }}
     runs-on: [self-hosted]
     steps:      
-       - name: Download a Build Artifact
-         uses: actions/download-artifact@v3.0.1
-         with:
-           name:  package
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v3.0.1
+        with:
+          name:  package
        
-       - name: Build native image
-         run: |
-           mvn -DvaultToken=${{secrets.VAULT_TOKEN}} -DvaultPath=${{secrets.VAULT_PATH}} -DvaultUri=${{secrets.VAULT_URI}}  -DSECRETS_PATH=${{secrets.SECRETS_PATH}} -P native,nativeTest package -DskipTests 
+      - name: Build native image
+        run: |
+          mvn -DvaultToken=${{secrets.VAULT_TOKEN}} -DvaultPath=${{secrets.VAULT_PATH}} -DvaultUri=${{secrets.VAULT_URI}}  -DSECRETS_PATH=${{secrets.SECRETS_PATH}} -P native,nativeTest package -DskipTests
+          podman tag registry.elpsykongroo.com/library/gateway:native gateway:native
+
+      - name: Push To Registry
+        uses: redhat-actions/push-to-registry@v2.7
+        with:
+          image: gateway
+          registry: docker.io/labman4
+          tags: "native"
+          username:  ${{ secrets.REGISTRY_NAME }}
+          password:  ${{ secrets.REGISTRY_PASS }}
+      
+  deploy:
+    environment: ${{ github.event.inputs.environment || 'native-image' }}
+    needs: host_build
+    runs-on: [self-hosted]
+    steps:
+      - name: depoly with helm
+        run: |
+          helm upgrade -n demo demo-dev ~/yaml/demo
