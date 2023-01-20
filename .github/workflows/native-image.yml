@@ -22,17 +22,18 @@ jobs:
     steps:
 #       - name: Docker Layer Caching
 #         uses: satackey/action-docker-layer-caching@v0.0.11   
-      - name: Cache Docker images.
+
+      - name: Cache Docker images
         uses: ScribeMD/docker-cache@0.2.7
         with:
           key: docker-${{ runner.os }}-{hash}
           
-      - name: Configure sysctl limits
-        run: |
-          sudo swapoff -a
-          sudo sysctl -w vm.swappiness=1
-          sudo sysctl -w fs.file-max=262144
-          sudo sysctl -w vm.max_map_count=262144
+#       - name: Configure sysctl limits
+#         run: |
+#           sudo swapoff -a
+#           sudo sysctl -w vm.swappiness=1
+#           sudo sysctl -w fs.file-max=262144
+#           sudo sysctl -w vm.max_map_count=262144
           
       - name: Checkout Code
         uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
@@ -65,14 +66,14 @@ jobs:
         run: | 
           mvn package install -DskipTests
           
-      - name: Upload dependencies
-        uses: actions/upload-artifact@v3.1.1
-        with:
-          name: m2
-          path: |
-            ${{ env.home}}/.m2/repository/com/elpsykongroo/**/*-client-*.jar
-            ${{ env.home}}/.m2/repository/com/elpsykongroo/**/*.pom
-#           retention-days: 3  
+#       - name: Upload dependencies
+#         uses: actions/upload-artifact@v3.1.1
+#         with:
+#           name: m2
+#           path: |
+#             ${{ env.home}}/.m2/repository/com/elpsykongroo/**/*-client-*.jar
+#             ${{ env.home}}/.m2/repository/com/elpsykongroo/**/*.pom
+# #           retention-days: 3  
 
       - name: Web test
         run: |
@@ -127,18 +128,18 @@ jobs:
       - run: |
           git status
           
+      - name: Create pull request
+        id: cpr
+        uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
+        with:
+          base: native-image
+          
       - name: package 
         run: |
           mvn -P native package -DskipTests -f  ${{ env.path }}/gateway/pom.xml 
         
       - run: |
           git status
-      
-      - name: Create pull request
-        id: cpr
-        uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
-        with:
-          base: native-image
           
       - name: Upload a package
         uses: actions/upload-artifact@v3.1.1
