@@ -69,19 +69,19 @@ jobs:
         run: |
           mvn -DvaultToken=${{secrets.VAULT_TOKEN}} -DvaultPath=${{secrets.VAULT_PATH}} -DvaultUri=${{secrets.VAULT_URI}}  -DSECRETS_PATH=${{secrets.SECRETS_PATH}} -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/gateway/pom.xml
 
-      - uses: getong/elasticsearch-action@v1.2
-        with:
-          elasticsearch version: '7.17.3'
-          host port: 9200
-          container port: 9200
-          host node port: 9300
-          node port: 9300
-          discovery type: 'single-node'
+#       - uses: getong/elasticsearch-action@v1.2
+#         with:
+#           elasticsearch version: '7.17.3'
+#           host port: 9200
+#           container port: 9200
+#           host node port: 9300
+#           node port: 9300
+#           discovery type: 'single-node'
                     
       - name: agent trace   
         run: |
-          nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
-          #java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar 
+          #nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
+          java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar 
           echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
         continue-on-error: true 
         
@@ -94,11 +94,11 @@ jobs:
       - run: |
           native-image --macro:native-image-configure-launcher
 
-      - run: |
-          echo "::stop-commands::${{ env.stopMarker}}"
-          kill -s 2 ${{ env.pid }}
-          curl -X POST http://localhost:8080/actuator/shutdown
-        continue-on-error: true 
+#       - run: |
+#           #echo "::stop-commands::${{ env.stopMarker}}"
+#           kill -s 15 ${{ env.pid }}
+#           curl -X POST http://localhost:8080/actuator/shutdown
+#         continue-on-error: true 
       
       - name: Upload test report
         uses: actions/upload-artifact@v3.1.1
