@@ -24,7 +24,7 @@ jobs:
     runs-on: [self-hosted]
     outputs:
       result: ${{ steps.build.outputs.build }}
-      deploy: ${{ steps.build.outputs.deploy_enable }}
+      deploy: ${{ steps.deploy_enable.outputs.deploy }}
     steps:      
       - name: Checkout
         uses: actions/checkout@v3.3.0   
