@@ -82,6 +82,7 @@ jobs:
 #           password:  ${{ secrets.REGISTRY_PRIVATE_PASS }}
     
   verify:
+    environment: ${{ github.event.inputs.environment || 'native-image' }}
     runs-on: ubuntu-latest
     needs: host_build
     steps:
@@ -89,7 +90,7 @@ jobs:
     
   
   deploy:
-#    environment: ${{ github.event.inputs.environment || 'native-image' }}
+    environment: ${{ github.event.inputs.environment || 'native-image' }}
     needs: host_build
     if: needs.host_build.outputs.deploy == true
     runs-on: [self-hosted]
