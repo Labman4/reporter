@@ -11,12 +11,15 @@ jobs:
     environment: ${{ github.event.inputs.environment || 'native-image' }}
     runs-on: ubuntu-latest
     steps: 
-    
+    - run: |
+        echo "path=$(pwd)" >> $GITHUB_ENV
+        echo "home=$HOME" >> $GITHUB_ENV
+        
     - name: Download .m2
       uses: actions/download-artifact@v3.0.1
       with:
         name:  m2
-        path: /home/cnb/.m2/repository/com/elpsykongroo
+        path: ${{ env.home }}.m2/repository/com/elpsykongroo
         
     - name: Download package
       uses: actions/download-artifact@v3.0.1
@@ -27,14 +30,7 @@ jobs:
       uses: ScribeMD/docker-cache@0.2.7
       with:
         key: docker-${{ runner.os }}-{hash}
-
-    - run: |
-        ls
-        echo "path=$(pwd)" >> $GITHUB_ENV
-        echo "home=$HOME" >> $GITHUB_ENV
-   
-    - run: |
-      
+         
     - name: Build image
       uses: labman4/buildpacks-action@master
       with:
