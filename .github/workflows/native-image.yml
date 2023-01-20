@@ -61,6 +61,7 @@ jobs:
       - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
           echo "home=$HOME" >> $GITHUB_ENV
+          java --version
           
       - name: install 
         run: | 
