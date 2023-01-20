@@ -106,9 +106,9 @@ jobs:
           name: test
           path: '**/target/surefire-reports/TEST-*.xml'
           
-      - run: | 
-         ps -ef |grep ${{ env.pid }}
-         cat ${{ env.path }}/gateway/src/main/resources/META-INF/native-image/.lock
+#       - run: | 
+#          ps -ef |grep ${{ env.pid }}
+#          cat ${{ env.path }}/gateway/src/main/resources/META-INF/native-image/.lock
 
       - name: Merge native config
         run: |
