@@ -39,7 +39,7 @@ jobs:
           
           if [[ ${{ inputs.deploy_secret }} == ${{ secrets.DEPLOY_SECRET }} ]];
           then         
-            echo "deploy=true" >> $GITHUB_OUTPUT
+            echo "deploy=enable" >> $GITHUB_OUTPUT
           fi
           echo ${{ env.deploy }}
           echo ${{ inputs.deploy_secret }}
@@ -92,7 +92,7 @@ jobs:
   deploy:
     environment: ${{ github.event.inputs.environment || 'native-image' }}
     needs: host_build
-    if: needs.host_build.outputs.deploy == true
+    if: needs.host_build.outputs.deploy == "enable"
     runs-on: [self-hosted]
     steps:
       - name: depoly with helm
