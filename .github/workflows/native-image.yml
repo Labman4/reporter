@@ -25,7 +25,7 @@ jobs:
       - name: Cache Docker images.
         uses: ScribeMD/docker-cache@0.2.7
         with:
-          key: docker-${{ runner.os }}-${{ hashFiles(...) }}
+          key: docker-${{ runner.os }}-{hash}
           
       - name: Configure sysctl limits
         run: |
@@ -85,8 +85,8 @@ jobs:
           echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
         continue-on-error: true 
         
-      - run: |
-          docker image rm demo:native elasticsearch:7.6.1 labman4/redis-cluster:7.0.7 labman4/redis-cluster:7.0
+#       - run: |
+#           docker image rm demo:native elasticsearch:7.6.1 labman4/redis-cluster:7.0.7 labman4/redis-cluster:7.0
           
       - run: |
           git status
