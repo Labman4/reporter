@@ -20,11 +20,8 @@ jobs:
     environment: ${{ github.event.inputs.environment || 'native-image' }}
     runs-on: [ubuntu-latest]
     steps:
-#       - name: Docker Layer Caching
-#         uses: satackey/action-docker-layer-caching@v0.0.11   
-      
-#       - run: |
-#           docker image rm demo:native elasticsearch:7.6.1 labman4/redis-cluster:7.0.7 labman4/redis-cluster:7.0
+      - name: Docker Layer Caching
+        uses: satackey/action-docker-layer-caching@v0.0.11   
           
       - name: Configure sysctl limits
         run: |
@@ -56,8 +53,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven- 
             
-      - name: pwd
-        run: |
+      - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
           echo "home=$HOME" >> $GITHUB_ENV
           
@@ -65,36 +61,40 @@ jobs:
         run: | 
           mvn package install -DskipTests
           
-#       - name: Web test
-#         run: |
-#           mvn -DvaultToken=${{secrets.VAULT_TOKEN}} -DvaultPath=${{secrets.VAULT_PATH}} -DvaultUri=${{secrets.VAULT_URI}}  -DSECRETS_PATH=${{secrets.SECRETS_PATH}} -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/gateway/pom.xml
+      - name: Web test
+        run: |
+          mvn -DvaultToken=${{secrets.VAULT_TOKEN}} -DvaultPath=${{secrets.VAULT_PATH}} -DvaultUri=${{secrets.VAULT_URI}}  -DSECRETS_PATH=${{secrets.SECRETS_PATH}} -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/gateway/pom.xml
 
-#       - uses: getong/elasticsearch-action@v1.2
-#         with:
-#           elasticsearch version: '7.17.3'
-#           host port: 9200
-#           container port: 9200
-#           host node port: 9300
-#           node port: 9300
-#           discovery type: 'single-node'
+      - uses: getong/elasticsearch-action@v1.2
+        with:
+          elasticsearch version: '7.17.3'
+          host port: 9200
+          container port: 9200
+          host node port: 9300
+          node port: 9300
+          discovery type: 'single-node'
                     
       - name: agent trace   
         run: |
-          #nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
-          java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar 
+          nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
+          #java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar 
           #echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
         continue-on-error: true 
         
+      - run: |
+          docker image rm demo:native elasticsearch:7.6.1 labman4/redis-cluster:7.0.7 labman4/redis-cluster:7.0
+          
       - run: |
           git status
           
       - run: |
           native-image --macro:native-image-configure-launcher
 
-      #- run: |
-          #kill -s 2 ${{ env.pid }}
-          #echo "::stop-commands::${{ env.stopMarker}}"
-          #curl -X POST http://localhost:8080/actuator/shutdown
+      - run: |
+          echo "::stop-commands::${{ env.stopMarker}}"
+          kill -s 2 ${{ env.pid }}
+          curl -X POST http://localhost:8080/actuator/shutdown
+        continue-on-error: true 
       
       - name: Upload test report
         uses: actions/upload-artifact@v3.1.1
@@ -102,14 +102,14 @@ jobs:
           name: test
           path: '**/target/surefire-reports/TEST-*.xml'
           
-      #- run: | 
-         # ps -ef |grep ${{ env.pid }}
-         # cat ${{ env.path }}/gateway/src/main/resources/META-INF/native-image/.lock
+      - run: | 
+         ps -ef |grep ${{ env.pid }}
+         cat ${{ env.path }}/gateway/src/main/resources/META-INF/native-image/.lock
 
-#       - name: Merge native config
-#         run: |
-#           native-image-configure generate --input-dir=${{ env.path }}/gateway/target/native/agent-output/test --output-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image
-#           #--input-dir=target/native/agent-output/main 
+      - name: Merge native config
+        run: |
+          native-image-configure generate --input-dir=${{ env.path }}/gateway/target/native/agent-output/test --output-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image
+          #--input-dir=target/native/agent-output/main 
       
       - run: |
           git status
@@ -121,29 +121,26 @@ jobs:
       - run: |
           git status
           
-#       - name: Upload a package
-#         uses: actions/upload-artifact@v3.1.1
-#         with:
-#           name: ${{ env.name }}-package
-#           path: |
-#             ${{ env.home}}/.m2/repository/com/elpsykongroo/**/*-client-*.jar
-#             ${{ env.home}}/.m2/repository/com/elpsykongroo/**/*.pom
-#             ${{ env.path }}/
-#             !${{ env.path }}/**/*.jar
-#           retention-days: 3  
+      - name: Upload a package
+        uses: actions/upload-artifact@v3.1.1
+        with:
+          name: ${{ env.name }}-package
+          path: |
+            ${{ env.home}}/.m2/repository/com/elpsykongroo/**/*-client-*.jar
+            ${{ env.home}}/.m2/repository/com/elpsykongroo/**/*.pom
+            ${{ env.path }}/
+            !${{ env.path }}/**/*.jar
+          retention-days: 3  
            
       - name: Create pull request
         id: cpr
         uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
         with:
           base: native-image
-       
-      - run: |
-          git status
           
-      - run: |
-          echo ${{ github.context.payload.pull_request }}
-          echo ${{ steps.cpr.outputs.pull-request-number }}
+#       - run: |
+#           echo ${{ github.context.payload.pull_request }}
+#           echo ${{ steps.cpr.outputs.pull-request-number }}
           
 #   pr_number:
 #     needs: test
@@ -183,10 +180,10 @@ jobs:
 #     uses: Labman4/workflow/.github/workflows/buildpacks-native-pre.yml@buildpacks
 #     secrets: inherit
     
-#   buildpacks:
-#     needs: test
-#     uses: Labman4/workflow/.github/workflows/buildpacks-native.yml@buildpacks
-#     secrets: inherit
+  buildpacks:
+    needs: test
+    uses: Labman4/workflow/.github/workflows/buildpacks-native.yml@buildpacks
+    secrets: inherit
     
 #   coverage:  
 #     needs: test
