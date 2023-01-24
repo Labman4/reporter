@@ -67,3 +67,9 @@ jobs:
           tags: "pre"
           username:  ${{ secrets.REGISTRY_NAME }}
           password:  ${{ secrets.REGISTRY_PASS }}
+          
+  deploy:
+    needs: pre
+    uses: Labman4/workflow/.github/workflows/host-deploy-pre.yml@native-image
+    secrets: inherit
+   
