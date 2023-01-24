@@ -1,0 +1,14 @@
+name: Build on host
+on: 
+  workflow_call:
+   
+  
+jobs:
+  deploy:
+    environment: ${{ github.event.inputs.environment || 'native-image' }}
+#     needs: host_build
+    runs-on: [self-hosted]
+    steps:
+      - name: depoly with helm
+        run: |
+          helm upgrade -n demo demo-pre ~/yaml/demo/pre
