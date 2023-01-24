@@ -1,8 +1,7 @@
-name: Build on host
+name: pre deploy host
 on: 
   workflow_call:
-   
-  
+ 
 jobs:
   deploy:
     environment: ${{ github.event.inputs.environment || 'native-image' }}
@@ -11,4 +10,4 @@ jobs:
     steps:
       - name: depoly with helm
         run: |
-          helm upgrade -n demo demo-pre ~/yaml/demo/pre
+          helm upgrade -n demo demo-pre ~/yaml/demo-pre
