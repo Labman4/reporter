@@ -112,7 +112,7 @@ jobs:
   
       - run: |
           git status
-        
+          
       - name: Upload test report
         uses: actions/upload-artifact@v3.1.1
         with:
@@ -128,6 +128,7 @@ jobs:
       - run: | 
          ps -ef |grep ${{ env.pid }}
          cat ${{ env.path }}/gateway/src/main/resources/META-INF/native-image/.lock
+        continue-on-error: true 
 
       - name: Create pull request
         id: cpr
@@ -156,6 +157,10 @@ jobs:
             !${{ env.path }}/**/*.jar
           retention-days: 3  
    
+      - run: | 
+         ps -ef |grep ${{ env.pid }}
+         cat ${{ env.path }}/gateway/src/main/resources/META-INF/native-image/.lock
+        continue-on-error: true 
 #       - run: |
 #           docker image rm demo:native elasticsearch:7.6.1 labman4/redis-cluster:7.0.7 labman4/redis-cluster:7.0
 
