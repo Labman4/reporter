@@ -1,4 +1,4 @@
-name: Build on host
+name: host deploy pre
 on: 
   workflow_call:
     secrets:
@@ -49,4 +49,4 @@ jobs:
     steps:
       - name: depoly with helm
         run: |
-          helm upgrade -n demo demo-pre ~/yaml/demo
+          helm upgrade -n demo demo-pre ~/yaml/demo-pre
