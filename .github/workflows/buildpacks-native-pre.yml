@@ -40,12 +40,10 @@ jobs:
           echo "home=$HOME" >> $GITHUB_ENV
           echo "path=$(pwd)" >> $GITHUB_ENV
           
-      - name: package client
-        run: | 
+      - run: | 
           mvn package install -DskipTests
         
-      - name: package
-        run: |
+      - run: |
           mvn -P native package -DskipTests -f  ${{ env.path }}/gateway/pom.xml 
       
       - name: Build image
