@@ -1,4 +1,4 @@
-name: Build on host
+name: deployment prod
 on: 
   workflow_call:
     secrets:
@@ -26,8 +26,7 @@ jobs:
       result: ${{ steps.build.outputs.build }}
       deploy: ${{ steps.deploy_enable.outputs.deploy }}
     steps:      
-      - name: Checkout
-        uses: actions/checkout@v3.3.0   
+      - uses: actions/checkout@v3.3.0   
      
       - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
@@ -44,8 +43,7 @@ jobs:
 #           echo ${{ env.deploy }}
 #           echo ${{ inputs.deploy_secret }}
     
-      - name: package 
-        run: | 
+      - run: | 
           mvn package install -DskipTests
          
       - name: agent trace   
@@ -53,7 +51,7 @@ jobs:
           nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  ${{ env.path }}/gateway/target/gateway-0.0.2.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV   
           #java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar 
           #echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
-        continue-on-error: true 
+#         continue-on-error: true 
 
       - run: |
           git status
@@ -69,8 +67,7 @@ jobs:
          ps -ef |grep ${{ env.pid }}
         continue-on-error: true 
         
-      - name: Create pull request
-        id: cpr
+      - id: cpr
         uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
         with:
           base: native-image
@@ -79,7 +76,6 @@ jobs:
         run: |
           mvn -DvaultToken=${{secrets.VAULT_TOKEN}} -DvaultPath=${{secrets.VAULT_PATH}} -DvaultUri=${{secrets.VAULT_URI}}  -DSECRETS_PATH=${{secrets.SECRETS_PATH}} -P native,nativeTest package -DskipTests -f ${{ env.path }}/gateway/pom.xml
           podman tag registry.elpsykongroo.com/library/gateway:native gateway:native
-          echo "build=success" >> $GITHUB_OUTPUT
           
       - name: Push To Registry
         uses: redhat-actions/push-to-registry@v2.7
@@ -95,13 +91,11 @@ jobs:
 #     runs-on: ubuntu-latest
 #     needs: host_build
 #     steps:
-#       - run: echo ${{needs.host_build.outputs.deploy}}
-    
-  
+#       - run: echo ${{needs.host_build.outputs.deploy}} 
   deploy:
-    environment: ${{ github.event.inputs.environment || 'native-image' }}
+    environment: ${{ github.event.inputs.environment || 'prod' }}
     needs: host_build
-#    if: needs.host_build.outputs.deploy == enable
+#    if: needs.host_build.outputs.deploy == enable not work
     runs-on: [self-hosted]
     steps:
       - name: depoly with helm
