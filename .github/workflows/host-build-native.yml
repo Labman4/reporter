@@ -67,7 +67,6 @@ jobs:
         
       - run: | 
          ps -ef |grep ${{ env.pid }}
-         cat ${{ env.path }}/gateway/src/main/resources/META-INF/native-image/.lock
         continue-on-error: true 
         
       - name: Create pull request
