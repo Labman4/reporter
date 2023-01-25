@@ -43,33 +43,38 @@ jobs:
 #           fi
 #           echo ${{ env.deploy }}
 #           echo ${{ inputs.deploy_secret }}
-
-          
+    
       - name: package 
         run: | 
           mvn package install -DskipTests
          
       - name: agent trace   
         run: |
-          #nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  ${{ env.path }}/gateway/target/gateway-0.0.2.jar > nohup.out 2> nohup.err < /dev/null & echo "pid=$!" >> $GITHUB_ENV  
-          java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar 
+          nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  ${{ env.path }}/gateway/target/gateway-0.0.2.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV   
+          #java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar 
           #echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
         continue-on-error: true 
 
+      - run: |
+          git status
+          
+      - run: |
+          #echo "::stop-commands::${{ env.stopMarker}}"
+          kill -s 15 ${{ env.pid }}
+          curl -X POST http://localhost:8080/actuator/shutdown
+          sleep 10
+        continue-on-error: true 
+        
+      - run: | 
+         ps -ef |grep ${{ env.pid }}
+         cat ${{ env.path }}/gateway/src/main/resources/META-INF/native-image/.lock
+        continue-on-error: true 
+        
       - name: Create pull request
         id: cpr
         uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
         with:
           base: native-image
-          
-      #- run: |
-          #kill -s 2 ${{ env.pid }}
-          #echo "::stop-commands::${{ env.stopMarker}}"
-          #curl -X POST http://localhost:8080/actuator/shutdown
-          
-      #- run: |    
-      #    cat ${{ env.path }}/gateway/src/main/resources/META-INF/native-image/.lock
-      #    ps -ef |grep ${{ env.pid }}
           
       - id: build 
         run: |
