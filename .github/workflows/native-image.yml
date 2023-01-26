@@ -112,8 +112,8 @@ jobs:
       - run: |
           #echo "::stop-commands::${{ env.stopMarker}}"
           kill -s 15 ${{ env.pid }}
-          curl -X POST http://localhost:8080/actuator/shutdown
-        continue-on-error: true 
+          #curl -X POST http://localhost:8080/actuator/shutdown
+        #continue-on-error: true 
 
       - run: | 
          ps -ef |grep ${{ env.pid }}
@@ -133,11 +133,6 @@ jobs:
       - run: |
           git status
           
-#       - name: Create pull request
-#         uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
-#         with:
-#           base: native-image
-          
       - uses: actions/upload-artifact@v3.1.1
         with:
           name: package
@@ -148,8 +143,9 @@ jobs:
    
       - run: | 
          ps -ef |grep ${{ env.pid }}
-         cat ${{ env.path }}/gateway/src/main/resources/META-INF/native-image/.lock
-        continue-on-error: true 
+         #cat ${{ env.path }}/gateway/src/main/resources/META-INF/native-image/.lock
+        #continue-on-error: true 
+        
 #       - run: |
 #           docker image rm demo:native elasticsearch:7.6.1 labman4/redis-cluster:7.0.7 labman4/redis-cluster:7.0
 
