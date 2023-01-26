@@ -20,7 +20,7 @@ on:
         required: false
 jobs:
   host_build:
-    environment: ${{ github.event.inputs.environment || 'native-image' }}
+    environment: native-image
     runs-on: [self-hosted]
     outputs:
       result: ${{ steps.build.outputs.build }}
@@ -59,7 +59,6 @@ jobs:
       - run: |
           #echo "::stop-commands::${{ env.stopMarker}}"
           kill -s 15 ${{ env.pid }}
-          curl -X POST http://localhost:8080/actuator/shutdown
           sleep 10
         continue-on-error: true 
         
