@@ -7,19 +7,16 @@ on:
         required: true    
 jobs:
   pre:
-    environment: ${{ github.event.inputs.environment || 'native-image' }}
+    environment: native-image
     runs-on: [ubuntu-latest]
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
+      - uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
             
-      - name: Cache Docker images
-        uses: ScribeMD/docker-cache@0.2.7
+      - uses: ScribeMD/docker-cache@0.2.7
         with:
-          key: docker-${{ runner.os }}-{hash}
+          key: docker-${{ runner.os }}-${{hash}}
           
-      - name: Set up Graalvm
-        uses: graalvm/setup-graalvm@d01f5f519f35cf82b318133761fd8b674632a8fe
+      - uses: graalvm/setup-graalvm@d01f5f519f35cf82b318133761fd8b674632a8fe
         with:
           version: 'latest'
           java-version: '17'
@@ -28,8 +25,7 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
        
-      - name: Cache local Maven repository
-        uses: actions/cache@v3.2.2
+      - uses: actions/cache@v3.2.2
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
