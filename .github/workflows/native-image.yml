@@ -96,10 +96,10 @@ jobs:
           discovery type: 'single-node'
           
       - run: |
-          nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
-          #java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar 
-          echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
-        continue-on-error: true 
+          #nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
+          java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar 
+          #echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
+        #continue-on-error: true 
   
       - run: |
           git status
@@ -110,20 +110,21 @@ jobs:
           path: '**/target/surefire-reports/TEST-*.xml'
   
       - run: |
-          echo "::stop-commands::${{ env.stopMarker}}"
+          #echo "::stop-commands::${{ env.stopMarker}}"
           kill -s 15 ${{ env.pid }}
-          curl -X POST http://localhost:8080/actuator/shutdown
+          #curl -X POST http://localhost:8080/actuator/shutdown
         continue-on-error: true 
 
       - run: | 
          ps -ef |grep ${{ env.pid }}
          cat ${{ env.path }}/gateway/src/main/resources/META-INF/native-image/.lock
         continue-on-error: true 
-
+        
+      - run: |
+          git status
+          
       - id: cpr
         uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
-        with:
-          base: native-image
       
       - run: |
           mvn -P native package -DskipTests -f  ${{ env.path }}/gateway/pom.xml 
@@ -189,9 +190,9 @@ jobs:
     uses: Labman4/workflow/.github/workflows/pre-host-deploy-pre.yml@native-image
     secrets: inherit
    
-  pre-build:
-    uses: Labman4/workflow/.github/workflows/buildpacks-native-pre.yml@buildpacks
-    secrets: inherit
+#   pre-build:
+#     uses: Labman4/workflow/.github/workflows/buildpacks-native-pre.yml@buildpacks
+#     secrets: inherit
     
   buildpacks:
     needs: test
