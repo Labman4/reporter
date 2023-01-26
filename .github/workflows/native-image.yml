@@ -185,14 +185,16 @@ jobs:
   deploy:
     needs: buildpacks
     uses: Labman4/workflow/.github/workflows/pre-host-deploy-pre.yml@native-image
-   
+
   pre-build:
     uses: Labman4/workflow/.github/workflows/buildpacks-native-pre.yml@buildpacks
+    secrets: inherit
     
   buildpacks:
     needs: test
     uses: Labman4/workflow/.github/workflows/buildpacks-native.yml@buildpacks
-    
+    secrets: inherit
+ 
 #   coverage:  
 #     needs: test
 #     uses: Labman4/workflow/.github/workflows/coverage-reporter.yml@coverage
