@@ -23,10 +23,9 @@ jobs:
 #       - name: Docker Layer Caching
 #         uses: satackey/action-docker-layer-caching@v0.0.11   
 
-      - name: Cache Docker images
-        uses: ScribeMD/docker-cache@0.2.7
+      - uses: ScribeMD/docker-cache@0.2.7
         with:
-          key: docker-${{ runner.os }}-{hash}
+          key: docker-${{ runner.os }}-${{hash}}
           
 #       - name: Configure sysctl limits
 #         run: |
@@ -35,11 +34,9 @@ jobs:
 #           sudo sysctl -w fs.file-max=262144
 #           sudo sysctl -w vm.max_map_count=262144
           
-      - name: Checkout Code
-        uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
+      - uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
             
-      - name: Set up Graalvm
-        uses: graalvm/setup-graalvm@d01f5f519f35cf82b318133761fd8b674632a8fe
+      - uses: graalvm/setup-graalvm@d01f5f519f35cf82b318133761fd8b674632a8fe
         with:
           version: 'latest'
           java-version: '17'
@@ -50,8 +47,7 @@ jobs:
           native-image-job-reports: 'true'
           native-image-pr-reports: 'true'
           
-      - name: Cache local Maven repository
-        uses: actions/cache@v3.2.2
+      - uses: actions/cache@v3.2.2
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -63,8 +59,7 @@ jobs:
           echo "home=$HOME" >> $GITHUB_ENV
           java --version
           
-      - name: install 
-        run: | 
+      - run: | 
           mvn package install -DskipTests
           
 #       - name: Upload dependencies
@@ -76,23 +71,20 @@ jobs:
 #             ${{ env.home}}/.m2/repository/com/elpsykongroo/**/*.pom
 # #           retention-days: 3  
 
-      - name: Web test
-        run: |
+      - run: |
           mvn -DvaultToken=${{secrets.VAULT_TOKEN}} -DvaultPath=${{secrets.VAULT_PATH}} -DvaultUri=${{secrets.VAULT_URI}}  -DSECRETS_PATH=${{secrets.SECRETS_PATH}} -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/gateway/pom.xml                
        
       - run: |
           native-image --macro:native-image-configure-launcher
       
-      - name: Merge native config
-        run: |
+      - run: |
           native-image-configure generate --input-dir=${{ env.path }}/gateway/target/native/agent-output/test --output-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image
           #--input-dir=target/native/agent-output/main 
       
       - run: |
           git status
       
-      - name: Create pull request
-        uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
+      - uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
        
       - uses: getong/elasticsearch-action@v1.2
         with:
@@ -103,8 +95,7 @@ jobs:
           node port: 9300
           discovery type: 'single-node'
           
-      - name: agent trace   
-        run: |
+      - run: |
           nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
           #java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar 
           echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
@@ -113,8 +104,7 @@ jobs:
       - run: |
           git status
           
-      - name: Upload test report
-        uses: actions/upload-artifact@v3.1.1
+      - uses: actions/upload-artifact@v3.1.1
         with:
           name: test
           path: '**/target/surefire-reports/TEST-*.xml'
@@ -130,14 +120,12 @@ jobs:
          cat ${{ env.path }}/gateway/src/main/resources/META-INF/native-image/.lock
         continue-on-error: true 
 
-      - name: Create pull request
-        id: cpr
+      - id: cpr
         uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
         with:
           base: native-image
       
-      - name: package 
-        run: |
+      - run: |
           mvn -P native package -DskipTests -f  ${{ env.path }}/gateway/pom.xml 
         
       - run: |
@@ -148,8 +136,7 @@ jobs:
 #         with:
 #           base: native-image
           
-      - name: Upload a package
-        uses: actions/upload-artifact@v3.1.1
+      - uses: actions/upload-artifact@v3.1.1
         with:
           name: package
           path: |
