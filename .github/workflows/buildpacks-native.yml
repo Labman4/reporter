@@ -34,7 +34,7 @@ jobs:
         
     - uses: ScribeMD/docker-cache@0.2.7
       with:
-        key: docker-${{ runner.os }}-${{ github.workflow }}
+        key: docker-${{ runner.os }}-${{ github.workflow_ref }}
          
     - uses: labman4/buildpacks-action@master
       with:
