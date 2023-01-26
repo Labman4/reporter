@@ -93,7 +93,7 @@ jobs:
 #     steps:
 #       - run: echo ${{needs.host_build.outputs.deploy}} 
   deploy:
-    environment: ${{ github.event.inputs.environment || 'prod' }}
+    environment: prod
     needs: host_build
 #    if: needs.host_build.outputs.deploy == enable not work
     runs-on: [self-hosted]
