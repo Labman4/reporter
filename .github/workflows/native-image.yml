@@ -112,7 +112,7 @@ jobs:
       - run: |
           #echo "::stop-commands::${{ env.stopMarker}}"
           kill -s 15 ${{ env.pid }}
-          #curl -X POST http://localhost:8080/actuator/shutdown
+          curl -X POST http://localhost:8080/actuator/shutdown
         continue-on-error: true 
 
       - run: | 
@@ -124,6 +124,8 @@ jobs:
           
       - id: cpr
         uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
+        with:
+          base: native-image
       
       - run: |
           mvn -P native package -DskipTests -f  ${{ env.path }}/gateway/pom.xml 
