@@ -14,7 +14,7 @@ jobs:
             
       - uses: ScribeMD/docker-cache@0.2.7
         with:
-          key: docker-${{ runner.os }}-${{ github.workflow }}
+          key: docker-${{ runner.os }}-${{ github.workflow_ref	 }}
           
       - uses: graalvm/setup-graalvm@d01f5f519f35cf82b318133761fd8b674632a8fe
         with:
