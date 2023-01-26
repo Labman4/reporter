@@ -3,7 +3,7 @@ on:
   workflow_call:
 jobs:
   deploy:
-    environment: ${{ github.event.inputs.environment || 'dev' }}
+    environment: dev
     runs-on: [self-hosted]
     steps:
       - name: depoly with helm
