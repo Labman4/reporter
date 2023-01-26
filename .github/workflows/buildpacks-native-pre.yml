@@ -65,5 +65,4 @@ jobs:
   deploy:
     needs: pre
     uses: Labman4/workflow/.github/workflows/pre-host-deploy-dev.yml@native-image
-    secrets: inherit
    
