@@ -8,7 +8,7 @@ on:
   
 jobs:
   buildpacks:
-    environment: ${{ github.event.inputs.environment || 'native-image' }}
+    environment: native-image
     runs-on: ubuntu-latest
     steps: 
     - run: |
@@ -21,26 +21,22 @@ jobs:
 #         name:  m2
 #         path: ${{ env.home }}/.m2/repository/com/elpsykongroo
         
-    - name: Download package
-      uses: actions/download-artifact@v3.0.1
+    - uses: actions/download-artifact@v3.0.1
       with:
         name:  package
         
-    - name: Cache local Maven repository
-      uses: actions/cache@v3.2.2
+    - uses: actions/cache@v3.2.2
       with:
         path: ~/.m2/repository
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
         restore-keys: |
           ${{ runner.os }}-maven- 
         
-    - name: Cache Docker images.
-      uses: ScribeMD/docker-cache@0.2.7
+    - uses: ScribeMD/docker-cache@0.2.7
       with:
-        key: docker-${{ runner.os }}-{hash}
+        key: docker-${{ runner.os }}-${{ hash }}
          
-    - name: Build image
-      uses: labman4/buildpacks-action@master
+    - uses: labman4/buildpacks-action@master
       with:
         image: 'gateway'
         tag: native
