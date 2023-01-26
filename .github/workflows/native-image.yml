@@ -1,19 +1,19 @@
 name: Native image
 on:
   workflow_call:
-    secrets:
-      VAULT_TOKEN: 
-        description: 'vault.token'
-        required: true
-      VAULT_URI:
-        description: 'vault.uri'
-        required: true
-      VAULT_PATH:
-        description: 'vault.path'
-        required: true
-      SECRETS_PATH:
-        description: 'SECRETS_PATH'
-        required: true 
+#     secrets:
+#       VAULT_TOKEN: 
+#         description: 'vault.token'
+#         required: true
+#       VAULT_URI:
+#         description: 'vault.uri'
+#         required: true
+#       VAULT_PATH:
+#         description: 'vault.path'
+#         required: true
+#       SECRETS_PATH:
+#         description: 'SECRETS_PATH'
+#         required: true 
 jobs:
   test:
 #     needs: pre-build
