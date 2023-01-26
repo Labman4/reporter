@@ -96,8 +96,8 @@ jobs:
           discovery type: 'single-node'
           
       - run: |
-          #nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
-          java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar 
+          nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
+          #java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar 
           #echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
         #continue-on-error: true 
   
@@ -117,7 +117,6 @@ jobs:
 
       - run: | 
          ps -ef |grep ${{ env.pid }}
-         cat ${{ env.path }}/gateway/src/main/resources/META-INF/native-image/.lock
         continue-on-error: true 
         
       - run: |
@@ -190,9 +189,9 @@ jobs:
     uses: Labman4/workflow/.github/workflows/pre-host-deploy-pre.yml@native-image
     secrets: inherit
    
-#   pre-build:
-#     uses: Labman4/workflow/.github/workflows/buildpacks-native-pre.yml@buildpacks
-#     secrets: inherit
+  pre-build:
+    uses: Labman4/workflow/.github/workflows/buildpacks-native-pre.yml@buildpacks
+    secrets: inherit
     
   buildpacks:
     needs: test
