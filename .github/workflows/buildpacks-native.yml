@@ -50,8 +50,8 @@ jobs:
       uses: redhat-actions/push-to-registry@v2.7
       with:
         image: gateway
-        registry: docker.io/labman4
+        registry: quay.io/elpsykongroo
         tags: "native"
-        username:  ${{ secrets.REGISTRY_NAME }}
-        password:  ${{ secrets.REGISTRY_PASS }}
+        username:  ${{ secrets.QUAY_REGISTRY_NAME }}
+        password:  ${{ secrets.QUAY_REGISTRY_PASS }}
 
