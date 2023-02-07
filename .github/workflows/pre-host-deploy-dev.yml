@@ -8,4 +8,4 @@ jobs:
     steps:
       - name: depoly with helm
         run: |
-          helm upgrade -n demo demo-dev ~/yaml/demo
+          helm upgrade -n demo demo-dev ~/yaml/demo-helm/demo-dev
