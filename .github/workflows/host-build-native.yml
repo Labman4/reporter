@@ -30,8 +30,8 @@ jobs:
 #           echo ${{ env.deploy }}
 #           echo ${{ inputs.deploy_secret }}
     
-#       - run: | 
-#           mvn package install -DskipTests
+      - run: | 
+          mvn package install -DskipTests
          
 #       - name: agent trace   
 #         run: |
