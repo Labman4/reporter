@@ -28,7 +28,7 @@ jobs:
       - uses: actions/cache@v3.2.2
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/storage/pom.xml') }}
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/storage/storage-server/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-        
         
@@ -40,14 +40,14 @@ jobs:
           mvn package install -DskipTests
         
       - run: |
-          mvn -P native package -DskipTests -f  ${{ env.path }}/storage/pom.xml 
+          mvn -P native package -DskipTests -f  ${{ env.path }}/storage/storage-server/pom.xml 
       
       - name: Build image
         uses: labman4/buildpacks-action@master
         with:
           image: 'storage'
           tag: pre
-          path: '${{ env.path }}/storage/'
+          path: '${{ env.path }}/'
           builder: 'paketobuildpacks/builder:0.1.303-tiny'
           env: 'BP_JVM_VERSION=17.0.5 JAVA_TOOL_OPTIONS=-agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ BP_NATIVE_IMAGE=true'
           map_env: 'BP_MAVEN_BUILD_ARGUMENTS="-Dmaven.test.skip=true --no-transfer-progress package "'
