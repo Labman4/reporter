@@ -1,0 +1,117 @@
+name: Native image (auth)
+on:
+  workflow_call:
+
+jobs:
+  test:
+    environment: native-image
+    runs-on: [ubuntu-latest]
+    steps:
+
+      - uses: ScribeMD/docker-cache@0.2.7
+        with:
+          key: docker-${{ runner.os }}-${{ github.workflow_ref }}
+          
+      - uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
+            
+      - uses: graalvm/setup-graalvm@d01f5f519f35cf82b318133761fd8b674632a8fe
+        with:
+          version: 'latest'
+          java-version: '17'
+          set-java-home: 'true'
+          cache: maven
+          components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          native-image-job-reports: 'true'
+          native-image-pr-reports: 'true'
+          
+      - uses: actions/cache@v3.2.2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/auth/authorization-server/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven- 
+            
+      - run: |
+          echo "path=$(pwd)" >> $GITHUB_ENV
+          echo "home=$HOME" >> $GITHUB_ENV
+          java --version
+ 
+      - run: |
+          mvn -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/auth/authorization-server/pom.xml                
+       
+      - run: |
+          native-image --macro:native-image-configure-launcher
+      
+      - run: |
+          native-image-configure generate --input-dir=${{ env.path }}/auth/authorization-server/target/native/agent-output/test --output-dir=${{ env.path }}/auth/authorization-server/src/main/resources/META-INF/native-image
+          #--input-dir=target/native/agent-output/main 
+      
+      - run: |
+          git status
+      
+      - uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
+      
+      - run: |
+          nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/auth/authorization-server/src/main/resources/META-INF/native-image/ -jar  auth/authorization-server/target/authorization-server-0.0.1.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
+          #echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
+        continue-on-error: true 
+  
+      - run: |
+          git status
+          
+      - uses: actions/upload-artifact@v3.1.1
+        with:
+          name: test
+          path: '**/target/surefire-reports/TEST-*.xml'
+  
+      - run: |
+          #echo "::stop-commands::${{ env.stopMarker}}"
+          kill -s 15 ${{ env.pid }}
+          #curl -X POST http://localhost:8080/actuator/shutdown
+        #continue-on-error: true 
+
+      - run: | 
+         ps -ef |grep ${{ env.pid }}
+        continue-on-error: true 
+        
+      - run: |
+          git status
+          
+      - id: cpr
+        uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
+        with:
+          base: native-image
+      
+      - run: |
+          mvn -P native package -DskipTests -f  ${{ env.path }}/storage/storage-server/pom.xml 
+        
+      - run: |
+          git status
+          
+#       - uses: actions/upload-artifact@v3.1.1
+#         with:
+#           name: package
+#           path: |
+#             ${{ env.path }}/storage/storage-server
+#             !${{ env.path }}/**/*.jar
+#           retention-days: 3  
+   
+      - run: | 
+         ps -ef |grep ${{ env.pid }}
+         #cat ${{ env.path }}/auth/authorization-server/src/main/resources/META-INF/native-image/.lock
+        #continue-on-error: true 
+
+  deploy:
+    needs: pre-build
+    uses: Labman4/workflow/.github/workflows/host-deploy-helm.yml@native-image
+    with:
+      module: auth-server
+
+  pre-build:
+    uses: Labman4/workflow/.github/workflows/buildpacks-storage.yml@buildpacks
+    secrets: inherit
+    
+ 
+    
+  
