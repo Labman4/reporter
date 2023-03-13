@@ -107,9 +107,11 @@ jobs:
          #cat ${{ env.path }}/storage/storage-server/src/main/resources/META-INF/native-image/.lock
         #continue-on-error: true 
 
-#   deploy:
-#     needs: buildpacks
-#     uses: Labman4/workflow/.github/workflows/pre-host-deploy-pre.yml@native-image
+  deploy:
+    needs: pre-build
+    uses: Labman4/workflow/.github/workflows/host-deploy-helm.yml@native-image
+    with: 
+      module: storage
 
   pre-build:
     uses: Labman4/workflow/.github/workflows/buildpacks-storage.yml@buildpacks
