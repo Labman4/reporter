@@ -1,10 +1,5 @@
 on: 
   workflow_call:
-    secrets: 
-      REGISTRY_NAME:
-        required: true
-      REGISTRY_PASS:
-        required: true    
   
 jobs:
   buildpacks:
@@ -54,4 +49,14 @@ jobs:
         tags: "native"
         username:  ${{ secrets.QUAY_REGISTRY_NAME }}
         password:  ${{ secrets.QUAY_REGISTRY_PASS }}
+        
+    - name: Push To harbor
+      uses: redhat-actions/push-to-registry@v2.7
+      with:
+        image: gateway
+        registry: registry.elpsykongroo.com/library
+        tags: "native"
+        username:  ${{ secrets.REGISTRY_PRIVATE_NAME }}
+        password:  ${{ secrets.REGISTRY_PRIVATE_PASS }}
+      continue-on-error: true 
 
