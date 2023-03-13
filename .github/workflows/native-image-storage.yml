@@ -53,8 +53,8 @@ jobs:
       - uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
       
       - run: |
-          nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/storage/storage-server/src/main/resources/META-INF/native-image/ -jar  storage/storage-server/target/gateway-0.0.2.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
-          #java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/storage/storage-server/src/main/resources/META-INF/native-image/ -jar  storage/storage-server/target/gateway-0.0.2.jar 
+          nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/storage/storage-server/src/main/resources/META-INF/native-image/ -jar  storage/storage-server/target/storage-server-0.0.1.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
+          #java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/storage/storage-server/src/main/resources/META-INF/native-image/ -jar  storage/storage-server/target/storage-server-0.0.2.jar 
           #echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
         continue-on-error: true 
   
@@ -90,13 +90,13 @@ jobs:
       - run: |
           git status
           
-      - uses: actions/upload-artifact@v3.1.1
-        with:
-          name: package
-          path: |
-            ${{ env.path }}/storage/storage-server
-            !${{ env.path }}/**/*.jar
-          retention-days: 3  
+#       - uses: actions/upload-artifact@v3.1.1
+#         with:
+#           name: package
+#           path: |
+#             ${{ env.path }}/storage/storage-server
+#             !${{ env.path }}/**/*.jar
+#           retention-days: 3  
    
       - run: | 
          ps -ef |grep ${{ env.pid }}
