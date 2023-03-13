@@ -72,6 +72,7 @@ jobs:
       - run: |
           #echo "::stop-commands::${{ env.stopMarker}}"
           kill -s 15 ${{ env.pid }}
+          sleep 10
           #curl -X POST http://localhost:8080/actuator/shutdown
         #continue-on-error: true 
 
