@@ -1,0 +1,68 @@
+on: 
+  workflow_call:
+    secrets: 
+      REGISTRY_NAME:
+        required: true
+      REGISTRY_PASS:
+        required: true    
+jobs:
+  pre:
+    environment: native-image
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
+            
+      - uses: ScribeMD/docker-cache@0.2.7
+        with:
+          key: docker-${{ runner.os }}-${{ github.workflow_ref }}
+          
+      - uses: graalvm/setup-graalvm@d01f5f519f35cf82b318133761fd8b674632a8fe
+        with:
+          version: 'latest'
+          java-version: '17'
+          set-java-home: 'true'
+          cache: maven
+          components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+       
+      - uses: actions/cache@v3.2.2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/storage/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-        
+        
+      - run: |
+          echo "home=$HOME" >> $GITHUB_ENV
+          echo "path=$(pwd)" >> $GITHUB_ENV
+          
+      - run: | 
+          mvn package install -DskipTests
+        
+      - run: |
+          mvn -P native package -DskipTests -f  ${{ env.path }}/storage/pom.xml 
+      
+      - name: Build image
+        uses: labman4/buildpacks-action@master
+        with:
+          image: 'storage'
+          tag: pre
+          path: '${{ env.path }}/storage/'
+          builder: 'paketobuildpacks/builder:0.1.303-tiny'
+          env: 'BP_JVM_VERSION=17.0.5 JAVA_TOOL_OPTIONS=-agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ BP_NATIVE_IMAGE=true'
+          map_env: 'BP_MAVEN_BUILD_ARGUMENTS="-Dmaven.test.skip=true --no-transfer-progress package "'
+          volume: ${{ env.home }}
+              
+      - name: Push To Registry
+        uses: redhat-actions/push-to-registry@v2.7
+        with:
+          image: storage
+          registry: docker.io/labman4
+          tags: "pre"
+          username:  ${{ secrets.REGISTRY_NAME }}
+          password:  ${{ secrets.REGISTRY_PASS }}
+          
+ # deploy:
+ #   needs: pre
+ #   uses: Labman4/workflow/.github/workflows/pre-host-deploy-dev.yml@native-image
+   
