@@ -61,6 +61,17 @@ jobs:
           tags: "pre"
           username:  ${{ secrets.REGISTRY_NAME }}
           password:  ${{ secrets.REGISTRY_PASS }}
+     
+      - name: Push To harbor
+        uses: redhat-actions/push-to-registry@v2.7
+        with:
+          image: gateway
+          registry: registry.elpsykongroo.com/library
+          tags: "native"
+          username:  ${{ secrets.REGISTRY_PRIVATE_NAME }}
+          password:  ${{ secrets.REGISTRY_PRIVATE_PASS }}
+        continue-on-error: true 
+
           
  # deploy:
  #   needs: pre
