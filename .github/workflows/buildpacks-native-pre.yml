@@ -34,9 +34,9 @@ jobs:
       - uses: actions/cache@v3.2.2
         with:
           path: ~/.m2/repository
-          key:  ${{ runner.os }}-maven-${{ hashFiles('**/${{ inputs.module }}/${{ inputs.moduleName }}/pom.xml') }}
+          key:  ${{ runner.os }}-maven-${{ hashFiles('**/${{ inputs.module }}/${{ inputs.moduleName }}pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven-${{ hashFiles('**/${{ inputs.module }}/${{ inputs.moduleName }}/pom.xml') }}
+            ${{ runner.os }}-maven-${{ hashFiles('**/${{ inputs.module }}/${{ inputs.moduleName }}pom.xml') }}
  
       - run: |
           echo "home=$HOME" >> $GITHUB_ENV
@@ -46,7 +46,7 @@ jobs:
           mvn package install -DskipTests
         
       - run: |
-          mvn -P native package -DskipTests -f  ${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}/pom.xml 
+          mvn -P native package -DskipTests -f  ${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}pom.xml 
       
       - name: Build image
         uses: labman4/buildpacks-action@master
