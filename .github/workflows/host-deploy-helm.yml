@@ -3,8 +3,10 @@ on:
   workflow_call:
     inputs:
       module:
-        description: 'module name'
         required: true
+        type: string
+      env:
+        required: false
         type: string
 jobs:
   deploy:
@@ -12,4 +14,4 @@ jobs:
     steps:
       - name: depoly with helm
         run: |
-          helm upgrade -n demo ${{ inputs.module }} ~/yaml/demo-helm/${{ inputs.module }}
+          helm upgrade -n demo ${{ inputs.module }}${{ inputs.env }} ~/yaml/demo-helm/${{ inputs.module }}${{ inputs.env }}
