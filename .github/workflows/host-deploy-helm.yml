@@ -11,16 +11,22 @@ on:
 jobs:
   deploy:
     runs-on: [self-hosted]
+    continue-on-error: true 
     steps:
       - if: inputs.env == 0
         run: |
           helm uninstall -n demo ${{ inputs.module }}
-          helm install -n demo ${{ inputs.module }} ~/yaml/demo-helm/${{ inputs.module }}
-
-      
+          
       - if: inputs.env != 0
         run: |
           helm uninstall -n demo ${{ inputs.module }}-${{ inputs.env }}
+          
+      - if: inputs.env == 0
+        run: |
+          helm install -n demo ${{ inputs.module }} ~/yaml/demo-helm/${{ inputs.module }}
+      
+      - if: inputs.env != 0
+        run: |
           helm install -n demo ${{ inputs.module }}-${{ inputs.env }} ~/yaml/demo-helm/${{ inputs.module }}-${{ inputs.env }}
 
         
