@@ -8,7 +8,10 @@ on:
       module:
         required: true
         type: string
-      modulePath:
+      moduleName:
+        required: true
+        type: string
+      version:
         required: true
         type: string
 
@@ -48,16 +51,16 @@ jobs:
           java --version
           
       - run: | 
-          mvn package install -DskipTests -f  ${{ env.path }}/${{ inputs.modulePath }}/pom.xml    
+          mvn package install -DskipTests -f  ${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}/pom.xml    
           
 #       - run: |
-#           mvn -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/${{ inputs.modulePath }}/pom.xml                
+#           mvn -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}/pom.xml                
        
 #       - run: |
 #           native-image --macro:native-image-configure-launcher
       
 #       - run: |
-#           native-image-configure generate --input-dir=${{ env.path }}/${{ inputs.modulePath }}/target/native/agent-output/test --output-dir=${{ env.path }}/${{ inputs.modulePath }}/src/main/resources/META-INF/native-image
+#           native-image-configure generate --input-dir=${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}/target/native/agent-output/test --output-dir=${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}/src/main/resources/META-INF/native-image
 #           #--input-dir=target/native/agent-output/main 
       
 #       - run: |
@@ -66,8 +69,7 @@ jobs:
 #       - uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
       
       - run: |
-          nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ inputs.modulePath }}/src/main/resources/META-INF/native-image/ -jar  ${{ inputs.modulePath }}/target/storage-server-0.0.1.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
-          #java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/storage/storage-server/src/main/resources/META-INF/native-image/ -jar  storage/storage-server/target/storage-server-0.0.1.jar 
+          nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}/src/main/resources/META-INF/native-image/ -jar  ${{ inputs.module }}/${{ inputs.moduleName }}/target/${{ inputs.moduleName }}-${{ inputs.version }}.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
           #echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
         continue-on-error: true 
   
@@ -99,7 +101,7 @@ jobs:
           base: native-image
       
       - run: |
-          mvn -P native package -DskipTests -f  ${{ env.path }}/${{ inputs.modulePath }}/pom.xml 
+          mvn -P native package -DskipTests -f  ${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}/pom.xml 
         
       - run: |
           git status
@@ -108,20 +110,12 @@ jobs:
         with:
           name: package
           path: |
-            ${{ env.path }}/${{ inputs.modulePath }}
+            ${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}
             !${{ env.path }}/**/*.jar
           retention-days: 3  
    
       - run: | 
          ps -ef |grep ${{ env.pid }}
-         #cat ${{ env.path }}/${{ inputs.modulePath }}/src/main/resources/META-INF/native-image/.lock
-        #continue-on-error: true 
-
-  deploy:
-    needs: pre-build
-    uses: Labman4/workflow/.github/workflows/host-deploy-helm.yml@native-image
-    with: 
-      module: ${{ inputs.module }}
 
   pre-build:
     needs: test
@@ -131,6 +125,10 @@ jobs:
       env: ${{ inputs.env }}
       module: ${{ inputs.module }}
     
- 
+  deploy:
+    needs: pre-build
+    uses: Labman4/workflow/.github/workflows/host-deploy-helm.yml@native-image
+    with: 
+      module: ${{ inputs.module }}
     
   
