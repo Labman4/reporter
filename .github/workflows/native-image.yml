@@ -95,8 +95,8 @@ jobs:
           discovery type: 'single-node'
           
       - run: |
-          nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ env.modulePath}}/src/main/resources/META-INF/native-image/ -DENV=pre -jar ${{ env.modulePath}}/target/${{ inputs.moduleName }}-${{ inputs.version }}.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
-          #java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}//${{ env.modulePath}}/src/main/resources/META-INF/native-image/ -DENV=pre -jar  ${{ env.modulePath}}/target/${{ inputs.moduleName }}-${{ inputs.version }}.jar
+          nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ env.modulePath}}/src/main/resources/META-INF/native-image/ -DENV=pre -jar ${{ env.modulePath}}/target/${{ inputs.module }}-${{ inputs.version }}.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
+          #java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}//${{ env.modulePath}}/src/main/resources/META-INF/native-image/ -DENV=pre -jar  ${{ env.modulePath}}/target/${{ inputs.module }}-${{ inputs.version }}.jar
           #echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
         #continue-on-error: true 
   
