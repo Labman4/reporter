@@ -1,10 +1,20 @@
 name: Native image (storage)
 on:
   workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
+      module:
+        required: true
+        type: string
+      modulePath:
+        required: true
+        type: string
 
 jobs:
   test:
-    environment: native-image
+    environment: ${{ inputs.env }}
     runs-on: [ubuntu-latest]
     steps:
 
@@ -28,7 +38,7 @@ jobs:
       - uses: actions/cache@v3.2.2
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/storage/storage-server/pom.xml') }}
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/${{ inputs.modulePath }}/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven- 
             
@@ -38,16 +48,16 @@ jobs:
           java --version
           
       - run: | 
-          mvn package install -DskipTests -f  ${{ env.path }}/storage/storage-server/pom.xml    
+          mvn package install -DskipTests -f  ${{ env.path }}/${{ inputs.modulePath }}/pom.xml    
           
 #       - run: |
-#           mvn -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/storage/storage-server/pom.xml                
+#           mvn -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/${{ inputs.modulePath }}/pom.xml                
        
 #       - run: |
 #           native-image --macro:native-image-configure-launcher
       
 #       - run: |
-#           native-image-configure generate --input-dir=${{ env.path }}/storage/storage-server/target/native/agent-output/test --output-dir=${{ env.path }}/storage/storage-server/src/main/resources/META-INF/native-image
+#           native-image-configure generate --input-dir=${{ env.path }}/${{ inputs.modulePath }}/target/native/agent-output/test --output-dir=${{ env.path }}/${{ inputs.modulePath }}/src/main/resources/META-INF/native-image
 #           #--input-dir=target/native/agent-output/main 
       
 #       - run: |
@@ -56,7 +66,7 @@ jobs:
 #       - uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
       
       - run: |
-          nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/storage/storage-server/src/main/resources/META-INF/native-image/ -jar  storage/storage-server/target/storage-server-0.0.1.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
+          nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ inputs.modulePath }}/src/main/resources/META-INF/native-image/ -jar  ${{ inputs.modulePath }}/target/storage-server-0.0.1.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
           #java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/storage/storage-server/src/main/resources/META-INF/native-image/ -jar  storage/storage-server/target/storage-server-0.0.1.jar 
           #echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
         continue-on-error: true 
@@ -89,33 +99,37 @@ jobs:
           base: native-image
       
       - run: |
-          mvn -P native package -DskipTests -f  ${{ env.path }}/storage/storage-server/pom.xml 
+          mvn -P native package -DskipTests -f  ${{ env.path }}/${{ inputs.modulePath }}/pom.xml 
         
       - run: |
           git status
           
-#       - uses: actions/upload-artifact@v3.1.1
-#         with:
-#           name: package
-#           path: |
-#             ${{ env.path }}/storage/storage-server
-#             !${{ env.path }}/**/*.jar
-#           retention-days: 3  
+      - uses: actions/upload-artifact@v3.1.1
+        with:
+          name: package
+          path: |
+            ${{ env.path }}/${{ inputs.modulePath }}
+            !${{ env.path }}/**/*.jar
+          retention-days: 3  
    
       - run: | 
          ps -ef |grep ${{ env.pid }}
-         #cat ${{ env.path }}/storage/storage-server/src/main/resources/META-INF/native-image/.lock
+         #cat ${{ env.path }}/${{ inputs.modulePath }}/src/main/resources/META-INF/native-image/.lock
         #continue-on-error: true 
 
   deploy:
     needs: pre-build
     uses: Labman4/workflow/.github/workflows/host-deploy-helm.yml@native-image
     with: 
-      module: storage
+      module: ${{ inputs.module }}
 
   pre-build:
-    uses: Labman4/workflow/.github/workflows/buildpacks-storage.yml@buildpacks
+    uses: Labman4/workflow/.github/workflows/buildpacks-native.yml@buildpacks
     secrets: inherit
+    with:
+      env: ${{ inputs.env }}
+      module: ${{ inputs.module }}
+      modulePath: ${{ inputs.modulePath }}
     
  
     
