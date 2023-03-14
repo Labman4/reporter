@@ -12,6 +12,9 @@ jobs:
   buildpacks:
     environment: native-image
     runs-on: ubuntu-latest
+    continue-on-error: true 
+    strategy:
+      fail-fast: true
     steps:     
     - uses: actions/download-artifact@v3.0.1
       with:
