@@ -14,7 +14,7 @@ on:
 
 jobs:
   test:
-    environment: ${{ inputs.env }}
+    environment: native-image
     runs-on: [ubuntu-latest]
     steps:
 
