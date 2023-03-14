@@ -39,7 +39,7 @@ jobs:
         uses: labman4/buildpacks-action@master
         with:
           image: 'storage'
-          tag: pre
+          tag: native
           path: '${{ env.path }}/storage/storage-server'
           builder: 'paketobuildpacks/builder:0.1.303-tiny'
           env: 'BP_JVM_VERSION=17.0.5 JAVA_TOOL_OPTIONS=-agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ BP_NATIVE_IMAGE=true'
@@ -51,7 +51,7 @@ jobs:
         with:
           image: storage
           registry: docker.io/labman4
-          tags: "pre"
+          tags: "native"
           username:  ${{ secrets.REGISTRY_NAME }}
           password:  ${{ secrets.REGISTRY_PASS }}
      
