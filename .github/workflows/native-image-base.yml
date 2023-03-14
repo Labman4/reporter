@@ -20,11 +20,11 @@ jobs:
     environment: native-image
     runs-on: [ubuntu-latest]
     steps:
-      - if: ${{ inputs.moduleName }} == ""
+      - if: inputs.moduleName == ""
         run: echo "modulePath=${{ inputs.module }}" >> $GITHUB_ENV
       
-      - if: ${{ inputs.moduleName }} != ""
-        run: echo "modulePath=${{ inputs.module }} + ${{ inputs.moduleName }}"  >> $GITHUB_ENV
+      - if: inputs.moduleName != ""
+        run: echo "modulePath=${{ inputs.module }}/${{ inputs.moduleName }}"  >> $GITHUB_ENV
         
       - uses: ScribeMD/docker-cache@0.2.7
         with:
