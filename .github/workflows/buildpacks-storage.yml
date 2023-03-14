@@ -1,10 +1,6 @@
 on: 
   workflow_call:
-    secrets: 
-      REGISTRY_NAME:
-        required: true
-      REGISTRY_PASS:
-        required: true    
+ 
 jobs:
   pre:
     environment: native-image
@@ -35,10 +31,7 @@ jobs:
       - run: |
           echo "home=$HOME" >> $GITHUB_ENV
           echo "path=$(pwd)" >> $GITHUB_ENV
-          
-      - run: | 
-          mvn package install -DskipTests
-        
+                
       - run: |
           mvn -P native package -DskipTests -f  ${{ env.path }}/storage/storage-server/pom.xml 
       
