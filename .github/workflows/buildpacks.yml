@@ -22,10 +22,8 @@ jobs:
     timeout-minutes: 5
     strategy:
       fail-fast: true
-    steps:     
-    - run: |
-        echo "path=$(pwd)" >> $GITHUB_ENV
-        echo "home=$HOME" >> $GITHUB_ENV
+    steps:  
+    - uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
         
     - uses: actions/cache@v3.2.2
       with:
@@ -39,10 +37,14 @@ jobs:
       with:
         key: docker-${{ runner.os }}-${{ github.workflow_ref }}
          
+    - run: |
+        echo "path=$(pwd)" >> $GITHUB_ENV
+        echo "home=$HOME" >> $GITHUB_ENV
+        
     - uses: labman4/buildpacks-action@master
       with:
         image:  ${{ inputs.module }}
-        tag: native
+        tag: ${{ inputs.version }}
         path: '${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}'
         builder: 'paketobuildpacks/builder:0.1.303-tiny'
         env: 'BP_JVM_VERSION=17.0.5 BP_NATIVE_IMAGE=false'
@@ -75,3 +77,9 @@ jobs:
         tags: ${{ inputs.version }}
         username:  ${{ secrets.REGISTRY_PRIVATE_NAME }}
         password:  ${{ secrets.REGISTRY_PRIVATE_PASS }}
+        
+  deploy:
+    needs: buildpacks
+    uses: Labman4/workflow/.github/workflows/host-deploy-helm.yml@native-image
+    with: 
+      module: ${{ inputs.module }}
