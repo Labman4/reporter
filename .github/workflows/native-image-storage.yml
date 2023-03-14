@@ -124,6 +124,7 @@ jobs:
       module: ${{ inputs.module }}
 
   pre-build:
+    needs: test
     uses: Labman4/workflow/.github/workflows/buildpacks-native.yml@buildpacks
     secrets: inherit
     with:
