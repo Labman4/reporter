@@ -86,12 +86,4 @@ jobs:
           username:  ${{ secrets.REGISTRY_PRIVATE_NAME }}
           password:  ${{ secrets.REGISTRY_PRIVATE_PASS }}
         continue-on-error: true 
-
-  deploy:
-    needs: pre
-    uses: Labman4/workflow/.github/workflows/host-deploy-helm.yml@native-image
-    with:
-      module: ${{ inputs.module }}
-      env: -${{ inputs.env }}
-      
-   
+  
