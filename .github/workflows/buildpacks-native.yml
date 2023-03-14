@@ -13,6 +13,7 @@ jobs:
     environment: native-image
     runs-on: ubuntu-latest
     continue-on-error: true 
+    timeout-minutes: 5
     strategy:
       fail-fast: true
     steps:     
@@ -73,5 +74,4 @@ jobs:
         tags: "native"
         username:  ${{ secrets.REGISTRY_PRIVATE_NAME }}
         password:  ${{ secrets.REGISTRY_PRIVATE_PASS }}
-      continue-on-error: true 
 
