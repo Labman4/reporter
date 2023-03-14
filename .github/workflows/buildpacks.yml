@@ -30,9 +30,9 @@ jobs:
     - uses: actions/cache@v3.2.2
       with:
         path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/${{ inputs.module }}/${{ inputs.moduleName }}pom.xml') }}
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/${{ inputs.module }}/${{ inputs.moduleName }}/pom.xml') }}
         restore-keys: |
-          ${{ runner.os }}-maven-${{ hashFiles('**/${{ inputs.module }}/${{ inputs.moduleName }}pom.xml') }}
+          ${{ runner.os }}-maven-${{ hashFiles('**/${{ inputs.module }}/${{ inputs.moduleName }}/pom.xml') }}
           ${{ runner.os }}-maven-
         
     - uses: ScribeMD/docker-cache@0.2.7
@@ -43,7 +43,7 @@ jobs:
       with:
         image:  ${{ inputs.module }}
         tag: native
-        path: '${{ env.path }}'
+        path: '${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}'
         builder: 'paketobuildpacks/builder:0.1.303-tiny'
         env: 'BP_JVM_VERSION=17.0.5 BP_NATIVE_IMAGE=false'
         map_env: 'BP_MAVEN_BUILD_ARGUMENTS="-Dmaven.test.skip=true --no-transfer-progress package "'
