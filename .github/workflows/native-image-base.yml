@@ -41,9 +41,9 @@ jobs:
       - uses: actions/cache@v3.2.2
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/${{ inputs.modulePath }}/pom.xml') }}
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/${{ inputs.module }}/${{ inputs.moduleName }}/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven- 
+            ${{ runner.os }}-maven-${{ hashFiles('**/${{ inputs.module }}/${{ inputs.moduleName }}/pom.xml') }}
             
       - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
@@ -91,7 +91,6 @@ jobs:
 
       - run: | 
          ps -ef |grep ${{ env.pid }}
-        continue-on-error: true 
         
       - run: |
           git status
@@ -131,5 +130,6 @@ jobs:
     uses: Labman4/workflow/.github/workflows/host-deploy-helm.yml@native-image
     with: 
       module: ${{ inputs.module }}
+      
     
   
