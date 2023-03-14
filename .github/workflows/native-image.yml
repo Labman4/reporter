@@ -52,14 +52,20 @@ jobs:
       - uses: actions/cache@v3.2.2
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/${{ inputs.module }}/${{ inputs.moduleName }}/pom.xml') }}
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/${{ inputs.module }}/${{ inputs.moduleName }}pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven-${{ hashFiles('**/${{ inputs.module }}/${{ inputs.moduleName }}/pom.xml') }}      
+            ${{ runner.os }}-maven-${{ hashFiles('**/${{ inputs.module }}/${{ inputs.moduleName }}pom.xml') }}      
             
       - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
           echo "home=$HOME" >> $GITHUB_ENV
           java --version
+          
+      - if: ${{ inputs.moduleName }} == ""
+        run: echo "moduleName=${{ inputs.module }}" >> $GITHUB_ENV
+      
+      - if: ${{ inputs.moduleName }} != ""
+        run: echo "moduleName=${{ inputs.moduleName }}" >> $GITHUB_ENV
           
       - run: | 
           mvn package install -DskipTests
@@ -89,7 +95,7 @@ jobs:
           discovery type: 'single-node'
           
       - run: |
-          nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}src/main/resources/META-INF/native-image/ -DENV=pre -jar  ${{ inputs.module }}/target/${{ inputs.moduleName }}-${{ inputs.version }}.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
+          nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}src/main/resources/META-INF/native-image/ -DENV=pre -jar  ${{ inputs.module }}/${{ inputs.moduleName }}target/${{ env.moduleName }}-${{ inputs.version }}.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
           #java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}//${{ inputs.module }}/${{ inputs.moduleName }}src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar 
           #echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
         #continue-on-error: true 
@@ -121,7 +127,7 @@ jobs:
           base: native-image
       
       - run: |
-          mvn -P native package -DskipTests -f  ${{ env.path }}/gateway/pom.xml 
+          mvn -P native package -DskipTests -f  ${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}pom.xml 
         
       - run: |
           git status
@@ -191,7 +197,7 @@ jobs:
     secrets: inherit
     with:
       env: pre
-      module: ${{ inputs.module}}
+      module: ${{ inputs.module }}
  
 #   coverage:  
 #     needs: test
