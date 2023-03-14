@@ -95,8 +95,8 @@ jobs:
           discovery type: 'single-node'
           
       - run: |
-          nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ env.modulePath}}/src/main/resources/META-INF/native-image/ -DENV=pre -jar ${{ env.modulePath}}/target/${{ inputs.module }}-${{ inputs.version }}.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
-          #java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}//${{ env.modulePath}}/src/main/resources/META-INF/native-image/ -DENV=pre -jar  ${{ env.modulePath}}/target/${{ inputs.module }}-${{ inputs.version }}.jar
+          nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ env.modulePath }}/src/main/resources/META-INF/native-image/ -DENV=pre -jar ${{ env.modulePath }}/target/${{ inputs.module }}-${{ inputs.version }}.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
+          #java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}//${{ env.modulePath }}/src/main/resources/META-INF/native-image/ -DENV=pre -jar  ${{ env.modulePath }}/target/${{ inputs.module }}-${{ inputs.version }}.jar
           #echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
         #continue-on-error: true 
   
@@ -109,10 +109,10 @@ jobs:
           path: '**/target/surefire-reports/TEST-*.xml'
   
       - run: |
-          #echo "::stop-commands::${{ env.stopMarker}}"
-          sleep 10
+          #echo "::stop-commands::${{ env.stopMarker }}"
+          sleep 15
           kill -s 15 ${{ env.pid }}
-          sleep 10
+          sleep 15
           #curl -X POST http://localhost:8080/actuator/shutdown
 
       - run: | 
@@ -127,7 +127,7 @@ jobs:
           base: native-image
       
       - run: |
-          mvn -P native package -DskipTests -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml 
+          mvn -P native package -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml 
         
       - run: |
           git status
