@@ -7,6 +7,12 @@ on:
       module:
         required: true
         type: string
+      moduleName:
+        required: true
+        type: string
+      version:
+        required: true
+        type: string
         
 jobs:
   buildpacks:
@@ -17,10 +23,6 @@ jobs:
     strategy:
       fail-fast: true
     steps:     
-    - uses: actions/download-artifact@v3.0.1
-      with:
-        name:  package
-    
     - run: |
         echo "path=$(pwd)" >> $GITHUB_ENV
         echo "home=$HOME" >> $GITHUB_ENV
@@ -28,9 +30,9 @@ jobs:
     - uses: actions/cache@v3.2.2
       with:
         path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('pom.xml') }}
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/${{ inputs.module }}/${{ inputs.moduleName }}pom.xml') }}
         restore-keys: |
-          ${{ runner.os }}-maven-${{ hashFiles('pom.xml') }}
+          ${{ runner.os }}-maven-${{ hashFiles('**/${{ inputs.module }}/${{ inputs.moduleName }}pom.xml') }}
           ${{ runner.os }}-maven-
         
     - uses: ScribeMD/docker-cache@0.2.7
@@ -52,7 +54,7 @@ jobs:
       with:
         image: ${{ inputs.module }}
         registry: docker.io/labman4
-        tags: "native"
+        tags: ${{ inputs.version }}
         username:  ${{ secrets.REGISTRY_NAME }}
         password:  ${{ secrets.REGISTRY_PASS }}  
       
@@ -61,7 +63,7 @@ jobs:
       with:
         image: ${{ inputs.module }}
         registry: quay.io/elpsykongroo
-        tags: "native"
+        tags: ${{ inputs.version }}
         username:  ${{ secrets.QUAY_REGISTRY_NAME }}
         password:  ${{ secrets.QUAY_REGISTRY_PASS }}
         
@@ -70,6 +72,6 @@ jobs:
       with:
         image: ${{ inputs.module }}
         registry: registry.elpsykongroo.com/library
-        tags: "native"
+        tags: ${{ inputs.version }}
         username:  ${{ secrets.REGISTRY_PRIVATE_NAME }}
         password:  ${{ secrets.REGISTRY_PRIVATE_PASS }}
