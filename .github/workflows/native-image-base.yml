@@ -1,4 +1,4 @@
-name: Native image (storage)
+name: Native image (base)
 on:
   workflow_call:
     inputs:
@@ -130,7 +130,6 @@ jobs:
     with:
       env: ${{ inputs.env }}
       module: ${{ inputs.module }}
-      modulePath: ${{ inputs.modulePath }}
     
  
     
