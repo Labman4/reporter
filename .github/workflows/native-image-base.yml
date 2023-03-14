@@ -20,7 +20,12 @@ jobs:
     environment: native-image
     runs-on: [ubuntu-latest]
     steps:
-
+      - if: ${{ inputs.moduleName }} == ""
+        run: echo "modulePath=${{ inputs.module }}" >> $GITHUB_ENV
+      
+      - if: ${{ inputs.moduleName }} != ""
+        run: echo "modulePath=${{ inputs.module }} + ${{ inputs.moduleName }}"  >> $GITHUB_ENV
+        
       - uses: ScribeMD/docker-cache@0.2.7
         with:
           key: docker-${{ runner.os }}-${{ github.workflow_ref }}
@@ -41,32 +46,26 @@ jobs:
       - uses: actions/cache@v3.2.2
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/${{ inputs.module }}/${{ inputs.moduleName }}pom.xml') }}
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/${{ env.modulePath }}/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven-${{ hashFiles('**/${{ inputs.module }}/${{ inputs.moduleName }}pom.xml') }}
+            ${{ runner.os }}-maven-${{ hashFiles('**/${{ env.modulePath }}/pom.xml') }}
             
       - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
           echo "home=$HOME" >> $GITHUB_ENV
           java --version
-       
-      - if: ${{ inputs.moduleName }} == ""
-        run: echo "moduleName=${{ inputs.module }}" >> $GITHUB_ENV
-      
-      - if: ${{ inputs.moduleName }} != ""
-        run: echo "moduleName=${{ inputs.moduleName }}" >> $GITHUB_ENV
-        
+    
       - run: | 
-          mvn package install -DskipTests -f  ${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}pom.xml    
+          mvn package install -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml    
           
 #       - run: |
-#           mvn -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}pom.xml                
+#           mvn -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml                
        
 #       - run: |
 #           native-image --macro:native-image-configure-launcher
       
 #       - run: |
-#           native-image-configure generate --input-dir=${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}target/native/agent-output/test --output-dir=${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}src/main/resources/META-INF/native-image
+#           native-image-configure generate --input-dir=${{ env.path }}/${{ env.modulePath }}/target/native/agent-output/test --output-dir=${{ env.path }}/${{ env.modulePath }}/src/main/resources/META-INF/native-image
 #           #--input-dir=target/native/agent-output/main 
       
 #       - run: |
@@ -75,7 +74,7 @@ jobs:
 #       - uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
       
       - run: |
-          nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}src/main/resources/META-INF/native-image/ -jar  ${{ inputs.module }}/${{ inputs.moduleName }}target/${{ env.moduleName }}-${{ inputs.version }}.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
+          nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ env.modulePath }}/src/main/resources/META-INF/native-image/ -jar  ${{ env.modulePath }}/target/${{ inputs.moduleName }}-${{ inputs.version }}.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
           #echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
         continue-on-error: true 
   
@@ -107,7 +106,7 @@ jobs:
           base: native-image
       
       - run: |
-          mvn -P native package -DskipTests -f  ${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}/pom.xml 
+          mvn -P native package -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml 
         
       - run: |
           git status
@@ -116,7 +115,7 @@ jobs:
         with:
           name: package
           path: |
-            ${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}
+            ${{ env.path }}/${{ env.modulePath }}
             !${{ env.path }}/**/*.jar
           retention-days: 3  
    
