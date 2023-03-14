@@ -1,9 +1,19 @@
 on: 
   workflow_call:
-  
+    inputs:
+      env:
+        required: true
+        type: string
+      module:
+        required: true
+        type: string
+      modulePath:
+        required: true
+        type: string
+        
 jobs:
   buildpacks:
-    environment: native-image
+    environment: ${{ inputs.env }}
     runs-on: ubuntu-latest
     steps: 
     - run: |
@@ -23,7 +33,7 @@ jobs:
     - uses: actions/cache@v3.2.2
       with:
         path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/ ${{ inputs.modulePath }}pom.xml') }}
         restore-keys: |
           ${{ runner.os }}-maven- 
         
@@ -33,18 +43,27 @@ jobs:
          
     - uses: labman4/buildpacks-action@master
       with:
-        image: 'gateway'
+        image:  ${{ inputs.module }}
         tag: native
-        path: '${{ env.path }}/gateway/'
+        path: '${{ env.path }}/${{ inputs.modulePath }}/'
         builder: 'paketobuildpacks/builder:0.1.303-tiny'
         env: 'BP_JVM_VERSION=17.0.5 JAVA_TOOL_OPTIONS=-agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ BP_NATIVE_IMAGE=true'
         map_env: 'BP_MAVEN_BUILD_ARGUMENTS="-Dmaven.test.skip=true --no-transfer-progress package "'
         volume: ${{ env.home }}
-      
-    - name: Push To Registry
+              
+    - name: Push To hub
       uses: redhat-actions/push-to-registry@v2.7
       with:
-        image: gateway
+        image: ${{ inputs.module }}
+        registry: docker.io/labman4
+        tags: "native"
+        username:  ${{ secrets.REGISTRY_NAME }}
+        password:  ${{ secrets.REGISTRY_PASS }}  
+      
+    - name: Push To quay
+      uses: redhat-actions/push-to-registry@v2.7
+      with:
+        image: ${{ inputs.module }}
         registry: quay.io/elpsykongroo
         tags: "native"
         username:  ${{ secrets.QUAY_REGISTRY_NAME }}
@@ -53,7 +72,7 @@ jobs:
     - name: Push To harbor
       uses: redhat-actions/push-to-registry@v2.7
       with:
-        image: gateway
+        image: ${{ inputs.module }}
         registry: registry.elpsykongroo.com/library
         tags: "native"
         username:  ${{ secrets.REGISTRY_PRIVATE_NAME }}
