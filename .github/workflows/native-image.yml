@@ -114,6 +114,7 @@ jobs:
           kill -s 15 ${{ env.pid }}
           sleep 15
           #curl -X POST http://localhost:8080/actuator/shutdown
+        continue-on-error: true 
 
       - run: | 
          ps -ef |grep ${{ env.pid }}
