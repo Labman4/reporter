@@ -15,20 +15,15 @@ jobs:
   buildpacks:
     environment: native-image
     runs-on: ubuntu-latest
-    steps: 
-    - run: |
-        echo "path=$(pwd)" >> $GITHUB_ENV
-        echo "home=$HOME" >> $GITHUB_ENV
-        
-#     - name: Download .m2
-#       uses: actions/download-artifact@v3.0.1
-#       with:
-#         name:  m2
-#         path: ${{ env.home }}/.m2/repository/com/elpsykongroo
-        
+    steps:     
     - uses: actions/download-artifact@v3.0.1
       with:
         name:  package
+    
+    - run: |
+        echo "path=$(pwd)" >> $GITHUB_ENV
+        echo "home=$HOME" >> $GITHUB_ENV
+        ls -la
         
     - uses: actions/cache@v3.2.2
       with:
