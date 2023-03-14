@@ -7,9 +7,6 @@ on:
       module:
         required: true
         type: string
-      modulePath:
-        required: true
-        type: string
         
 jobs:
   buildpacks:
@@ -28,7 +25,7 @@ jobs:
     - uses: actions/cache@v3.2.2
       with:
         path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/${{ inputs.modulePath }}/pom.xml') }}
+        key: ${{ runner.os }}-maven-${{ hashFiles('pom.xml') }}
         restore-keys: |
           ${{ runner.os }}-maven- 
         
@@ -40,7 +37,7 @@ jobs:
       with:
         image:  ${{ inputs.module }}
         tag: native
-        path: '${{ env.path }}/${{ inputs.modulePath }}'
+        path: '${{ env.path }}'
         builder: 'paketobuildpacks/builder:0.1.303-tiny'
         env: 'BP_JVM_VERSION=17.0.5 JAVA_TOOL_OPTIONS=-agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ BP_NATIVE_IMAGE=true'
         map_env: 'BP_MAVEN_BUILD_ARGUMENTS="-Dmaven.test.skip=true --no-transfer-progress package "'
