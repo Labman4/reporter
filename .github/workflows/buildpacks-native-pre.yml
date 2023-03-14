@@ -1,6 +1,16 @@
 on: 
   workflow_call:
-
+    inputs:
+      env:
+        required: false
+        type: string
+      module:
+        required: true
+        type: string
+      moduleName:
+        required: true
+        type: string
+        
 jobs:
   pre:
     environment: native-image
@@ -10,7 +20,7 @@ jobs:
             
       - uses: ScribeMD/docker-cache@0.2.7
         with:
-          key: docker-${{ runner.os }}-${{ github.workflow_ref	 }}
+          key: docker-${{ runner.os }}-${{ github.workflow_ref }}
           
       - uses: graalvm/setup-graalvm@d01f5f519f35cf82b318133761fd8b674632a8fe
         with:
@@ -24,10 +34,10 @@ jobs:
       - uses: actions/cache@v3.2.2
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          key:  ${{ runner.os }}-maven-${{ hashFiles('**/${{ inputs.module }}/${{ inputs.moduleName }}/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven-        
-        
+            ${{ runner.os }}-maven-${{ hashFiles('**/${{ inputs.module }}/${{ inputs.moduleName }}/pom.xml') }}
+ 
       - run: |
           echo "home=$HOME" >> $GITHUB_ENV
           echo "path=$(pwd)" >> $GITHUB_ENV
@@ -36,7 +46,7 @@ jobs:
           mvn package install -DskipTests
         
       - run: |
-          mvn -P native package -DskipTests -f  ${{ env.path }}/gateway/pom.xml 
+          mvn -P native package -DskipTests -f  ${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}/pom.xml 
       
       - name: Build image
         uses: labman4/buildpacks-action@master
@@ -49,27 +59,39 @@ jobs:
           map_env: 'BP_MAVEN_BUILD_ARGUMENTS="-Dmaven.test.skip=true --no-transfer-progress package "'
           volume: ${{ env.home }}
               
-      - name: Push To Registry
+      - name: Push To hub
         uses: redhat-actions/push-to-registry@v2.7
         with:
-          image: gateway
+          image: ${{ inputs.module }}
           registry: docker.io/labman4
           tags: "pre"
           username:  ${{ secrets.REGISTRY_NAME }}
-          password:  ${{ secrets.REGISTRY_PASS }}
-          
+          password:  ${{ secrets.REGISTRY_PASS }}  
+
+      - name: Push To quay
+        uses: redhat-actions/push-to-registry@v2.7
+        with:
+          image: ${{ inputs.module }}
+          registry: quay.io/elpsykongroo
+          tags: "pre"
+          username:  ${{ secrets.QUAY_REGISTRY_NAME }}
+          password:  ${{ secrets.QUAY_REGISTRY_PASS }}
+
       - name: Push To harbor
         uses: redhat-actions/push-to-registry@v2.7
         with:
-          image: gateway
+          image: ${{ inputs.module }}
           registry: registry.elpsykongroo.com/library
-          tags: "native"
+          tags: "pre"
           username:  ${{ secrets.REGISTRY_PRIVATE_NAME }}
           password:  ${{ secrets.REGISTRY_PRIVATE_PASS }}
         continue-on-error: true 
 
-          
   deploy:
     needs: pre
-    uses: Labman4/workflow/.github/workflows/pre-host-deploy-dev.yml@native-image
+    uses: Labman4/workflow/.github/workflows/host-deploy-helm.yml@native-image
+    with:
+      module: ${{ inputs.module }}
+      env: -${{ inputs.env }}
+      
    
