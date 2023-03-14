@@ -1,6 +1,19 @@
 name: Native image
 on:
   workflow_call:
+    inputs:
+      env:
+        required: false
+        type: string
+      module:
+        required: true
+        type: string
+      moduleName:
+        required: false
+        type: string
+      version:
+        required: true
+        type: string
 #     secrets:
 #       VAULT_TOKEN: 
 #         description: 'vault.token'
@@ -16,23 +29,12 @@ on:
 #         required: true 
 jobs:
   test:
-#     needs: pre-build
     environment: native-image
     runs-on: [ubuntu-latest]
     steps:
-#       - name: Docker Layer Caching
-#         uses: satackey/action-docker-layer-caching@v0.0.11   
-
       - uses: ScribeMD/docker-cache@0.2.7
         with:
           key: docker-${{ runner.os }}-${{ github.workflow_ref }}
-          
-#       - name: Configure sysctl limits
-#         run: |
-#           sudo swapoff -a
-#           sudo sysctl -w vm.swappiness=1
-#           sudo sysctl -w fs.file-max=262144
-#           sudo sysctl -w vm.max_map_count=262144
           
       - uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
             
@@ -50,9 +52,9 @@ jobs:
       - uses: actions/cache@v3.2.2
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/${{ inputs.module }}/${{ inputs.moduleName }}/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven- 
+            ${{ runner.os }}-maven-${{ hashFiles('**/${{ inputs.module }}/${{ inputs.moduleName }}/pom.xml') }}      
             
       - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
@@ -61,24 +63,15 @@ jobs:
           
       - run: | 
           mvn package install -DskipTests
-          
-#       - name: Upload dependencies
-#         uses: actions/upload-artifact@v3.1.1
-#         with:
-#           name: m2
-#           path: |
-#             ${{ env.home}}/.m2/repository/com/elpsykongroo/**/*-client-*.jar
-#             ${{ env.home}}/.m2/repository/com/elpsykongroo/**/*.pom
-# #           retention-days: 3  
 
       - run: |
-          mvn -DvaultToken=${{secrets.VAULT_TOKEN}} -DvaultPath=${{secrets.VAULT_PATH}} -DvaultUri=${{secrets.VAULT_URI}}  -DSECRETS_PATH=${{secrets.SECRETS_PATH}} -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/gateway/pom.xml                
+          mvn -DvaultToken=${{secrets.VAULT_TOKEN}} -DvaultPath=${{secrets.VAULT_PATH}} -DvaultUri=${{secrets.VAULT_URI}}  -DSECRETS_PATH=${{secrets.SECRETS_PATH}} -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}pom.xml                
        
       - run: |
           native-image --macro:native-image-configure-launcher
       
       - run: |
-          native-image-configure generate --input-dir=${{ env.path }}/gateway/target/native/agent-output/test --output-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image
+          native-image-configure generate --input-dir=${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}target/native/agent-output/test --output-dir=${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}src/main/resources/META-INF/native-image
           #--input-dir=target/native/agent-output/main 
       
       - run: |
@@ -96,8 +89,8 @@ jobs:
           discovery type: 'single-node'
           
       - run: |
-          nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
-          #java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/gateway/src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar 
+          nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}src/main/resources/META-INF/native-image/ -DENV=pre -jar  ${{ inputs.module }}/target/${{ inputs.moduleName }}-${{ inputs.version }}.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
+          #java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}//${{ inputs.module }}/${{ inputs.moduleName }}src/main/resources/META-INF/native-image/ -DENV=pre -jar  gateway/target/gateway-0.0.2.jar 
           #echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
         #continue-on-error: true 
   
@@ -111,13 +104,13 @@ jobs:
   
       - run: |
           #echo "::stop-commands::${{ env.stopMarker}}"
+          sleep 10
           kill -s 15 ${{ env.pid }}
+          sleep 10
           #curl -X POST http://localhost:8080/actuator/shutdown
-        #continue-on-error: true 
 
       - run: | 
          ps -ef |grep ${{ env.pid }}
-        continue-on-error: true 
         
       - run: |
           git status
@@ -137,18 +130,14 @@ jobs:
         with:
           name: package
           path: |
-            ${{ env.path }}/
+            ${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}
             !${{ env.path }}/**/*.jar
           retention-days: 3  
    
       - run: | 
          ps -ef |grep ${{ env.pid }}
-         #cat ${{ env.path }}/gateway/src/main/resources/META-INF/native-image/.lock
-        #continue-on-error: true 
-        
-#       - run: |
-#           docker image rm demo:native elasticsearch:7.6.1 labman4/redis-cluster:7.0.7 labman4/redis-cluster:7.0
-
+         #cat ${{ env.path }}//${{ inputs.module }}/${{ inputs.moduleName }}src/main/resources/META-INF/native-image/.lock
+      
 #       - run: |
 #           echo ${{ github.context.payload.pull_request }}
 #           echo ${{ steps.cpr.outputs.pull-request-number }}
@@ -184,16 +173,25 @@ jobs:
 
   deploy:
     needs: buildpacks
-    uses: Labman4/workflow/.github/workflows/pre-host-deploy-pre.yml@native-image
+    uses: Labman4/workflow/.github/workflows/host-deploy-helm.yml@native-image
+    with:
+      module: ${{ inputs.module}}
+      env: pre
 
   pre-build:
     uses: Labman4/workflow/.github/workflows/buildpacks-native-pre.yml@buildpacks
     secrets: inherit
+    with: 
+      env: dev
+      module: ${{ inputs.module}}
     
   buildpacks:
     needs: test
     uses: Labman4/workflow/.github/workflows/buildpacks-native.yml@buildpacks
     secrets: inherit
+    with:
+      env: pre
+      module: ${{ inputs.module}}
  
 #   coverage:  
 #     needs: test
