@@ -197,7 +197,7 @@ jobs:
     uses: Labman4/workflow/.github/workflows/host-deploy-helm.yml@native-image
     with:
       module: ${{ inputs.module }}
-      env: ${{ inputs.env }}   
+      env: dev  
     
   buildpacks:
     needs: test
