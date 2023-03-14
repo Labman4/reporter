@@ -1,0 +1,75 @@
+on: 
+  workflow_call:
+    inputs:
+      env:
+        required: false
+        type: string
+      module:
+        required: true
+        type: string
+        
+jobs:
+  buildpacks:
+    environment: native-image
+    runs-on: ubuntu-latest
+    continue-on-error: true 
+    timeout-minutes: 5
+    strategy:
+      fail-fast: true
+    steps:     
+    - uses: actions/download-artifact@v3.0.1
+      with:
+        name:  package
+    
+    - run: |
+        echo "path=$(pwd)" >> $GITHUB_ENV
+        echo "home=$HOME" >> $GITHUB_ENV
+        
+    - uses: actions/cache@v3.2.2
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-${{ hashFiles('pom.xml') }}
+          ${{ runner.os }}-maven-
+        
+    - uses: ScribeMD/docker-cache@0.2.7
+      with:
+        key: docker-${{ runner.os }}-${{ github.workflow_ref }}
+         
+    - uses: labman4/buildpacks-action@master
+      with:
+        image:  ${{ inputs.module }}
+        tag: native
+        path: '${{ env.path }}'
+        builder: 'paketobuildpacks/builder:0.1.303-tiny'
+        env: 'BP_JVM_VERSION=17.0.5 BP_NATIVE_IMAGE=false'
+        map_env: 'BP_MAVEN_BUILD_ARGUMENTS="-Dmaven.test.skip=true --no-transfer-progress package "'
+        volume: ${{ env.home }}
+              
+    - name: Push To hub
+      uses: redhat-actions/push-to-registry@v2.7
+      with:
+        image: ${{ inputs.module }}
+        registry: docker.io/labman4
+        tags: "native"
+        username:  ${{ secrets.REGISTRY_NAME }}
+        password:  ${{ secrets.REGISTRY_PASS }}  
+      
+    - name: Push To quay
+      uses: redhat-actions/push-to-registry@v2.7
+      with:
+        image: ${{ inputs.module }}
+        registry: quay.io/elpsykongroo
+        tags: "native"
+        username:  ${{ secrets.QUAY_REGISTRY_NAME }}
+        password:  ${{ secrets.QUAY_REGISTRY_PASS }}
+        
+    - name: Push To harbor
+      uses: redhat-actions/push-to-registry@v2.7
+      with:
+        image: ${{ inputs.module }}
+        registry: registry.elpsykongroo.com/library
+        tags: "native"
+        username:  ${{ secrets.REGISTRY_PRIVATE_NAME }}
+        password:  ${{ secrets.REGISTRY_PRIVATE_PASS }}
