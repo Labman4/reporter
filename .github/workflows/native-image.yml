@@ -60,9 +60,9 @@ jobs:
       - uses: actions/cache@v3.2.2
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('${{ env.modulePath }}/**/pom.xml') }}
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven-${{ hashFiles('${{ env.modulePath }}/**/pom.xml') }}      
+            ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}      
                  
       - run: | 
           mvn package install -DskipTests
@@ -134,7 +134,7 @@ jobs:
         with:
           name: package
           path: |
-            ${{ env.path }}/${{ env.modulePath}}
+            ${{ env.path }}/
             !${{ env.path }}/**/*.jar
           retention-days: 3  
    
