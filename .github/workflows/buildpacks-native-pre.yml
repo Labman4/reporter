@@ -16,6 +16,11 @@ jobs:
     strategy:
       fail-fast: true
     steps:
+      - if: inputs.moduleName == 0
+        run: echo "modulePath=${{ inputs.module }}" >> $GITHUB_ENV
+      
+      - if: inputs.moduleName != 0
+        run: echo "modulePath=${{ inputs.module }}/${{ inputs.moduleName }}"  >> $GITHUB_ENV
       - uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
             
       - uses: ScribeMD/docker-cache@0.2.7
@@ -34,9 +39,9 @@ jobs:
       - uses: actions/cache@v3.2.2
         with:
           path: ~/.m2/repository
-          key:  ${{ runner.os }}-maven-${{ hashFiles('${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}/pom.xml') }}
+          key:  ${{ runner.os }}-maven-${{ hashFiles('${{ env.modulePath }}/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven-${{ hashFiles('${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}/pom.xml') }}
+            ${{ runner.os }}-maven-${{ hashFiles('${{ env.modulePath }}/pom.xml') }}
  
       - run: |
           echo "home=$HOME" >> $GITHUB_ENV
@@ -46,14 +51,14 @@ jobs:
           mvn package install -DskipTests
         
       - run: |
-          mvn -P native package -DskipTests -f  ${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}pom.xml 
+          mvn -P native package -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml 
       
       - name: Build image
         uses: labman4/buildpacks-action@master
         with:
           image: ${{ inputs.module }}
           tag: pre
-          path: '${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}'
+          path: '${{ env.path }}/${{ env.modulePath }}'
           builder: 'paketobuildpacks/builder:0.1.303-tiny'
           env: 'BP_JVM_VERSION=17.0.5 JAVA_TOOL_OPTIONS=-agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ BP_NATIVE_IMAGE=true '
           map_env: 'BP_MAVEN_BUILD_ARGUMENTS="-Dmaven.test.skip=true --no-transfer-progress package "'
