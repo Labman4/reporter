@@ -21,6 +21,7 @@ jobs:
       
       - if: inputs.moduleName != 0
         run: echo "modulePath=${{ inputs.module }}/${{ inputs.moduleName }}"  >> $GITHUB_ENV
+        
       - uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
             
       - uses: ScribeMD/docker-cache@0.2.7
@@ -39,9 +40,9 @@ jobs:
       - uses: actions/cache@v3.2.2
         with:
           path: ~/.m2/repository
-          key:  ${{ runner.os }}-maven-${{ hashFiles('${{ env.modulePath }}/**/pom.xml') }}
+          key:  ${{ runner.os }}-maven-${{ hashFiles('/**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven-${{ hashFiles('${{ env.modulePath }}/**/pom.xml') }}
+            ${{ runner.os }}-maven-${{ hashFiles('/**/pom.xml') }}
  
       - run: |
           echo "home=$HOME" >> $GITHUB_ENV
