@@ -44,7 +44,7 @@ jobs:
         tag: native
         path: '${{ env.path }}'
         builder: 'paketobuildpacks/builder:0.1.303-tiny'
-        env: 'BP_JVM_VERSION=17.0.5 JAVA_TOOL_OPTIONS=-agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ BP_NATIVE_IMAGE=true BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-run-time=ch.qos.logback.classic.Logger,ch.qos.logback.core,io.netty.channel.DefaultFileRegion,org.slf4j.MDC,org.slf4j.LoggerFactory,io.netty.util.AbstractReferenceCounted'
+        env: 'BP_JVM_VERSION=17.0.5 JAVA_TOOL_OPTIONS=-agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ BP_NATIVE_IMAGE=true BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-build-time=ch.qos.logback.classic.Logger BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-run-time=ch.qos.logback.classic.Logger,ch.qos.logback.core,io.netty.channel.DefaultFileRegion,org.slf4j.MDC,org.slf4j.LoggerFactory,io.netty.util.AbstractReferenceCounted'
         map_env: 'BP_MAVEN_BUILD_ARGUMENTS="-Dmaven.test.skip=true --no-transfer-progress package "'
         volume: ${{ env.home }}
               
