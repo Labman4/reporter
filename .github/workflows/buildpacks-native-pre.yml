@@ -1,9 +1,6 @@
 on: 
   workflow_call:
     inputs:
-      env:
-        required: false
-        type: string
       module:
         required: true
         type: string
@@ -37,9 +34,9 @@ jobs:
       - uses: actions/cache@v3.2.2
         with:
           path: ~/.m2/repository
-          key:  ${{ runner.os }}-maven-${{ hashFiles('**/${{ inputs.module }}/${{ inputs.moduleName }}/pom.xml') }}
+          key:  ${{ runner.os }}-maven-${{ hashFiles('${{ inputs.module }}/${{ inputs.moduleName }}/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven-${{ hashFiles('**/${{ inputs.module }}/${{ inputs.moduleName }}/pom.xml') }}
+            ${{ runner.os }}-maven-${{ hashFiles('${{ inputs.module }}/${{ inputs.moduleName }}/pom.xml') }}
  
       - run: |
           echo "home=$HOME" >> $GITHUB_ENV
