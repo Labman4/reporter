@@ -54,18 +54,18 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
           native-image-pr-reports: 'true'
-          
-      - uses: actions/cache@v3.2.2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('${{ env.modulePath}}/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-${{ hashFiles('${{ env.modulePath}}/pom.xml') }}      
-            
+        
       - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
           echo "home=$HOME" >> $GITHUB_ENV
           java --version
+          
+      - uses: actions/cache@v3.2.2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('${{ env.path }}/${{ env.modulePath }}/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-${{ hashFiles('${{ env.path }}/${{ env.modulePath }}/pom.xml') }}      
                  
       - run: | 
           mvn package install -DskipTests
