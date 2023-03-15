@@ -44,8 +44,8 @@ jobs:
         tag: native
         path: '${{ env.path }}'
         builder: 'paketobuildpacks/builder:0.1.303-tiny'
-        env: 'BP_JVM_VERSION=17.0.5 JAVA_TOOL_OPTIONS=-agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ BP_NATIVE_IMAGE=true  BP_NATIVE_IMAGE_BUILD_ARGUMENTS=--initialize-at-build-time=ch.qos.logback.classic.Logger --initialize-at-run-time=org.slf4j.MDC,ch.qos.logback.core.CoreConstants,ch.qos.logback.classic.Level,ch.qos.logback.core.util.StatusPrinter,io.netty.util.AbstractReferenceCounted,io.netty.channel.DefaultFileRegion,org.slf4j.LoggerFactory,ch.qos.logback.core.util.Loader,ch.qos.logback.core.status.InfoStatus,ch.qos.logback.core.status.StatusBase'
-        map_env: 'BP_MAVEN_BUILD_ARGUMENTS="-Dmaven.test.skip=true --no-transfer-progress package "'
+        env: 'BP_JVM_VERSION=17.0.5 JAVA_TOOL_OPTIONS=-agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ BP_NATIVE_IMAGE=true '
+        map_env: 'BP_MAVEN_BUILD_ARGUMENTS="-Dmaven.test.skip=true --no-transfer-progress package " BP_NATIVE_IMAGE_BUILD_ARGUMENTS="--initialize-at-build-time=ch.qos.logback.classic.Logger --initialize-at-run-time=org.slf4j.MDC,ch.qos.logback.core.CoreConstants,ch.qos.logback.classic.Level,ch.qos.logback.core.util.StatusPrinter,io.netty.util.AbstractReferenceCounted,io.netty.channel.DefaultFileRegion,org.slf4j.LoggerFactory,ch.qos.logback.core.util.Loader,ch.qos.logback.core.status.InfoStatus,ch.qos.logback.core.status.StatusBase"'
         volume: ${{ env.home }}
               
     - name: Push To hub
