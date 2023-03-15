@@ -40,9 +40,9 @@ jobs:
       - uses: actions/cache@v3.2.2
         with:
           path: ~/.m2/repository
-          key:  ${{ runner.os }}-maven-${{ hashFiles('/**/pom.xml') }}
+          key:  ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven-${{ hashFiles('/**/pom.xml') }}
+            ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
  
       - run: |
           echo "home=$HOME" >> $GITHUB_ENV
