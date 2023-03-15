@@ -60,7 +60,7 @@ jobs:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/${{ env.modulePath}}/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven-${{ hashFiles('**//${{ env.modulePath}}/pom.xml') }}      
+            ${{ runner.os }}-maven-${{ hashFiles('**/${{ env.modulePath}}/pom.xml') }}      
             
       - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
