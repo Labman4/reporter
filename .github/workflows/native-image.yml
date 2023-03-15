@@ -2,9 +2,6 @@ name: Native image
 on:
   workflow_call:
     inputs:
-      env:
-        required: false
-        type: string
       module:
         required: true
         type: string
@@ -63,9 +60,9 @@ jobs:
       - uses: actions/cache@v3.2.2
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('${{ env.modulePath }}/pom.xml') }}
+          key: ${{ runner.os }}-maven-${{ hashFiles('${{ env.modulePath }}/**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven-${{ hashFiles('${{ env.modulePath }}/pom.xml') }}      
+            ${{ runner.os }}-maven-${{ hashFiles('${{ env.modulePath }}/**/pom.xml') }}      
                  
       - run: | 
           mvn package install -DskipTests
