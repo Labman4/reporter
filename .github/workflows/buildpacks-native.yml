@@ -7,6 +7,9 @@ on:
       moduleName:
         required: false
         type: string
+      mode:
+        required: false
+        type: string
 jobs:
   buildpacks:
     environment: native-image
@@ -22,6 +25,7 @@ jobs:
     - if: inputs.moduleName != 0
       run: echo "modulePath=${{ inputs.module }}/${{ inputs.moduleName }}"  >> $GITHUB_ENV
       
+    - if: inputs.mode != 'pre'
     - uses: actions/download-artifact@v3.0.1
       with:
         name:  package
@@ -41,7 +45,13 @@ jobs:
     - uses: ScribeMD/docker-cache@0.2.7
       with:
         key: docker-${{ runner.os }}-${{ github.workflow_ref }}
-         
+     
+    - run: | 
+        mvn package install -DskipTests
+        
+    - run: |
+        mvn -P native package -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml 
+        
     - uses: labman4/buildpacks-action@master
       with:
         image:  ${{ inputs.module }}
