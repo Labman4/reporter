@@ -127,7 +127,6 @@ jobs:
     uses: Labman4/workflow/.github/workflows/buildpacks-native.yml@buildpacks
     secrets: inherit
     with:
-      env: ${{ inputs.env }}
       module: ${{ inputs.module }}
     
   deploy:
