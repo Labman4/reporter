@@ -43,12 +43,12 @@ jobs:
           native-image-job-reports: 'true'
           native-image-pr-reports: 'true'
           
-      - uses: actions/cache@v3.2.2
-        with:
-          path: ~/.m2/repository
-          key: setup-graalvm-${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            setup-graalvm-${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+#       - uses: actions/cache@v3.2.2
+#         with:
+#           path: ~/.m2/repository
+#           key: setup-graalvm-${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+#           restore-keys: |
+#             setup-graalvm-${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
             
       - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
