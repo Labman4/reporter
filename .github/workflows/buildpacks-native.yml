@@ -37,13 +37,24 @@ jobs:
         echo "path=$(pwd)" >> $GITHUB_ENV
         echo "home=$HOME" >> $GITHUB_ENV
         ls -la
-        
-    - uses: actions/cache@v3.2.2
+     
+    - uses: graalvm/setup-graalvm@d01f5f519f35cf82b318133761fd8b674632a8fe
       with:
-        path: ~/.m2/repository
-        key: setup-graalvm-${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          setup-graalvm-${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        version: 'latest'
+        java-version: '17'
+        set-java-home: 'true'
+        cache: maven
+        components: 'native-image'
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        native-image-job-reports: 'true'
+        native-image-pr-reports: 'true'
+        
+#     - uses: actions/cache@v3.2.2
+#       with:
+#         path: ~/.m2/repository
+#         key: setup-graalvm-${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+#         restore-keys: |
+#           setup-graalvm-${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
         
     - uses: ScribeMD/docker-cache@0.2.7
       with:
