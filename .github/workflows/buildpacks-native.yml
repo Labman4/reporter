@@ -23,8 +23,11 @@ jobs:
       run: echo "modulePath=${{ inputs.module }}" >> $GITHUB_ENV
       
     - if: inputs.moduleName != 0
-      run: echo "modulePath=${{ inputs.module }}/${{ inputs.moduleName }}"  >> $GITHUB_ENV
-      
+      run: echo "modulePath=${{ inputs.module }}/${{ inputs.moduleName }}"  >> $GITHUB_ENV   
+         
+    - if: inputs.mode == 'pre'
+      uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
+
     - if: inputs.mode != 'pre'
       uses: actions/download-artifact@v3.0.1
       with:
@@ -46,8 +49,8 @@ jobs:
       with:
         key: docker-${{ runner.os }}-${{ github.workflow_ref }}
      
-#     - run: | 
-#         mvn package install -DskipTests
+    - run: | 
+        mvn package install -DskipTests
         
     - run: |
         mvn -P native package -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml 
