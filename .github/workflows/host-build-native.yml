@@ -89,7 +89,7 @@ jobs:
           deploy: ${{ secrets.DEPLOY_SECRET }}
         if: ${{ env.deploy == inputs.deploy_secret }}
         run: |
-          helm upgrade -n demo demo ~/code/helm/charts/demo
+          helm upgrade -n demo gateway ~/code/helm/charts/gateway
 
 #   label:
 #     needs: host_build
