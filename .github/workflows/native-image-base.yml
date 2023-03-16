@@ -106,6 +106,9 @@ jobs:
           base: native-image
       
       - run: |
+          git status
+          
+      - run: |
           mvn -P native package -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml 
         
       - run: |
@@ -118,9 +121,6 @@ jobs:
             ${{ env.path }}
             !${{ env.path }}/**/*.jar
           retention-days: 3  
-   
-      - run: | 
-         ps -ef |grep ${{ env.pid }}
 
   pre-build:
     needs: test
