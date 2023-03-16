@@ -46,8 +46,8 @@ jobs:
       with:
         key: docker-${{ runner.os }}-${{ github.workflow_ref }}
      
-    - run: | 
-        mvn package install -DskipTests
+#     - run: | 
+#         mvn package install -DskipTests
         
     - run: |
         mvn -P native package -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml 
