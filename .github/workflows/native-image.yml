@@ -57,12 +57,12 @@ jobs:
           echo "home=$HOME" >> $GITHUB_ENV
           java --version
           
-      - uses: actions/cache@v3.2.2
-        with:
-          path: ~/.m2/repository
-          key: setup-graalvm-${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            setup-graalvm-${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}      
+#       - uses: actions/cache@v3.2.2
+#         with:
+#           path: ~/.m2/repository
+#           key: setup-graalvm-${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+#           restore-keys: |
+#             setup-graalvm-${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}      
                  
       - run: | 
           mvn package install -DskipTests
@@ -81,6 +81,9 @@ jobs:
           git status
       
       - uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
+    
+      - run: |
+          git status
        
       - uses: getong/elasticsearch-action@v1.2
         with:
@@ -124,9 +127,6 @@ jobs:
         with:
           base: native-image
       
-      - run: |
-          mvn -P native package -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml 
-        
       - run: |
           git status
           
@@ -183,10 +183,11 @@ jobs:
       env: pre
 
   pre-build:
-    uses: Labman4/workflow/.github/workflows/buildpacks-native-pre.yml@buildpacks
+    uses: Labman4/workflow/.github/workflows/buildpacks-native.yml@buildpacks
     secrets: inherit
     with: 
       module: ${{ inputs.module }}
+      mode: pre
   
   pre-deploy:
     needs: pre-build
