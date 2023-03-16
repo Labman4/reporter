@@ -10,11 +10,13 @@ on:
       mode:
         required: false
         type: string
+      version:
+        required: false
+        type: string
 jobs:
   buildpacks:
     environment: native-image
     runs-on: ubuntu-latest
-    continue-on-error: true 
 #     timeout-minutes: 5
     strategy:
       fail-fast: true
@@ -27,7 +29,15 @@ jobs:
          
     - if: inputs.mode == 'pre'
       uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
-
+      
+    - if: inputs.mode == 'pre'
+      run: |
+        echo "tag=pre" >> $GITHUB_ENV
+        
+    - if: inputs.mode != 'pre'
+      run: |
+        echo "tag=native" >> $GITHUB_ENV
+  
     - if: inputs.mode != 'pre'
       uses: actions/download-artifact@v3.0.1
       with:
@@ -48,14 +58,7 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         native-image-job-reports: 'true'
         native-image-pr-reports: 'true'
-        
-#     - uses: actions/cache@v3.2.2
-#       with:
-#         path: ~/.m2/repository
-#         key: setup-graalvm-${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-#         restore-keys: |
-#           setup-graalvm-${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-        
+            
     - uses: ScribeMD/docker-cache@0.2.7
       with:
         key: docker-${{ runner.os }}-${{ github.workflow_ref }}
@@ -82,7 +85,7 @@ jobs:
       with:
         image: ${{ inputs.module }}
         registry: docker.io/labman4
-        tags: "native"
+        tags: ${{ env.tag }}
         username:  ${{ secrets.REGISTRY_NAME }}
         password:  ${{ secrets.REGISTRY_PASS }}  
       
@@ -91,16 +94,17 @@ jobs:
       with:
         image: ${{ inputs.module }}
         registry: quay.io/elpsykongroo
-        tags: "native"
+        tags: ${{ env.tag }}
         username:  ${{ secrets.QUAY_REGISTRY_NAME }}
         password:  ${{ secrets.QUAY_REGISTRY_PASS }}
         
     - name: Push To harbor
       uses: redhat-actions/push-to-registry@v2.7
+      continue-on-error: true 
       with:
         image: ${{ inputs.module }}
         registry: registry.elpsykongroo.com/library
-        tags: "native"
+        tags: ${{ env.tag }}
         username:  ${{ secrets.REGISTRY_PRIVATE_NAME }}
         password:  ${{ secrets.REGISTRY_PRIVATE_PASS }}
 
