@@ -44,6 +44,9 @@ jobs:
         echo "path=$(pwd)" >> $GITHUB_ENV
         echo "home=$HOME" >> $GITHUB_ENV
         
+    - run: |
+        mvn package install -DskipTests
+
     - uses: labman4/buildpacks-action@master
       with:
         image:  ${{ inputs.module }}
