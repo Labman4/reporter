@@ -115,7 +115,7 @@ jobs:
         with:
           name: package
           path: |
-            ${{ env.path }}/${{ env.modulePath }}
+            ${{ env.path }}
             !${{ env.path }}/**/*.jar
           retention-days: 3  
    
