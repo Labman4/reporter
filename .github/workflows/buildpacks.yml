@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       moduleName:
-        required: true
+        required: false
         type: string
       version:
         required: true
