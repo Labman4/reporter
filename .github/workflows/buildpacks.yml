@@ -89,4 +89,4 @@ jobs:
     uses: Labman4/workflow/.github/workflows/host-deploy-helm.yml@native-image
     with: 
       module: ${{ inputs.module }}
-      env: ${{ inputs.dev }}
+      env: ${{ inputs.env }}
