@@ -18,7 +18,6 @@ jobs:
   buildpacks:
     environment: native-image
     runs-on: ubuntu-latest
-    continue-on-error: true 
     timeout-minutes: 10
     strategy:
       fail-fast: true
