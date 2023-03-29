@@ -1,0 +1,23 @@
+on: 
+  push:
+    paths:
+      -  '**/pom.xml'   
+        
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:  
+    - uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
+        
+    - uses: graalvm/setup-graalvm@d01f5f519f35cf82b318133761fd8b674632a8fe
+      with:
+        version: 'latest'
+        java-version: '17'
+        set-java-home: 'true'
+        cache: maven
+        components: 'native-image'
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+  
+    - run: |
+        mvn package install -DskipTests
+  
