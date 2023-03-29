@@ -1,8 +1,6 @@
 on: 
   workflow_call:
-  push:
-    paths: 
-      "**/pom.xml"
+
 jobs:
   update:
     runs-on: ubuntu-latest
