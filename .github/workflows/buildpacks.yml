@@ -32,9 +32,13 @@ jobs:
       with:
         key: docker-${{ runner.os }}-${{ github.workflow_ref }}
          
-    - run: |
-        echo "path=$(pwd)" >> $GITHUB_ENV
-        echo "home=$HOME" >> $GITHUB_ENV
+    - uses: graalvm/setup-graalvm@d01f5f519f35cf82b318133761fd8b674632a8fe
+      with:
+        version: 'latest'
+        java-version: '17'
+        set-java-home: 'true'
+        cache: maven
+        github-token: ${{ secrets.GITHUB_TOKEN }}
 
     - uses: labman4/buildpacks-action@master
       with:
@@ -46,13 +50,7 @@ jobs:
         map_env: 'BP_MAVEN_BUILD_ARGUMENTS="-Dmaven.test.skip=true --no-transfer-progress package "'
         volume: ${{ env.home }}
         
-    - uses: actions/cache@v3.2.2
-      with:
-        path: ~/.m2/repository
-        key:  setup-graalvm-${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          setup-graalvm-${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}    
-            
+ 
     - name: Push To hub
       uses: redhat-actions/push-to-registry@v2.7
       with:
