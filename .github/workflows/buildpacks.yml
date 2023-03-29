@@ -19,6 +19,7 @@ jobs:
     uses: Labman4/workflow/.github/workflows/maven.yml@cache
 
   buildpacks:
+    needs: cache
     environment: native-image
     runs-on: ubuntu-latest
 #     timeout-minutes: 10
