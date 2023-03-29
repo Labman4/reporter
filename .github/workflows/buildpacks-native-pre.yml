@@ -9,7 +9,10 @@ on:
         type: string
         
 jobs:
+  cache: 
+    uses: Labman4/workflow/.github/workflows/maven.yml@cache
   pre:
+    needs: cache
     environment: native-image
     runs-on: [ubuntu-latest]
     continue-on-error: true 
