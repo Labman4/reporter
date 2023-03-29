@@ -15,15 +15,16 @@ on:
         type: string
         
 jobs:
+  cache: 
+    uses: Labman4/workflow/.github/workflows/maven.yml@cache
+
   buildpacks:
     environment: native-image
     runs-on: ubuntu-latest
 #     timeout-minutes: 10
-    strategy:
-      fail-fast: true
-    steps:  
-    - uses: Labman4/workflow/.github/workflows/maven.yml@cache
-    
+#     strategy:
+#       fail-fast: true
+    steps:      
     - uses: ScribeMD/docker-cache@0.2.7
       with:
         key: docker-${{ runner.os }}-${{ github.workflow_ref }}
