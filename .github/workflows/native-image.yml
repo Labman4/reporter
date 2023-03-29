@@ -25,7 +25,11 @@ on:
 #         description: 'SECRETS_PATH'
 #         required: true 
 jobs:
+  cache: 
+    uses: Labman4/workflow/.github/workflows/maven.yml@cache
+    
   test:
+    needs: cache
     environment: native-image
     runs-on: [ubuntu-latest]
     steps:
