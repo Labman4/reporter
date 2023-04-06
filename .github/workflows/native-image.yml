@@ -130,7 +130,8 @@ jobs:
         uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
         with:
           base: native-image
-      
+        continue-on-error: true 
+        
       - run: |
           git status
           
