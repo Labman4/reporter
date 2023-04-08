@@ -31,7 +31,7 @@ jobs:
 #           echo ${{ inputs.deploy_secret }}
     
       - run: | 
-          mvn package install -DskipTests
+          mvn clean package install -DskipTests
          
 #       - name: agent trace   
 #         run: |
