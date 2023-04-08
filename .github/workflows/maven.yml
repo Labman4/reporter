@@ -4,10 +4,9 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
-    concurrency: "1"
-    timeout-minutes: 30
-    strategy:
-      fail-fast: false
+    concurrency:
+      group: ${{ github.repository }}-concurrency-for-job
+      cancel-in-progress: false
     steps:  
     - uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
              
