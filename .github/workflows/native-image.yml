@@ -60,13 +60,6 @@ jobs:
           echo "path=$(pwd)" >> $GITHUB_ENV
           echo "home=$HOME" >> $GITHUB_ENV
           java --version
-          
-#       - uses: actions/cache@v3.2.2
-#         with:
-#           path: ~/.m2/repository
-#           key: setup-graalvm-${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-#           restore-keys: |
-#             setup-graalvm-${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}      
                  
       - run: | 
           mvn package install -DskipTests
@@ -88,16 +81,7 @@ jobs:
     
       - run: |
           git status
-       
-      - uses: getong/elasticsearch-action@v1.2
-        with:
-          elasticsearch version: '7.17.3'
-          host port: 9200
-          container port: 9200
-          host node port: 9300
-          node port: 9300
-          discovery type: 'single-node'
-          
+
       - run: |
           nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ env.modulePath }}/src/main/resources/META-INF/native-image/ -DENV=pre -jar ${{ env.modulePath }}/target/${{ inputs.module }}-${{ inputs.version }}.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
           #java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}//${{ env.modulePath }}/src/main/resources/META-INF/native-image/ -DENV=pre -jar  ${{ env.modulePath }}/target/${{ inputs.module }}-${{ inputs.version }}.jar
