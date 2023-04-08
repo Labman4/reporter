@@ -1,4 +1,4 @@
-name: Native image (base)
+name: Native image (elasticsearch)
 on:
   workflow_call:
     inputs:
@@ -55,20 +55,20 @@ jobs:
       - run: | 
           mvn package install -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml    
           
-#       - run: |
-#           mvn -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml                
+      - run: |
+          mvn -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml                
        
-#       - run: |
-#           native-image --macro:native-image-configure-launcher
+      - run: |
+          native-image --macro:native-image-configure-launcher
       
-#       - run: |
-#           native-image-configure generate --input-dir=${{ env.path }}/${{ env.modulePath }}/target/native/agent-output/test --output-dir=${{ env.path }}/${{ env.modulePath }}/src/main/resources/META-INF/native-image
-#           #--input-dir=target/native/agent-output/main 
+      - run: |
+          native-image-configure generate --input-dir=${{ env.path }}/${{ env.modulePath }}/target/native/agent-output/test --output-dir=${{ env.path }}/${{ env.modulePath }}/src/main/resources/META-INF/native-image
+          #--input-dir=target/native/agent-output/main 
       
-#       - run: |
-#           git status
+      - run: |
+          git status
       
-#       - uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
+      - uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
       
       - run: |
           nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ env.modulePath }}/src/main/resources/META-INF/native-image/ -jar  ${{ env.modulePath }}/target/${{ inputs.moduleName }}-${{ inputs.version }}.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
