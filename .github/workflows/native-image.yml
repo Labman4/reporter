@@ -176,7 +176,6 @@ jobs:
     secrets: inherit
     with: 
       module: ${{ inputs.module }}
-      mode: pre
   
   pre-deploy:
     needs: pre-build
