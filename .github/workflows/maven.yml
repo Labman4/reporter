@@ -5,6 +5,7 @@ jobs:
   update:
     runs-on: ubuntu-latest
     concurrency: "1"
+    timeout-minutes: 30
     strategy:
       fail-fast: false
     steps:  
