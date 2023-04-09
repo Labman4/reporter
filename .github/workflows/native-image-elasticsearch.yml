@@ -51,7 +51,16 @@ jobs:
           echo "path=$(pwd)" >> $GITHUB_ENV
           echo "home=$HOME" >> $GITHUB_ENV
           java --version
-    
+          
+      - uses: getong/elasticsearch-action@v1.2
+        with:
+          elasticsearch version: '7.17.3'
+          host port: 9200
+          container port: 9200
+          host node port: 9300
+          node port: 9300
+          discovery type: 'single-node'
+          
       - run: | 
           mvn package install -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml    
           
@@ -69,14 +78,6 @@ jobs:
           git status
       
       - uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
-      - uses: getong/elasticsearch-action@v1.2
-        with:
-          elasticsearch version: '7.17.3'
-          host port: 9200
-          container port: 9200
-          host node port: 9300
-          node port: 9300
-          discovery type: 'single-node'
 
       - run: |
           nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ env.modulePath }}/src/main/resources/META-INF/native-image/ -jar  ${{ env.modulePath }}/target/${{ inputs.moduleName }}-${{ inputs.version }}.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
