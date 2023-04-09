@@ -62,7 +62,7 @@ jobs:
           discovery type: 'single-node'
           
       - run: | 
-          mvn package install -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml    
+          mvn clean package install -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml    
           
       - run: |
           mvn -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml                
