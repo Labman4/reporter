@@ -19,7 +19,7 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         
     - run: |
-        rm -rf ~/.m2/repository/com/elpsykongroo
+        rm -rf ~/.m2/repository/com/elpsykongroo/
         
     - run: |
         mvn clean package install -DskipTests
