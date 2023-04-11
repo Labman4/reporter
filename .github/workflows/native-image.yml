@@ -11,19 +11,6 @@ on:
       version:
         required: true
         type: string
-#     secrets:
-#       VAULT_TOKEN: 
-#         description: 'vault.token'
-#         required: true
-#       VAULT_URI:
-#         description: 'vault.uri'
-#         required: true
-#       VAULT_PATH:
-#         description: 'vault.path'
-#         required: true
-#       SECRETS_PATH:
-#         description: 'SECRETS_PATH'
-#         required: true 
 jobs:
   cache: 
     uses: Labman4/workflow/.github/workflows/maven.yml@cache
@@ -65,7 +52,7 @@ jobs:
           mvn package install -DskipTests
 
       - run: |
-          mvn -DvaultToken=${{secrets.VAULT_TOKEN}} -DvaultPath=${{secrets.VAULT_PATH}} -DvaultUri=${{secrets.VAULT_URI}}  -DSECRETS_PATH=${{secrets.SECRETS_PATH}} -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml                
+          mvn -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml                
        
       - run: |
           native-image --macro:native-image-configure-launcher
@@ -96,6 +83,9 @@ jobs:
           name: test
           path: '**/target/surefire-reports/TEST-*.xml'
   
+      - run: | 
+         ps -ef |grep ${{ env.pid }}
+         
       - run: |
           #echo "::stop-commands::${{ env.stopMarker }}"
           sleep 15
@@ -103,12 +93,12 @@ jobs:
           sleep 15
           #curl -X POST http://localhost:8080/actuator/shutdown
         continue-on-error: true 
-
-      - run: | 
-         ps -ef |grep ${{ env.pid }}
         
       - run: |
           git status
+    
+      - run: | 
+         ps -ef |grep ${{ env.pid }}
           
       - id: cpr
         uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
