@@ -55,6 +55,7 @@ jobs:
       version: 0.0.1
       
   elasticsearch:
+    needs: redis
     uses: Labman4/workflow/.github/workflows/buildpacks.yml@buildpacks
     secrets: inherit
     with:
