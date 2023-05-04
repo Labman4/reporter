@@ -1,6 +1,6 @@
 name: build or deploy
 on: 
-  workflow_dispatch:
+  workflow_call:
 #     inputs:
 #       deploy_secret:
 #         type: string
