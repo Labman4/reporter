@@ -13,39 +13,40 @@ jobs:
       module: auth
       moduleName: authorization-server
       version: 0.0.2
-#   auth-native:
-#     uses: Labman4/workflow/.github/workflows/native-image-base.yml@native-image
-#     secrets: inherit
-#     with:
-#       module: auth
-#       moduleName: authorization-server
-#       version: 0.0.2
-      
-#   gateway: 
-#     needs: auth
-#     uses: Labman4/workflow/.github/workflows/buildpacks.yml@buildpacks
-#     secrets: inherit
-#     with:
-#       module: gateway
-#       version: dev
-#       env: dev
-  gateway-native:
+  auth-native:
     needs: auth
+    uses: Labman4/workflow/.github/workflows/native-image-base.yml@native-image
+    secrets: inherit
+    with:
+      module: auth
+      moduleName: authorization-server
+      version: 0.0.2
+      
+  gateway: 
+    needs: auth
+    uses: Labman4/workflow/.github/workflows/buildpacks.yml@buildpacks
+    secrets: inherit
+    with:
+      module: gateway
+      version: 0.0.2
+  gateway-native:
+    needs: gateway
     uses: Labman4/workflow/.github/workflows/native-image.yml@native-image
     secrets: inherit
     with: 
       module: gateway
       version: 0.0.2
       
-#   redis:
-#     uses: Labman4/workflow/.github/workflows/buildpacks.yml@buildpacks
-#     secrets: inherit
-#     with:
-#       module: redis
-#       moduleName: redis-server
-#       version: 0.0.1
+  redis:
+    uses: Labman4/workflow/.github/workflows/buildpacks.yml@buildpacks
+    secrets: inherit
+    with:
+      module: redis
+      moduleName: redis-server
+      version: 0.0.1
       
   redis-native:
+    needs: redis
     uses: Labman4/workflow/.github/workflows/native-image-base.yml@native-image
     secrets: inherit
     with:
@@ -54,31 +55,32 @@ jobs:
       version: 0.0.1
       
   elasticsearch:
-    needs: redis-native
+    needs: redis
     uses: Labman4/workflow/.github/workflows/buildpacks.yml@buildpacks
     secrets: inherit
     with:
       module: elasticsearch
       moduleName: elasticsearch-server
       version: 0.0.1
-#       env: dev
-#   elasticsearch-native:
-#     uses: Labman4/workflow/.github/workflows/native-image-elasticsearch.yml@native-image
-#     secrets: inherit
-#     with:
-#       module: elasticsearch
-#       moduleName: elasticsearch-server
-#       version: 0.0.1
+  elasticsearch-native:
+    needs: elasticsearch
+    uses: Labman4/workflow/.github/workflows/native-image-elasticsearch.yml@native-image
+    secrets: inherit
+    with:
+      module: elasticsearch
+      moduleName: elasticsearch-server
+      version: 0.0.1
     
-#   storage: 
-#     uses: Labman4/workflow/.github/workflows/buildpacks.yml@buildpacks
-#     secrets: inherit
-#     with:
-#       module: storage
-#       moduleName: storage-server
-#       version: dev
+  storage: 
+    needs: redis
+    uses: Labman4/workflow/.github/workflows/buildpacks.yml@buildpacks
+    secrets: inherit
+    with:
+      module: storage
+      moduleName: storage-server
+      version: 0.0.1
   storage-native:
-    needs: redis-native
+    needs: storage
     uses: Labman4/workflow/.github/workflows/native-image-base.yml@native-image
     secrets: inherit
     with:
