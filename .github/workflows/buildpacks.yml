@@ -89,7 +89,7 @@ jobs:
         
   deploy:
     needs: buildpacks
-    uses: Labman4/workflow/.github/workflows/host-deploy-helm.yml@native-image
+    uses: Labman4/workflow/.github/workflows/deploy.yml@deploy
     with: 
       module: ${{ inputs.module }}
       env: ${{ inputs.env }}
