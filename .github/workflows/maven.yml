@@ -5,7 +5,7 @@ jobs:
   update:
     runs-on: ubuntu-latest
     concurrency:
-      group: ${{ github.repository }}-concurrency-for-job
+      group: ${{ github.repository }}-concurrency-for-cache-maven
       cancel-in-progress: false
     steps:  
     - uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
