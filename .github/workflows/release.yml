@@ -72,7 +72,7 @@ jobs:
 #       version: 0.0.1
     
   storage: 
-    needs: redis
+    needs: elasticsearch
     uses: Labman4/workflow/.github/workflows/buildpacks.yml@buildpacks
     secrets: inherit
     with:
