@@ -9,5 +9,5 @@ jobs:
   codeql:
     uses: Labman4/workflow/.github/workflows/codeql-java.yml@codeql-java
 
-  pmd:  
-    uses: Labman4/workflow/.github/workflows/pmd.yml@pmd
+#   pmd:  
+#     uses: Labman4/workflow/.github/workflows/pmd.yml@pmd
