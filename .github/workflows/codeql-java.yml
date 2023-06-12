@@ -22,8 +22,8 @@ on:
     - cron: '38 12 * * 0'
 
 jobs:
-  cache: 
-    uses: Labman4/workflow/.github/workflows/maven.yml@cache
+#   cache: 
+#     uses: Labman4/workflow/.github/workflows/maven.yml@cache
     
   analyze:
     name: Analyze
