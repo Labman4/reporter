@@ -10,14 +10,17 @@ jobs:
     steps:  
     - uses: actions/checkout@v3.5.3
    
-    - uses: graalvm/setup-graalvm@b11d36630f94ed5864e0a680a979b5afde449e9d
+    - uses: actions/setup-java@v3
       with:
-        version: 'latest'
+        distribution: 'temurin' # See 'Supported distributions' for available options
         java-version: '17'
-        set-java-home: 'true'
-        cache: maven
-        components: 'native-image'
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+    - uses: actions/cache@v3
+      with:
+        path: ~/.m2/repository
+        key: setup-graalvm-${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          setup-graalvm-${{ runner.os }}-maven-
       
     - run: |
         rm -rf ~/.m2/repository/com/elpsykongroo
