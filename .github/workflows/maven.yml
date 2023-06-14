@@ -16,7 +16,7 @@ jobs:
             
     - run: |
         rm -rf ~/.m2/repository/com/elpsykongroo/
-        
+        rm -rf ~/.m2/repository/com/google/guava/
     - run: |
         mvn clean package install -DskipTests
   
