@@ -11,7 +11,10 @@ jobs:
     concurrency:
       group: ${{ github.repository }}-concurrency-for-cache-maven
       cancel-in-progress: false
-    steps:              
+    steps:  
+    
+    - uses: actions/checkout@v3.5.3
+
     - run: |
         rm -rf ~/.m2/repository/
         
