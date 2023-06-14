@@ -14,6 +14,9 @@ on:
         required: false
         type: string
 jobs:
+  set-up:
+    uses: Labman4/workflow/.github/workflows/graalvm.yml@set-up        
+    
   buildpacks:
     environment: native-image
     runs-on: ubuntu-latest
@@ -47,9 +50,7 @@ jobs:
         echo "path=$(pwd)" >> $GITHUB_ENV
         echo "home=$HOME" >> $GITHUB_ENV
         ls -la
-  
-    - uses: Labman4/workflow/.github/workflows/graalvm.yml@set-up
-    
+      
     - uses: ScribeMD/docker-cache@0.2.7
       with:
         key: docker-${{ runner.os }}-${{ github.workflow_ref }}
