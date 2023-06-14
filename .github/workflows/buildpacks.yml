@@ -53,7 +53,7 @@ jobs:
 #     - run: |
 #         mvn package install -DskipTests
 
-    - uses: graalvm/setup-graalvm@d01f5f519f35cf82b318133761fd8b674632a8fe
+    - uses: graalvm/setup-graalvm@b11d36630f94ed5864e0a680a979b5afde449e9d
       with:
         version: 'latest'
         java-version: '17'
