@@ -1,24 +1,24 @@
 on: 
   workflow_call:
 
-jobs:
-  set-up:
-    uses: Labman4/workflow/.github/workflows/graalvm.yml@set-up    
-    
+jobs:    
   update:
-    needs: set-up
     runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.repository }}-concurrency-for-cache-maven
       cancel-in-progress: false
     steps:  
     - uses: actions/checkout@v3.5.3
-
-    - name: Download report artifact
-      uses: actions/download-artifact@v3
+   
+    - uses: graalvm/setup-graalvm@b11d36630f94ed5864e0a680a979b5afde449e9d
       with:
-        name: maven-repo
-
+        version: 'latest'
+        java-version: '17'
+        set-java-home: 'true'
+        cache: maven
+        components: 'native-image'
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+      
     - run: |
         rm -rf ~/.m2/repository
         
