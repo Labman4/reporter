@@ -33,9 +33,10 @@ jobs:
     - run: |
         echo "path=$(pwd)" >> $GITHUB_ENV
         echo "home=$HOME" >> $GITHUB_ENV
-      
         java --version
-          
+        
+    - uses: actions/checkout@v3.5.3
+     
     - uses: labman4/buildpacks-action@master
       with:
         image:  ${{ inputs.module }}
@@ -44,7 +45,7 @@ jobs:
         builder: 'paketobuildpacks/builder:tiny'
         env: 'BP_JVM_VERSION=17 BP_NATIVE_IMAGE=false'
         map_env: 'BP_MAVEN_BUILD_ARGUMENTS="-Dmaven.test.skip=true --no-transfer-progress package"'
-        volume: ~/
+        volume: ${{env.home}}
     
  
     - name: Push To hub
