@@ -36,23 +36,16 @@ jobs:
         java --version
         
     - uses: actions/checkout@v3.5.3
-    
-    - uses: graalvm/setup-graalvm@b11d36630f94ed5864e0a680a979b5afde449e9d
-      with:
-        version: 'latest'
-        java-version: '17'
-        set-java-home: 'true'
-        cache: maven
-        components: 'native-image'
-        github-token: ${{ secrets.GITHUB_TOKEN }}
         
-#     - uses: actions/cache@v3
-#       with:
-#         path: ~/.m2/
-#         key: setup-graalvm-${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-#         restore-keys: |
-#           setup-graalvm-${{ runner.os }}-maven-
-   
+    - uses: actions/cache@v3
+      with:
+        path: ~/.m2/
+        key: setup-graalvm-${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          setup-graalvm-${{ runner.os }}-maven-
+          
+    - run: |
+        mvn package install -DskipTests
 
     - uses: labman4/buildpacks-action@master
       with:
