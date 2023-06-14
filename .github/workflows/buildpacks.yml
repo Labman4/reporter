@@ -29,7 +29,12 @@ jobs:
     - uses: ScribeMD/docker-cache@0.2.7
       with:
         key: docker-${{ runner.os }}-${{ github.workflow_ref }}
-             
+
+    - uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin' # See 'Supported distributions' for available options
+        java-version: '17'   
+        
     - run: |
         echo "path=$(pwd)" >> $GITHUB_ENV
         echo "home=$HOME" >> $GITHUB_ENV
@@ -57,7 +62,6 @@ jobs:
         map_env: 'BP_MAVEN_BUILD_ARGUMENTS="-Dmaven.test.skip=true --no-transfer-progress package"'
         volume: ${{ env.home }}
     
- 
     - name: Push To hub
       uses: redhat-actions/push-to-registry@v2.7
       with:
