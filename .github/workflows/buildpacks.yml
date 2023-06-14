@@ -50,7 +50,7 @@ jobs:
           setup-graalvm-${{ runner.os }}-maven-
           
     - run: |
-        mvn clean package install -DskipTests
+        mvn package install -DskipTests
 
     - uses: labman4/buildpacks-action@master
       with:
