@@ -25,7 +25,12 @@ jobs:
 #     timeout-minutes: 10
 #     strategy:
 #       fail-fast: true
-    steps:      
+    steps:    
+    - uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin' # See 'Supported distributions' for available options
+        java-version: '17'
+        
     - uses: ScribeMD/docker-cache@0.2.7
       with:
         key: docker-${{ runner.os }}-${{ github.workflow_ref }}
