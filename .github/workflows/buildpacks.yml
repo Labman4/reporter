@@ -52,7 +52,7 @@ jobs:
         builder: 'paketobuildpacks/builder:tiny'
         env: 'BP_JVM_VERSION=17 BP_NATIVE_IMAGE=false'
         map_env: 'BP_MAVEN_BUILD_ARGUMENTS="-Dmaven.test.skip=true --no-transfer-progress package"'
-        volume: ~/
+        volume: ${{ env.home }}
     
  
     - name: Push To hub
