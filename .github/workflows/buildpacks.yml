@@ -17,6 +17,9 @@ on:
 jobs:
   cache: 
     uses: Labman4/workflow/.github/workflows/maven.yml@cache
+    
+  set-up:
+    uses: Labman4/workflow/.github/workflows/graalvm.yml@set-up        
 
   buildpacks:
     needs: cache
@@ -31,9 +34,7 @@ jobs:
     - uses: ScribeMD/docker-cache@0.2.7
       with:
         key: docker-${{ runner.os }}-${{ github.workflow_ref }}
-     
-    - uses: Labman4/workflow/.github/workflows/graalvm.yml@set-up        
-        
+             
     - run: |
         echo "path=$(pwd)" >> $GITHUB_ENV
         echo "home=$HOME" >> $GITHUB_ENV
