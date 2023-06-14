@@ -19,10 +19,11 @@ jobs:
     uses: Labman4/workflow/.github/workflows/maven.yml@cache
     
   set-up:
+    needs: cache
     uses: Labman4/workflow/.github/workflows/graalvm.yml@set-up        
 
   buildpacks:
-    needs: cache
+    needs: set-up
     environment: native-image
     runs-on: ubuntu-latest
 #     timeout-minutes: 10
