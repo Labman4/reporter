@@ -53,7 +53,7 @@ jobs:
         path: '${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}'
         builder: 'paketobuildpacks/builder:tiny'
         env: 'BP_JVM_VERSION=17 BP_NATIVE_IMAGE=false'
-        map_env: 'BP_MAVEN_BUILD_ARGUMENTS="-Dmaven.test.skip=true --no-transfer-progress package"'
+#         map_env: 'BP_MAVEN_BUILD_ARGUMENTS="-Dmaven.test.skip=true --no-transfer-progress package"'
         volume: ${{ env.home }}
     
  
