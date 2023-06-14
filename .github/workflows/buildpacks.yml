@@ -33,6 +33,7 @@ jobs:
     - run: |
         echo "path=$(pwd)" >> $GITHUB_ENV
         echo "home=$HOME" >> $GITHUB_ENV
+        chmod -R 755 ~/.m2
         java --version
         
     - uses: actions/checkout@v3.5.3
