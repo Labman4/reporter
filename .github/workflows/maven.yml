@@ -12,11 +12,17 @@ jobs:
       group: ${{ github.repository }}-concurrency-for-cache-maven
       cancel-in-progress: false
     steps:  
-    
     - uses: actions/checkout@v3.5.3
 
+    - name: Download report artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: maven-repo
+        workflow: ${{ github.event.workflow.id }}
+        run_id: ${{ github.event.workflow_run.id }}
+
     - run: |
-        rm -rf ~/.m2/repository/
+        rm -rf ~/.m2/repository
         
     - run: |
         mvn clean package install -DskipTests
