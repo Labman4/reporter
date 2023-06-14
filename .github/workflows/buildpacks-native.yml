@@ -18,6 +18,7 @@ jobs:
     uses: Labman4/workflow/.github/workflows/graalvm.yml@set-up        
     
   buildpacks:
+    needs: set-up
     environment: native-image
     runs-on: ubuntu-latest
 #     timeout-minutes: 5
