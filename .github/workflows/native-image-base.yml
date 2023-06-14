@@ -18,13 +18,9 @@ on:
 jobs:
   cache: 
     uses: Labman4/workflow/.github/workflows/maven.yml@cache
-
-  set-up:
-    needs: cache
-    uses: Labman4/workflow/.github/workflows/graalvm.yml@set-up        
     
   test:
-    needs: set-up
+    needs: cache
     environment: native-image
     runs-on: [ubuntu-latest]
     steps:
