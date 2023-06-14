@@ -14,11 +14,11 @@ on:
         required: false
         type: string
 jobs:
-  set-up:
-    uses: Labman4/workflow/.github/workflows/graalvm.yml@set-up        
+  cache:
+    uses: Labman4/workflow/.github/workflows/maven.yml@cache  
     
   buildpacks:
-    needs: set-up
+    needs: cache
     environment: native-image
     runs-on: ubuntu-latest
 #     timeout-minutes: 5
@@ -51,14 +51,7 @@ jobs:
         echo "path=$(pwd)" >> $GITHUB_ENV
         echo "home=$HOME" >> $GITHUB_ENV
         ls -la
-      
-    - uses: ScribeMD/docker-cache@0.2.7
-      with:
-        key: docker-${{ runner.os }}-${{ github.workflow_ref }}
-     
-    - run: | 
-        mvn package install -DskipTests
-        
+            
     - run: |
         mvn -P native package -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml 
         
