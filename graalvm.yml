@@ -11,5 +11,6 @@ jobs:
         java-version: '17'
         set-java-home: 'true'
         cache: maven
+        components: 'native-image'
         github-token: ${{ secrets.GITHUB_TOKEN }}
   
