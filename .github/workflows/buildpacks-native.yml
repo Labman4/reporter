@@ -47,18 +47,9 @@ jobs:
         echo "path=$(pwd)" >> $GITHUB_ENV
         echo "home=$HOME" >> $GITHUB_ENV
         ls -la
-     
-    - uses: graalvm/setup-graalvm@d01f5f519f35cf82b318133761fd8b674632a8fe
-      with:
-        version: 'latest'
-        java-version: '17'
-        set-java-home: 'true'
-        cache: maven
-        components: 'native-image'
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        native-image-job-reports: 'true'
-        native-image-pr-reports: 'true'
-            
+  
+    - uses: Labman4/workflow/.github/workflows/graalvm.yml@set-up
+    
     - uses: ScribeMD/docker-cache@0.2.7
       with:
         key: docker-${{ runner.os }}-${{ github.workflow_ref }}
