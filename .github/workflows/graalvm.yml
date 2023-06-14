@@ -5,6 +5,8 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:            
+    - uses: actions/checkout@v3.5.3
+    
     - uses: graalvm/setup-graalvm@b11d36630f94ed5864e0a680a979b5afde449e9d
       with:
         version: 'latest'
