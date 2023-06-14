@@ -25,12 +25,7 @@ jobs:
 #     timeout-minutes: 10
 #     strategy:
 #       fail-fast: true
-    steps:    
-    - uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin' # See 'Supported distributions' for available options
-        java-version: '17'
-        
+    steps:       
     - uses: ScribeMD/docker-cache@0.2.7
       with:
         key: docker-${{ runner.os }}-${{ github.workflow_ref }}
@@ -38,6 +33,7 @@ jobs:
     - run: |
         echo "path=$(pwd)" >> $GITHUB_ENV
         echo "home=$HOME" >> $GITHUB_ENV
+      
         java --version
           
     - uses: labman4/buildpacks-action@master
@@ -48,8 +44,8 @@ jobs:
         builder: 'paketobuildpacks/builder:tiny'
         env: 'BP_JVM_VERSION=17 BP_NATIVE_IMAGE=false'
         map_env: 'BP_MAVEN_BUILD_ARGUMENTS="-Dmaven.test.skip=true --no-transfer-progress package"'
-        volume: ${{ env.home }}
-        
+        volume: ~/
+    
  
     - name: Push To hub
       uses: redhat-actions/push-to-registry@v2.7
