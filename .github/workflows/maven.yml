@@ -13,8 +13,8 @@ jobs:
       cancel-in-progress: false
     steps:              
     - run: |
-        rm -rf ~/.m2/repository/com/elpsykongroo/
-        rm -rf ~/.m2/repository/com/google/guava/
+        rm -rf ~/.m2/repository/
+        
     - run: |
         mvn clean package install -DskipTests
   
