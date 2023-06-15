@@ -13,12 +13,8 @@ on:
       version:
         required: false
         type: string
-jobs:
-  cache:
-    uses: Labman4/workflow/.github/workflows/maven.yml@cache  
-    
+jobs:    
   buildpacks:
-    needs: cache
     environment: native-image
     runs-on: ubuntu-latest
 #     timeout-minutes: 5
