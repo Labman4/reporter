@@ -52,6 +52,14 @@ jobs:
           echo "home=$HOME" >> $GITHUB_ENV
           java --version
           
+      - name: Import Secrets
+        id: import-secrets
+        uses: hashicorp/vault-action@v2
+        with:
+          url: https://vault.elpsykongroo.com:443
+          method: github
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          
       - run: | 
           mvn package install -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml    
           
