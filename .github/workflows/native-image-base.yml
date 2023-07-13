@@ -54,13 +54,13 @@ jobs:
           
       - name: Import Secrets
         id: import-secrets
-        uses: hashicorp/vault-action@v2
+        uses: hashicorp/vault-action@v2.7.3
         with:
           url: https://vault.elpsykongroo.com:443
           method: github
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           secrets: |
-              kv/app/test/redis $.$ | service
+              kv/data/app/test/redis $.$ | service
  
       - run: | 
           mvn package install -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml    
