@@ -33,7 +33,9 @@ jobs:
       - uses: ScribeMD/docker-cache@0.2.7
         with:
           key: docker-${{ runner.os }}-${{ github.workflow_ref }}
-      
+          
+      - uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
+                  
       - uses: graalvm/setup-graalvm@v1
         with:
           version: 'latest'
@@ -45,13 +47,11 @@ jobs:
           native-image-job-reports: 'true'
           native-image-pr-reports: 'true'
           
-      - uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
-                        
       - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
           echo "home=$HOME" >> $GITHUB_ENV
           java --version
-    
+          
       - run: | 
           mvn package install -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml    
           
