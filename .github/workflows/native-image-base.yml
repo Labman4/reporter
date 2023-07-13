@@ -30,11 +30,11 @@ jobs:
       - if: inputs.moduleName != 0
         run: echo "modulePath=${{ inputs.module }}/${{ inputs.moduleName }}"  >> $GITHUB_ENV
         
-      - uses: ScribeMD/docker-cache@0.2.7
+      - uses: ScribeMD/docker-cache@0.3.3
         with:
           key: docker-${{ runner.os }}-${{ github.workflow_ref }}
           
-      - uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
+      - uses: actions/checkout@v3.5.3
                   
       - uses: graalvm/setup-graalvm@v1
         with:
@@ -98,7 +98,7 @@ jobs:
           git status
           
       - id: cpr
-        uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
+        uses: peter-evans/create-pull-request@v5.0.2
         with:
           base: native-image
       
@@ -111,7 +111,7 @@ jobs:
       - run: |
           git status
           
-      - uses: actions/upload-artifact@v3.1.1
+      - uses: actions/upload-artifact@v3.1.2
         with:
           name: package
           path: |
