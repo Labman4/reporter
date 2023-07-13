@@ -33,6 +33,17 @@ jobs:
       - uses: ScribeMD/docker-cache@0.2.7
         with:
           key: docker-${{ runner.os }}-${{ github.workflow_ref }}
+      
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          version: 'latest'
+          java-version: '17'
+          set-java-home: 'true'
+          cache: maven
+          components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          native-image-job-reports: 'true'
+          native-image-pr-reports: 'true'
           
       - uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
                         
