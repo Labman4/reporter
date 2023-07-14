@@ -61,7 +61,7 @@ jobs:
       - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
           echo "home=$HOME" >> $GITHUB_ENV
-          echo "{{service.redis.port}}"
+          echo "${{service.redis.port}}"
           java --version
           
       - run: | 
