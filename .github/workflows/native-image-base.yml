@@ -56,12 +56,12 @@ jobs:
           githubToken: ${{ secrets.VAULT_GITHUB_TOKEN }}
           secrets: |
               kv/data/app/test/redis $.$ 
- 
-     
+   
       - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
           echo "home=$HOME" >> $GITHUB_ENV
-          echo "${{env.service.redis.port}}"
+          echo "VAULT_URI=${{ env.VAULT_URI }}"  >> $GITHUB_ENV
+          echo "VAULT_TOKEN=${{ env.VAULT_TOKEN }}"  >> $GITHUB_ENV
           java --version
           
       - run: | 
