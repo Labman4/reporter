@@ -55,8 +55,7 @@ jobs:
           method: github
           githubToken: ${{ secrets.VAULT_GITHUB_TOKEN }}
           secrets: |
-            kv/data/app/test/ uri | VAULT_URI
-            kv/data/app/test/ token | VAULT_TOKEN
+            kv/data/app/test/token vaultToken | VAULT_TOKEN
 
       - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
