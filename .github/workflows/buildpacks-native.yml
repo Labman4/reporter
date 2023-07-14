@@ -42,7 +42,7 @@ jobs:
       uses: actions/download-artifact@v3.0.1
       with:
         name:  package
-    
+        
     - uses: graalvm/setup-graalvm@v1
       with:
         version: 'latest'
@@ -57,7 +57,7 @@ jobs:
         ls -la
         
     - if: inputs.mode == 'pre'  
-    - run: |
+      run: |
         mvn -P native package -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml 
         
     - uses: labman4/buildpacks-action@master
