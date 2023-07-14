@@ -43,6 +43,25 @@ jobs:
       with:
         name:  package
         
+    - if: inputs.mode == 'pre'
+      name: Import Secrets
+      id: import-secrets
+      uses: hashicorp/vault-action@v2.7.3
+      with:
+        url: https://vault.elpsykongroo.com:443
+        method: github
+        githubToken: ${{ secrets.VAULT_GITHUB_TOKEN }}
+        secrets: |
+          kv/data/app/test/vault VAULT_TOKEN | VAULT_TOKEN;
+          kv/data/app/test/vault VAULT_URI | VAULT_URI;            
+          kv/data/app/test/vault SECRETS_APP_AUTH_PATH | SECRETS_APP_AUTH_PATH;
+          kv/data/app/test/vault SECRETS_APP_GATEWAY_PATH | SECRETS_APP_GATEWAY_PATH;
+          kv/data/app/test/vault SECRETS_APP_ES_PATH | SECRETS_APP_ES_PATH;
+          kv/data/app/test/vault SECRETS_APP_REDIS_PATH | SECRETS_APP_REDIS_PATH;
+          kv/data/app/test/vault SECRETS_APP_STORAGE_PATH | SECRETS_APP_STORAGE_PATH;
+          kv/data/app/test/vault SECRETS_DATA_ES_PATH | SECRETS_DATA_ES_PATH;
+          kv/data/app/test/vault SECRETS_DATA_REDIS_PATH | SECRETS_DATA_REDIS_PATH
+          
     - uses: graalvm/setup-graalvm@v1
       with:
         version: 'latest'
@@ -65,8 +84,8 @@ jobs:
         image:  ${{ inputs.module }}
         tag: ${{ env.tag }}
         path: '${{ env.path }}/${{ env.modulePath }}'
-        builder: 'paketobuildpacks/builder:0.1.303-tiny'
-        env: 'BP_JVM_VERSION=17.0.5 JAVA_TOOL_OPTIONS=-agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ BP_NATIVE_IMAGE=true '
+        builder: 'paketobuildpacks/builder:tiny'
+        env: 'BP_JVM_VERSION=17 BP_NATIVE_IMAGE=true JAVA_TOOL_OPTIONS=-agentlib:native-image-agent=config-merge-dir=src/main/resources/META-INF/native-image/ '
 #         map_env: 'BP_MAVEN_BUILD_ARGUMENTS="-Dmaven.test.skip=true --no-transfer-progress package "'
         map_env: 'BP_NATIVE_IMAGE_BUILD_ARGUMENTS="--initialize-at-build-time=org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository"'
 
