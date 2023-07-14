@@ -31,14 +31,25 @@ jobs:
           key: docker-${{ runner.os }}-${{ github.workflow_ref }}
           
       - uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
-                    
+      
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          version: 'latest'
+          java-version: '17'
+          set-java-home: 'true'
+          cache: maven
+          components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          native-image-job-reports: 'true'
+          native-image-pr-reports: 'true'
+               
       - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
           echo "home=$HOME" >> $GITHUB_ENV
           java --version
                  
       - run: | 
-          mvn clean package install -DskipTests
+          mvn package install -DskipTests
 
       - run: |
           mvn -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml                
