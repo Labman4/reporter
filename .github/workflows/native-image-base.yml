@@ -55,7 +55,7 @@ jobs:
           method: github
           githubToken: ${{ secrets.VAULT_GITHUB_TOKEN }}
           secrets: |
-              kv/data/app/test/token VAULT_URI | VAULT_URI
+              kv/data/app/test/token VAULT_URI | VAULT_URI;
               kv/data/app/test/token VAULT_TOKEN | VAULT_TOKEN
 
    
