@@ -46,12 +46,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
           native-image-pr-reports: 'true'
-          
-      - run: |
-          echo "path=$(pwd)" >> $GITHUB_ENV
-          echo "home=$HOME" >> $GITHUB_ENV
-          java --version
-          
+               
       - name: Import Secrets
         id: import-secrets
         uses: hashicorp/vault-action@v2.7.3
@@ -60,8 +55,15 @@ jobs:
           method: github
           githubToken: ${{ secrets.VAULT_GITHUB_TOKEN }}
           secrets: |
-              kv/data/app/test/redis $.$ | SERVICE_CONFIG
+              kv/data/app/test/redis $.$ 
  
+     
+      - run: |
+          echo "path=$(pwd)" >> $GITHUB_ENV
+          echo "home=$HOME" >> $GITHUB_ENV
+          echo "{{service.redis.port}}"
+          java --version
+          
       - run: | 
           mvn package install -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml    
           
