@@ -29,7 +29,15 @@ jobs:
          
     - if: inputs.mode == 'pre'
       uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
-      
+          
+    - uses: graalvm/setup-graalvm@v1
+      with:
+        version: 'latest'
+        java-version: '17'
+        set-java-home: 'true'
+        cache: maven
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        
     - if: inputs.mode == 'pre'
       run: |
         echo "tag=pre" >> $GITHUB_ENV
