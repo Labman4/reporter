@@ -55,7 +55,8 @@ jobs:
         echo "path=$(pwd)" >> $GITHUB_ENV
         echo "home=$HOME" >> $GITHUB_ENV
         ls -la
-            
+        
+    - if: inputs.mode == 'pre'  
     - run: |
         mvn -P native package -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml 
         
