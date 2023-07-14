@@ -2,9 +2,6 @@ name: Native image (base)
 on:
   workflow_call:
     inputs:
-      env:
-        required: false
-        type: string
       module:
         required: true
         type: string
@@ -88,12 +85,18 @@ jobs:
 #           git status
       
 #       - uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
-      
-      - run: |
+
+      - if: inputs.moduleName != 0
+        run: |
           nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ env.modulePath }}/src/main/resources/META-INF/native-image/ -jar  ${{ env.modulePath }}/target/${{ inputs.moduleName }}-${{ inputs.version }}.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
           #echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
         continue-on-error: true 
   
+      - if: inputs.moduleName == 0
+        run: |
+          nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ env.modulePath }}/src/main/resources/META-INF/native-image/ -jar  ${{ env.modulePath }}/target/${{ inputs.modulePath }}-${{ inputs.version }}.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
+          #echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
+        continue-on-error: true 
       - run: |
           git status
           
