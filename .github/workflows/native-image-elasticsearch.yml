@@ -40,7 +40,18 @@ jobs:
           echo "path=$(pwd)" >> $GITHUB_ENV
           echo "home=$HOME" >> $GITHUB_ENV
           java --version
-          
+     
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          version: 'latest'
+          java-version: '17'
+          set-java-home: 'true'
+          cache: maven
+          components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          native-image-job-reports: 'true'
+          native-image-pr-reports: 'true'
+               
       - uses: getong/elasticsearch-action@v1.2
         with:
           elasticsearch version: '7.17.3'
