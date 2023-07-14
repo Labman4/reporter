@@ -60,7 +60,7 @@ jobs:
           method: github
           githubToken: ${{ secrets.VAULT_GITHUB_TOKEN }}
           secrets: |
-              kv/data/app/test/redis &.& | SERVICE_CONFIG
+              kv/data/app/test/redis $.$ | SERVICE_CONFIG
  
       - run: | 
           mvn package install -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml    
