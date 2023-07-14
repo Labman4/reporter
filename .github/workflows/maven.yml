@@ -28,10 +28,7 @@ jobs:
         java-version: '17'
         set-java-home: 'true'
         cache: maven
-        components: 'native-image'
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        native-image-job-reports: 'true'
-        native-image-pr-reports: 'true'
         
     - run: |
         rm -rf ~/.m2/repository/com/elpsykongroo
