@@ -30,11 +30,11 @@ jobs:
       - if: inputs.moduleName != 0
         run: echo "modulePath=${{ inputs.module }}/${{ inputs.moduleName }}"  >> $GITHUB_ENV
         
-      - uses: ScribeMD/docker-cache@0.2.7
+      - uses: ScribeMD/docker-cache@0.3.3
         with:
           key: docker-${{ runner.os }}-${{ github.workflow_ref }}
           
-      - uses: actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28
+      - uses: actions/checkout@v3.5.3
                         
       - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
@@ -51,7 +51,25 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
           native-image-pr-reports: 'true'
-               
+       
+      - name: Import Secrets
+        id: import-secrets
+        uses: hashicorp/vault-action@v2.7.3
+        with:
+          url: https://vault.elpsykongroo.com:443
+          method: github
+          githubToken: ${{ secrets.VAULT_GITHUB_TOKEN }}
+          secrets: |
+            kv/data/app/test/vault VAULT_TOKEN | VAULT_TOKEN;
+            kv/data/app/test/vault VAULT_URI | VAULT_URI;            
+            kv/data/app/test/vault SECRETS_APP_AUTH_PATH | SECRETS_APP_AUTH_PATH;
+            kv/data/app/test/vault SECRETS_APP_GATEWAY_PATH | SECRETS_APP_GATEWAY_PATH;
+            kv/data/app/test/vault SECRETS_APP_ES_PATH | SECRETS_APP_ES_PATH;
+            kv/data/app/test/vault SECRETS_APP_REDIS_PATH | SECRETS_APP_REDIS_PATH;
+            kv/data/app/test/vault SECRETS_APP_STORAGE_PATH | SECRETS_APP_STORAGE_PATH;
+            kv/data/app/test/vault SECRETS_DATA_ES_PATH | SECRETS_DATA_ES_PATH;
+            kv/data/app/test/vault SECRETS_DATA_REDIS_PATH | SECRETS_DATA_REDIS_PATH
+            
       - uses: getong/elasticsearch-action@v1.2
         with:
           elasticsearch version: '7.17.3'
