@@ -58,7 +58,7 @@ jobs:
         with:
           url: https://vault.elpsykongroo.com:443
           method: github
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          githubToken: ${{ secrets.VAULT_GITHUB_TOKEN }}
           secrets: |
               kv/data/app/test/redis data | SERVICE_CONFIG
  
