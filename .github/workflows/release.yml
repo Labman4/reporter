@@ -56,7 +56,7 @@ jobs:
     secrets: inherit
     with:
       module: elasticsearch
-      version: 0.0.1
+      version: 1.0.0
 #   elasticsearch-native:
 #     needs: elasticsearch
 #     uses: Labman4/workflow/.github/workflows/native-image-elasticsearch.yml@native-image
@@ -71,7 +71,7 @@ jobs:
     secrets: inherit
     with:
       module: storage
-      version: 0.0.1
+      version: 1.0.0
 #   storage-native:
 #     needs: elasticsearch
 #     uses: Labman4/workflow/.github/workflows/native-image-base.yml@native-image
@@ -79,3 +79,10 @@ jobs:
 #     with:
 #       module: storage
 #       version: 0.0.1
+  kafka:
+    needs: gateway
+    uses: Labman4/workflow/.github/workflows/buildpacks.yml@buildpacks
+    secrets: inherit
+    with:
+      module: kafka
+      version: 0.0.1
