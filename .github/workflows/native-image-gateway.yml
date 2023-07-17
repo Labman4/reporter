@@ -182,8 +182,8 @@ jobs:
       module: ${{ inputs.module}}
       env: pre
       
-#   coverage:  
-#     needs: test
-#     uses: Labman4/workflow/.github/workflows/coverage-reporter.yml@coverage
+  coverage:  
+    needs: test
+    uses: Labman4/workflow/.github/workflows/coverage-reporter.yml@coverage
     
   
