@@ -35,13 +35,7 @@ jobs:
 #     - uses: actions/setup-java@v3
 #       with:
 #         distribution: 'temurin' # See 'Supported distributions' for available options
-#         java-version: '17'   
-        
-#     - run: |
-#         echo "path=$(pwd)" >> $GITHUB_ENV
-#         echo "home=$HOME" >> $GITHUB_ENV
-#         java --version
-        
+#         java-version: '17'         
         
 #     - uses: actions/cache@v3
 #       with:
@@ -49,11 +43,8 @@ jobs:
 #         key: setup-graalvm-${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
 #         restore-keys: |
 #           setup-graalvm-${{ runner.os }}-maven-
-          
-#     - run: |
-#         mvn package install -DskipTests
 
-    - uses: graalvm/setup-graalvm@b11d36630f94ed5864e0a680a979b5afde449e9d
+    - uses: graalvm/setup-graalvm@v1
       with:
         version: 'latest'
         java-version: '17'
@@ -74,19 +65,10 @@ jobs:
         image:  ${{ inputs.module }}
         tag: ${{ inputs.version }}
         path: '${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}'
-        builder: 'paketobuildpacks/builder:0.1.303-tiny'
-        env: 'BP_JVM_VERSION=17.0.5 BP_NATIVE_IMAGE=false'
+        builder: 'paketobuildpacks/builder:tiny'
+        env: 'BP_JVM_VERSION=17 BP_NATIVE_IMAGE=false'
         map_env: 'BP_MAVEN_BUILD_ARGUMENTS="-Dmaven.test.skip=true --no-transfer-progress package "'
         volume: ${{ env.home }}
-#     - uses: labman4/buildpacks-action@master
-#       with:
-#         image:  ${{ inputs.module }}
-#         tag: ${{ inputs.version }}
-#         path: '${{ env.path }}/${{ inputs.module }}/${{ inputs.moduleName }}'
-#         builder: 'paketobuildpacks/builder:tiny'
-#         env: 'BP_JVM_VERSION=17 BP_NATIVE_IMAGE=false'
-#         map_env: 'BP_MAVEN_BUILD_ARGUMENTS="-Dmaven.test.skip=true --no-transfer-progress package"'
-#         volume: ${{ env.home }}
     
     - name: Push To hub
       uses: redhat-actions/push-to-registry@v2.7
