@@ -116,7 +116,20 @@ jobs:
     
       - run: | 
          ps -ef |grep ${{ env.pid }}
-          
+         
+      - run: |
+          mvn -P native spring-boot:build-image -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml     
+       
+      - name: Push To harbor
+        uses: redhat-actions/push-to-registry@v2.7
+        continue-on-error: true 
+        with:
+          image: ${{ inputs.module }}
+          registry: registry.elpsykongroo.com/library
+          tags: native
+          username:  ${{ secrets.REGISTRY_PRIVATE_NAME }}
+          password:  ${{ secrets.REGISTRY_PRIVATE_PASS }}
+
       - id: cpr
         uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
         with:
