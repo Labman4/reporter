@@ -118,7 +118,7 @@ jobs:
          ps -ef |grep ${{ env.pid }}
          
       - run: |
-          mvn -P native spring-boot:build-image -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml     
+          mvn -P native spring-boot:build-image  -DskipTests -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml     
        
       - name: Push To harbor
         uses: redhat-actions/push-to-registry@v2.7
