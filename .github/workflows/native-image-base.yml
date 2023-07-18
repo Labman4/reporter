@@ -119,6 +119,18 @@ jobs:
       - run: |
           git status
           
+      - run: |
+          mvn -P native spring-boot:build-image  -DskipTests -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml     
+       
+      - name: Push To quay
+        uses: redhat-actions/push-to-registry@v2.7
+        with:
+          image: ${{ inputs.module }}
+          registry: quay.io/elpsykongroo
+          tags: native
+          username:  ${{ secrets.QUAY_REGISTRY_NAME }}
+          password:  ${{ secrets.QUAY_REGISTRY_PASS }}     
+          
       - id: cpr
         uses: peter-evans/create-pull-request@v5.0.2
         with:
@@ -141,17 +153,17 @@ jobs:
             !${{ env.path }}/**/*.jar
           retention-days: 3  
 
-  pre-build:
-    needs: test
-    uses: Labman4/workflow/.github/workflows/buildpacks-native.yml@buildpacks
-    secrets: inherit
-    with:
-      module: ${{ inputs.module }}
-      moduleName: ${{ inputs.moduleName }}
+#   pre-build:
+#     needs: test
+#     uses: Labman4/workflow/.github/workflows/buildpacks-native.yml@buildpacks
+#     secrets: inherit
+#     with:
+#       module: ${{ inputs.module }}
+#       moduleName: ${{ inputs.moduleName }}
       
     
   deploy:
-    needs: pre-build
+    needs: test
     uses: Labman4/workflow/.github/workflows/deploy.yml@deploy
     with: 
       module: ${{ inputs.module }}
