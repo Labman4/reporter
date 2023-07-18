@@ -123,7 +123,7 @@ jobs:
       - name: Push To quay
         uses: redhat-actions/push-to-registry@v2.7
         with:
-          image: registry.elpsykongroo.com/library/${{ inputs.module }}
+          image: ${{ inputs.module }}
           registry: quay.io/elpsykongroo
           tags: native
           username:  ${{ secrets.QUAY_REGISTRY_NAME }}
@@ -133,7 +133,7 @@ jobs:
         uses: redhat-actions/push-to-registry@v2.7
         continue-on-error: true 
         with:
-          image: registry.elpsykongroo.com/library/${{ inputs.module }}
+          image: ${{ inputs.module }}
           registry: registry.elpsykongroo.com/library
           tags: native
           username:  ${{ secrets.REGISTRY_PRIVATE_NAME }}
