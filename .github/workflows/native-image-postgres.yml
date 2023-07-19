@@ -91,7 +91,7 @@ jobs:
           postgresql version: 15
           postgresql db: auth
           postgresql user: postgres
-          postgresql password: elpsy
+          postgresql password: ${{ secrets.PL_PASSWORD}}
           
 #       - run: |
 #           mvn -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml                
@@ -129,7 +129,7 @@ jobs:
 #           path: '**/target/surefire-reports/TEST-*.xml'
 
       - run: | 
-         sleep 60 
+         sleep 15
          ps -ef |grep ${{ env.pid }}
          
       - run: |
