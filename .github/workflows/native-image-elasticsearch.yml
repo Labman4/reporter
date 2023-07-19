@@ -2,9 +2,6 @@ name: Native image (elasticsearch)
 on:
   workflow_call:
     inputs:
-      env:
-        required: false
-        type: string
       module:
         required: true
         type: string
@@ -35,12 +32,7 @@ jobs:
           key: docker-${{ runner.os }}-${{ github.workflow_ref }}
           
       - uses: actions/checkout@v3.5.3
-                        
-      - run: |
-          echo "path=$(pwd)" >> $GITHUB_ENV
-          echo "home=$HOME" >> $GITHUB_ENV
-          java --version
-     
+                  
       - uses: graalvm/setup-graalvm@v1
         with:
           version: 'latest'
@@ -51,7 +43,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
           native-image-pr-reports: 'true'
-       
+               
       - name: Import Secrets
         id: import-secrets
         uses: hashicorp/vault-action@v2.7.3
@@ -70,6 +62,13 @@ jobs:
             kv/data/app/test/vault SECRETS_DATA_ES_PATH | SECRETS_DATA_ES_PATH;
             kv/data/app/test/vault SECRETS_DATA_REDIS_PATH | SECRETS_DATA_REDIS_PATH
             
+      - run: |
+          echo "path=$(pwd)" >> $GITHUB_ENV
+          echo "home=$HOME" >> $GITHUB_ENV
+          echo "VAULT_URI=${{ env.VAULT_URI }}"  >> $GITHUB_ENV
+          echo "VAULT_TOKEN=${{ env.VAULT_TOKEN }}"  >> $GITHUB_ENV
+          java --version
+      
       - uses: getong/elasticsearch-action@v1.2
         with:
           elasticsearch version: '7.17.3'
@@ -108,7 +107,6 @@ jobs:
           nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ env.modulePath }}/src/main/resources/META-INF/native-image/ -jar  ${{ env.modulePath }}/target/${{ inputs.module }}-${{ inputs.version }}.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
           #echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
         continue-on-error: true 
-  
       - run: |
           git status
           
@@ -116,10 +114,9 @@ jobs:
 #         with:
 #           name: test
 #           path: '**/target/surefire-reports/TEST-*.xml'
-  
       - run: | 
-          ps -ef |grep ${{ env.pid }}
-          
+         ps -ef |grep ${{ env.pid }}
+         
       - run: |
           #echo "::stop-commands::${{ env.stopMarker}}"
           sleep 15
@@ -133,7 +130,7 @@ jobs:
         
       - run: |
           git status
-      
+          
       - run: |
           mvn -P native spring-boot:build-image  -DskipTests -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml     
        
@@ -147,11 +144,10 @@ jobs:
           password:  ${{ secrets.QUAY_REGISTRY_PASS }}     
           
       - id: cpr
-        uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
+        uses: peter-evans/create-pull-request@v5.0.2
         with:
           base: native-image
-        continue-on-error: true 
-
+      
       - run: |
           git status
           
@@ -161,7 +157,7 @@ jobs:
 #       - run: |
 #           git status
           
-#       - uses: actions/upload-artifact@v3.1.1
+#       - uses: actions/upload-artifact@v3.1.2
 #         with:
 #           name: package
 #           path: |
@@ -179,7 +175,7 @@ jobs:
       
     
 #   deploy:
-#     needs: pre-build
+#     needs: test
 #     uses: Labman4/workflow/.github/workflows/deploy.yml@deploy
 #     with: 
 #       module: ${{ inputs.module }}
