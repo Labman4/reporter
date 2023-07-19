@@ -1,10 +1,7 @@
-name: Native image (base)
+name: Native image (redis)
 on:
   workflow_call:
     inputs:
-      env:
-        required: false
-        type: string
       module:
         required: true
         type: string
@@ -64,6 +61,7 @@ jobs:
             kv/data/app/test/vault SECRETS_APP_STORAGE_PATH | SECRETS_APP_STORAGE_PATH;
             kv/data/app/test/vault SECRETS_DATA_ES_PATH | SECRETS_DATA_ES_PATH;
             kv/data/app/test/vault SECRETS_DATA_REDIS_PATH | SECRETS_DATA_REDIS_PATH
+            
       - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
           echo "home=$HOME" >> $GITHUB_ENV
@@ -88,12 +86,18 @@ jobs:
 #           git status
       
 #       - uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
-      
-      - run: |
+
+      - if: inputs.moduleName != 0
+        run: |
           nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ env.modulePath }}/src/main/resources/META-INF/native-image/ -jar  ${{ env.modulePath }}/target/${{ inputs.moduleName }}-${{ inputs.version }}.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
           #echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
         continue-on-error: true 
   
+      - if: inputs.moduleName == 0
+        run: |
+          nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ env.modulePath }}/src/main/resources/META-INF/native-image/ -jar  ${{ env.modulePath }}/target/${{ inputs.module }}-${{ inputs.version }}.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
+          #echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
+        continue-on-error: true 
       - run: |
           git status
           
@@ -101,7 +105,9 @@ jobs:
 #         with:
 #           name: test
 #           path: '**/target/surefire-reports/TEST-*.xml'
-  
+      - run: | 
+         ps -ef |grep ${{ env.pid }}
+         
       - run: |
           #echo "::stop-commands::${{ env.stopMarker}}"
           sleep 15
@@ -116,6 +122,18 @@ jobs:
       - run: |
           git status
           
+      - run: |
+          mvn -P native spring-boot:build-image  -DskipTests -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml     
+       
+      - name: Push To quay
+        uses: redhat-actions/push-to-registry@v2.7
+        with:
+          image: ${{ inputs.module }}
+          registry: quay.io/elpsykongroo
+          tags: native
+          username:  ${{ secrets.QUAY_REGISTRY_NAME }}
+          password:  ${{ secrets.QUAY_REGISTRY_PASS }}     
+          
       - id: cpr
         uses: peter-evans/create-pull-request@v5.0.2
         with:
@@ -124,34 +142,36 @@ jobs:
       - run: |
           git status
           
-      - run: |
-          mvn -P native package -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml 
+#       - run: |
+#           mvn -P native package -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml 
         
-      - run: |
-          git status
+#       - run: |
+#           git status
           
-      - uses: actions/upload-artifact@v3.1.2
-        with:
-          name: package
-          path: |
-            ${{ env.path }}
-            !${{ env.path }}/**/*.jar
-          retention-days: 3  
+#       - uses: actions/upload-artifact@v3.1.2
+#         with:
+#           name: package
+#           path: |
+#             ${{ env.path }}
+#             !${{ env.path }}/**/*.jar
+#           retention-days: 3  
 
-  pre-build:
-    needs: test
-    uses: Labman4/workflow/.github/workflows/buildpacks-native.yml@buildpacks
-    secrets: inherit
-    with:
-      module: ${{ inputs.module }}
-      moduleName: ${{ inputs.moduleName }}
+#   pre-build:
+#     needs: test
+#     uses: Labman4/workflow/.github/workflows/buildpacks-native.yml@buildpacks
+#     secrets: inherit
+#     with:
+#       module: ${{ inputs.module }}
+#       moduleName: ${{ inputs.moduleName }}
       
     
-  deploy:
-    needs: pre-build
-    uses: Labman4/workflow/.github/workflows/deploy.yml@deploy
-    with: 
-      module: ${{ inputs.module }}
+#   deploy:
+#     needs: test
+#     uses: Labman4/workflow/.github/workflows/deploy.yml@deploy
+#     with: 
+#       module: ${{ inputs.module }}
       
+    
+  
     
   
