@@ -61,13 +61,23 @@ jobs:
             kv/data/app/test/vault SECRETS_APP_STORAGE_PATH | SECRETS_APP_STORAGE_PATH;
             kv/data/app/test/vault SECRETS_DATA_ES_PATH | SECRETS_DATA_ES_PATH;
             kv/data/app/test/vault SECRETS_DATA_REDIS_PATH | SECRETS_DATA_REDIS_PATH
+            
       - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
           echo "home=$HOME" >> $GITHUB_ENV
           echo "VAULT_URI=${{ env.VAULT_URI }}"  >> $GITHUB_ENV
           echo "VAULT_TOKEN=${{ env.VAULT_TOKEN }}"  >> $GITHUB_ENV
           java --version
-          
+       
+      - name: Setup PostgreSQL
+        uses: Harmon758/postgresql-action@v1.0.0
+        with:
+          # Version of PostgreSQL to use
+          postgresql version: 15
+          postgresql db: auth
+          postgresql user: postgres
+          postgresql password: elpsy
+
       - run: | 
           mvn package install -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml    
           
@@ -139,19 +149,19 @@ jobs:
       - run: |
           git status
           
-      - run: |
-          mvn -P native package -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml 
+#       - run: |
+#           mvn -P native package -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml 
         
-      - run: |
-          git status
+#       - run: |
+#           git status
           
-      - uses: actions/upload-artifact@v3.1.2
-        with:
-          name: package
-          path: |
-            ${{ env.path }}
-            !${{ env.path }}/**/*.jar
-          retention-days: 3  
+#       - uses: actions/upload-artifact@v3.1.2
+#         with:
+#           name: package
+#           path: |
+#             ${{ env.path }}
+#             !${{ env.path }}/**/*.jar
+#           retention-days: 3  
 
 #   pre-build:
 #     needs: test
@@ -162,11 +172,11 @@ jobs:
 #       moduleName: ${{ inputs.moduleName }}
       
     
-  deploy:
-    needs: test
-    uses: Labman4/workflow/.github/workflows/deploy.yml@deploy
-    with: 
-      module: ${{ inputs.module }}
+#   deploy:
+#     needs: test
+#     uses: Labman4/workflow/.github/workflows/deploy.yml@deploy
+#     with: 
+#       module: ${{ inputs.module }}
       
     
   
