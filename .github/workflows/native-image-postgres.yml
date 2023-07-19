@@ -80,6 +80,18 @@ jobs:
           
       - run: | 
           mvn package install -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml    
+    
+      - run: |
+          mvn spring-boot:build-image  -DskipTests -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml         
+        
+      - name: Push To quay
+        uses: redhat-actions/push-to-registry@v2.7
+        with:
+          image: ${{ inputs.module }}
+          registry: quay.io/elpsykongroo
+          tags: ${{ inputs.version }}
+          username:  ${{ secrets.QUAY_REGISTRY_NAME }}
+          password:  ${{ secrets.QUAY_REGISTRY_PASS }} 
           
 #       - run: |
 #           mvn -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml                
