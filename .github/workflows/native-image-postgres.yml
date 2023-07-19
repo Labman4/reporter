@@ -107,6 +107,7 @@ jobs:
           nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ env.modulePath }}/src/main/resources/META-INF/native-image/ -jar  ${{ env.modulePath }}/target/${{ inputs.module }}-${{ inputs.version }}.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
           #echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
         continue-on-error: true 
+        
       - run: |
           git status
           
@@ -115,6 +116,9 @@ jobs:
 #           name: test
 #           path: '**/target/surefire-reports/TEST-*.xml'
   
+      - run: | 
+         ps -ef |grep ${{ env.pid }}
+         
       - run: |
           #echo "::stop-commands::${{ env.stopMarker}}"
           sleep 15
