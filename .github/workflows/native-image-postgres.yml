@@ -68,15 +68,6 @@ jobs:
           echo "VAULT_URI=${{ env.VAULT_URI }}"  >> $GITHUB_ENV
           echo "VAULT_TOKEN=${{ env.VAULT_TOKEN }}"  >> $GITHUB_ENV
           java --version
-        
-      - name: Setup PostgreSQL
-        uses: Harmon758/postgresql-action@v1.0.0
-        with:
-          # Version of PostgreSQL to use
-          postgresql version: 15
-          postgresql db: auth
-          postgresql user: postgres
-          postgresql password: elpsy
           
       - run: | 
           mvn package install -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml    
@@ -92,6 +83,15 @@ jobs:
           tags: ${{ inputs.version }}
           username:  ${{ secrets.QUAY_REGISTRY_NAME }}
           password:  ${{ secrets.QUAY_REGISTRY_PASS }} 
+    
+      - name: Setup PostgreSQL
+        uses: Harmon758/postgresql-action@v1.0.0
+        with:
+          # Version of PostgreSQL to use
+          postgresql version: 15
+          postgresql db: auth
+          postgresql user: postgres
+          postgresql password: elpsy
           
 #       - run: |
 #           mvn -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml                
