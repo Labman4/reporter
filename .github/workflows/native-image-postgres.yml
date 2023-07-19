@@ -132,8 +132,6 @@ jobs:
          ps -ef |grep ${{ env.pid }}
          
       - run: |
-          #echo "::stop-commands::${{ env.stopMarker}}"
-          sleep 15
           kill -s 15 ${{ env.pid }}
           sleep 15
           #curl -X POST http://localhost:8080/actuator/shutdown
