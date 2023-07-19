@@ -94,7 +94,7 @@ jobs:
 #       - run: |
 #           git status
       
-#       - uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
+#       - uses: peter-evans/create-pull-request@v5.0.2
 
       - if: inputs.moduleName != 0
         run: |
@@ -114,7 +114,9 @@ jobs:
 #         with:
 #           name: test
 #           path: '**/target/surefire-reports/TEST-*.xml'
+
       - run: | 
+         sleep 15 
          ps -ef |grep ${{ env.pid }}
          
       - run: |
