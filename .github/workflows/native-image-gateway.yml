@@ -114,7 +114,8 @@ jobs:
   
       - run: | 
          ps -ef |grep ${{ env.pid }}
-         
+        continue-on-error: true 
+ 
       - run: |
           #echo "::stop-commands::${{ env.stopMarker }}"
           sleep 15
@@ -128,7 +129,8 @@ jobs:
     
       - run: | 
          ps -ef |grep ${{ env.pid }}
-         
+        continue-on-error: true 
+
       - run: |
           mvn -P native spring-boot:build-image  -DskipTests -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml     
        
