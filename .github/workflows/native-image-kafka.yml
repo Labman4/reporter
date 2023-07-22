@@ -11,6 +11,9 @@ on:
       version:
         required: true
         type: string
+      native:
+        required: false
+        type: boolean
 
 jobs:
   cache: 
@@ -139,11 +142,13 @@ jobs:
         
       - run: |
           git status
-          
-      - run: |
+        
+      - if: inputs.native
+        run: |
           mvn -P native spring-boot:build-image  -DskipTests -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml     
        
-      - name: Push To quay
+      - if: inputs.native
+        name: Push To quay
         uses: redhat-actions/push-to-registry@v2.7
         with:
           image: ${{ inputs.module }}
