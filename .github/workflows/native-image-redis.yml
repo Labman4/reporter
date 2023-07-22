@@ -11,6 +11,9 @@ on:
       version:
         required: true
         type: string
+      native:
+        required: false
+        type: boolean
 
 jobs:
   cache: 
@@ -83,7 +86,17 @@ jobs:
           tags: ${{ inputs.version }}
           username:  ${{ secrets.QUAY_REGISTRY_NAME }}
           password:  ${{ secrets.QUAY_REGISTRY_PASS }} 
-          
+    
+      - name: install redis cluster service
+        uses: pfapi/redis-cluster-service@v1
+        
+      - name: start redis cluster
+        run: sudo systemctl start redis-cluster
+
+      - name: check cluster
+        run: redis-cli --cluster check 127.0.0.1:7000
+        
+        
 #       - run: |
 #           mvn -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml                
        
@@ -133,11 +146,13 @@ jobs:
         
       - run: |
           git status
-          
-      - run: |
+      
+      - if: inputs.native
+        run: |
           mvn -P native spring-boot:build-image  -DskipTests -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml     
        
-      - name: Push To quay
+      - if: inputs.native
+        name: Push To quay
         uses: redhat-actions/push-to-registry@v2.7
         with:
           image: ${{ inputs.module }}
