@@ -88,8 +88,8 @@ jobs:
           username:  ${{ secrets.QUAY_REGISTRY_NAME }}
           password:  ${{ secrets.QUAY_REGISTRY_PASS }} 
      
-#       - name: Setup Bitnami Kafka
-#         uses: bbcCorp/kafka-actions@v1
+      - name: Setup Bitnami Kafka
+        uses: bbcCorp/kafka-actions@v1
         
 #       - run: |
 #           mvn -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml                
@@ -114,10 +114,11 @@ jobs:
   
       - if: inputs.moduleName == 0
         run: |
-          java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ env.modulePath }}/src/main/resources/META-INF/native-image/ -jar  ${{ env.modulePath }}/target/${{ inputs.module }}-${{ inputs.version }}.jar  
-          #nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ env.modulePath }}/src/main/resources/META-INF/native-image/ -jar  ${{ env.modulePath }}/target/${{ inputs.module }}-${{ inputs.version }}.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
+          #java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ env.modulePath }}/src/main/resources/META-INF/native-image/ -jar  ${{ env.modulePath }}/target/${{ inputs.module }}-${{ inputs.version }}.jar  
+          nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ env.modulePath }}/src/main/resources/META-INF/native-image/ -jar  ${{ env.modulePath }}/target/${{ inputs.module }}-${{ inputs.version }}.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
           #echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
         continue-on-error: true 
+        
       - run: |
           git status
           
