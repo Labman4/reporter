@@ -88,8 +88,8 @@ jobs:
           username:  ${{ secrets.QUAY_REGISTRY_NAME }}
           password:  ${{ secrets.QUAY_REGISTRY_PASS }} 
      
-      - name: Setup Bitnami Kafka
-        uses: bbcCorp/kafka-actions@v1
+#       - name: Setup Bitnami Kafka
+#         uses: bbcCorp/kafka-actions@v1
         
 #       - run: |
 #           mvn -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml                
