@@ -65,6 +65,7 @@ jobs:
       - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
           echo "home=$HOME" >> $GITHUB_ENV
+          echo "ENV=test" >> $GITHUB_ENV
           echo "VAULT_URI=${{ env.VAULT_URI }}"  >> $GITHUB_ENV
           echo "VAULT_TOKEN=${{ env.VAULT_TOKEN }}"  >> $GITHUB_ENV
           java --version
@@ -83,7 +84,10 @@ jobs:
           tags: ${{ inputs.version }}
           username:  ${{ secrets.QUAY_REGISTRY_NAME }}
           password:  ${{ secrets.QUAY_REGISTRY_PASS }} 
-          
+     
+      - name: Setup Bitnami Kafka
+        uses: bbcCorp/kafka-actions@v1
+        
 #       - run: |
 #           mvn -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml                
        
@@ -97,7 +101,7 @@ jobs:
 #       - run: |
 #           git status
       
-#       - uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
+#       - uses: peter-evans/create-pull-request@v5.0.2
 
       - if: inputs.moduleName != 0
         run: |
@@ -117,12 +121,13 @@ jobs:
 #         with:
 #           name: test
 #           path: '**/target/surefire-reports/TEST-*.xml'
+
       - run: | 
+         sleep 15
          ps -ef |grep ${{ env.pid }}
          
       - run: |
           #echo "::stop-commands::${{ env.stopMarker}}"
-          sleep 15
           kill -s 15 ${{ env.pid }}
           sleep 15
           #curl -X POST http://localhost:8080/actuator/shutdown
@@ -130,6 +135,7 @@ jobs:
 
       - run: | 
          ps -ef |grep ${{ env.pid }}
+        continue-on-error: true 
         
       - run: |
           git status
