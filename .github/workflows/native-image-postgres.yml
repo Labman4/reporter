@@ -55,12 +55,6 @@ jobs:
             kv/data/app/test/vault VAULT_TOKEN | VAULT_TOKEN;
             kv/data/app/test/vault VAULT_URI | VAULT_URI;            
             kv/data/app/test/vault SECRETS_APP_AUTH_PATH | SECRETS_APP_AUTH_PATH;
-            kv/data/app/test/vault SECRETS_APP_GATEWAY_PATH | SECRETS_APP_GATEWAY_PATH;
-            kv/data/app/test/vault SECRETS_APP_ES_PATH | SECRETS_APP_ES_PATH;
-            kv/data/app/test/vault SECRETS_APP_REDIS_PATH | SECRETS_APP_REDIS_PATH;
-            kv/data/app/test/vault SECRETS_APP_STORAGE_PATH | SECRETS_APP_STORAGE_PATH;
-            kv/data/app/test/vault SECRETS_DATA_ES_PATH | SECRETS_DATA_ES_PATH;
-            kv/data/app/test/vault SECRETS_DATA_REDIS_PATH | SECRETS_DATA_REDIS_PATH
             
       - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
