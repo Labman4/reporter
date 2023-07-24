@@ -71,7 +71,7 @@ jobs:
           mvn clean package install -DskipTests  
         
       - run: |
-          mvn spring-boot:build-image  -DskipTests -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml         
+          mvn spring-boot:build-image  -DskipTests
         
       - name: Push To quay
         uses: redhat-actions/push-to-registry@v2.7
