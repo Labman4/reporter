@@ -110,8 +110,8 @@ jobs:
   
       - if: inputs.moduleName == 0
         run: |
-          java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ env.modulePath }}/src/main/resources/META-INF/native-image/ -jar  ${{ env.modulePath }}/target/${{ inputs.module }}-${{ inputs.version }}.jar 
-          #nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ env.modulePath }}/src/main/resources/META-INF/native-image/ -jar  ${{ env.modulePath }}/target/${{ inputs.module }}-${{ inputs.version }}.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
+          #java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ env.modulePath }}/src/main/resources/META-INF/native-image/ -jar  ${{ env.modulePath }}/target/${{ inputs.module }}-${{ inputs.version }}.jar 
+          nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ env.modulePath }}/src/main/resources/META-INF/native-image/ -jar  ${{ env.modulePath }}/target/${{ inputs.module }}-${{ inputs.version }}.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
           #echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
         continue-on-error: true 
       - run: |
@@ -123,7 +123,8 @@ jobs:
 #           path: '**/target/surefire-reports/TEST-*.xml'
       - run: | 
          ps -ef |grep ${{ env.pid }}
-         
+        continue-on-error: true 
+
       - run: |
           #echo "::stop-commands::${{ env.stopMarker}}"
           sleep 15
@@ -134,7 +135,8 @@ jobs:
 
       - run: | 
          ps -ef |grep ${{ env.pid }}
-        
+        continue-on-error: true 
+
       - run: |
           git status
         
