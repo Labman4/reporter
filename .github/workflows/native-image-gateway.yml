@@ -61,7 +61,7 @@ jobs:
           java --version
                  
       - run: | 
-          mvn package install -DskipTests
+          mvn clean package install -DskipTests
           
       - run: |
           mvn spring-boot:build-image  -DskipTests -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml         
