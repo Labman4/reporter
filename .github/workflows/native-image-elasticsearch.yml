@@ -74,7 +74,7 @@ jobs:
           discovery type: 'single-node'
           
       - run: | 
-          mvn package install -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml    
+          mvn clean package install -DskipTests   
           
       - run: |
           mvn spring-boot:build-image  -DskipTests -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml         
