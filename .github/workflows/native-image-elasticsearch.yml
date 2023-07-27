@@ -41,8 +41,8 @@ jobs:
           cache: maven
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          native-image-job-reports: 'true'
-          native-image-pr-reports: 'true'
+#           native-image-job-reports: 'true'
+#           native-image-pr-reports: 'true'
                
       - name: Import Secrets
         id: import-secrets
