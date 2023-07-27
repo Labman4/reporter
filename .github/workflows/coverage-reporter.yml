@@ -14,8 +14,8 @@
        uses: actions/download-artifact@v3
        with:
          name: test
-         workflow: ${{ github.event.workflow.id }}
-         run_id: ${{ github.event.workflow_run.id }}
+#          workflow: ${{ github.event.workflow.id }}
+#          run_id: ${{ github.event.workflow_run.id }}
          
      - uses: mikepenz/action-junit-report@v3
        if: always() # always run even if the previous step fails
