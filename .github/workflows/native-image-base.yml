@@ -76,7 +76,7 @@ jobs:
         with:
           image: ${{ inputs.module }}
           registry: quay.io/elpsykongroo
-          tags: ${{GITHUB_HEAD_REF}}
+          tags: ${{GITHUB_REF_NAME}}
           username:  ${{ secrets.QUAY_REGISTRY_NAME }}
           password:  ${{ secrets.QUAY_REGISTRY_PASS }} 
           
@@ -143,7 +143,7 @@ jobs:
         with:
           image: ${{ inputs.module }}
           registry: quay.io/elpsykongroo
-          tags: ${{GITHUB_HEAD_REF}}
+          tags: ${{GITHUB_REF_NAME}}
           username:  ${{ secrets.QUAY_REGISTRY_NAME }}
           password:  ${{ secrets.QUAY_REGISTRY_PASS }}     
           
