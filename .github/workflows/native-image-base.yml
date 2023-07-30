@@ -21,7 +21,6 @@ jobs:
     
   test:
     needs: cache
-    environment: native
     runs-on: [ubuntu-latest]
     steps:
       - if: inputs.moduleName == 0
