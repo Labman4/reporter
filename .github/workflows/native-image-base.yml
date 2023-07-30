@@ -21,7 +21,7 @@ jobs:
     
   test:
     needs: cache
-    environment: native-image
+    environment: native
     runs-on: [ubuntu-latest]
     steps:
       - if: inputs.moduleName == 0
@@ -77,7 +77,7 @@ jobs:
         with:
           image: ${{ inputs.module }}
           registry: quay.io/elpsykongroo
-          tags: ${{ inputs.version }}
+          tags: ${{GITHUB_HEAD_REF}}
           username:  ${{ secrets.QUAY_REGISTRY_NAME }}
           password:  ${{ secrets.QUAY_REGISTRY_PASS }} 
           
@@ -144,7 +144,7 @@ jobs:
         with:
           image: ${{ inputs.module }}
           registry: quay.io/elpsykongroo
-          tags: native
+          tags: ${{GITHUB_HEAD_REF}}
           username:  ${{ secrets.QUAY_REGISTRY_NAME }}
           password:  ${{ secrets.QUAY_REGISTRY_PASS }}     
           
