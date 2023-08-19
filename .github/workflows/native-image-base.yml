@@ -149,8 +149,6 @@ jobs:
           
       - id: cpr
         uses: peter-evans/create-pull-request@v5.0.2
-        with:
-          base: native-image
       
       - run: |
           git status
