@@ -148,9 +148,7 @@ jobs:
 #           password:  ${{ secrets.REGISTRY_PRIVATE_PASS }}
 
       - id: cpr
-        uses: peter-evans/create-pull-request@2b011faafdcbc9ceb11414d64d0573f37c774b04
-        with:
-          base: native-image
+        uses: peter-evans/create-pull-request@v5.0.2
         continue-on-error: true 
         
       - run: |
