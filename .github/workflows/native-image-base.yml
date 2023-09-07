@@ -72,12 +72,6 @@ jobs:
           mvn spring-boot:build-image  -DskipTests -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml  
           
       - run: |
-          podman images
-          
-      - run: |
-          docker images
-          
-      - run: |
           docker tag ${{inputs.module}}:${{inputs.version}} ${{inputs.module}}:${{ github.event.inputs.ref || github.head_ref || github.ref_name }}
         continue-on-error: true 
   
@@ -102,6 +96,16 @@ jobs:
           tags: ${{github.sha}}
           username:  ${{ secrets.QUAY_REGISTRY_NAME }}
           password:  ${{ secrets.QUAY_REGISTRY_PASS }} 
+
+      - if:  ${{ github.ref_name }} == main
+        uses: redhat-actions/push-to-registry@v2.7
+        with:
+          image: ${{ inputs.module }}
+          registry: quay.io/elpsykongroo
+          tags: ${{input.version }}
+          username:  ${{ secrets.QUAY_REGISTRY_NAME }}
+          password:  ${{ secrets.QUAY_REGISTRY_PASS }} 
+          
 #       - run: |
 #           mvn -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml                
        
