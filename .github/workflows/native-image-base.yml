@@ -56,7 +56,7 @@ jobs:
           secrets: |
             kv/data/app/test/vault VAULT_TOKEN | VAULT_TOKEN;
             kv/data/app/test/vault VAULT_URI | VAULT_URI;            
-            kv/data/app/test/vault SECRETS_APP_STORAGE_PATH | SECRETS_APP_STORAGE_PATH;
+            kv/data/app/test/vault SECRETS_APP_PATH | SECRETS_APP_PATH;
             
       - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
@@ -97,7 +97,7 @@ jobs:
           username:  ${{ secrets.QUAY_REGISTRY_NAME }}
           password:  ${{ secrets.QUAY_REGISTRY_PASS }} 
 
-      - if:  ${{ github.ref_name }} == "main"
+      - if:  github.ref_name == "main"
         uses: redhat-actions/push-to-registry@v2.7
         with:
           image: ${{ inputs.module }}
