@@ -79,7 +79,15 @@ jobs:
           tags: ${{ inputs.version }}
           username:  ${{ secrets.QUAY_REGISTRY_NAME }}
           password:  ${{ secrets.QUAY_REGISTRY_PASS }} 
-          
+
+      - name: Push To quay ref
+        uses: redhat-actions/push-to-registry@v2.7
+        with:
+          image: ${{ inputs.module }}
+          registry: quay.io/elpsykongroo
+          tags: ${{github.sha}}
+          username:  ${{ secrets.QUAY_REGISTRY_NAME }}
+          password:  ${{ secrets.QUAY_REGISTRY_PASS }} 
 #       - run: |
 #           mvn -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml                
        
