@@ -14,6 +14,9 @@ on:
       native:
         required: false
         type: boolean
+      secretPath:
+        required: true
+        type: string
 
 jobs:
   cache: 
@@ -56,13 +59,13 @@ jobs:
           secrets: |
             kv/data/app/test/vault VAULT_TOKEN | VAULT_TOKEN;
             kv/data/app/test/vault VAULT_URI | VAULT_URI;            
-            kv/data/app/test/vault SECRETS_APP_PATH | SECRETS_APP_PATH;
             
       - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
           echo "home=$HOME" >> $GITHUB_ENV
           echo "VAULT_URI=${{ env.VAULT_URI }}"  >> $GITHUB_ENV
           echo "VAULT_TOKEN=${{ env.VAULT_TOKEN }}"  >> $GITHUB_ENV
+          echo "SECRETS_APP_PATH=${{ inputs.secretPath }}"  >> $GITHUB_ENV
           java --version
           
       - run: | 
