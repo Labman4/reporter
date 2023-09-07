@@ -11,6 +11,9 @@ on:
       version:
         required: true
         type: string
+      secretPath:
+        required: true
+        type: string
 
 jobs:
   cache: 
@@ -54,14 +57,13 @@ jobs:
           secrets: |
             kv/data/app/test/vault VAULT_TOKEN | VAULT_TOKEN;
             kv/data/app/test/vault VAULT_URI | VAULT_URI;            
-            kv/data/app/test/vault SECRETS_APP_ES_PATH | SECRETS_APP_ES_PATH;
-            kv/data/app/test/vault SECRETS_DATA_ES_PATH | SECRETS_DATA_ES_PATH;
             
       - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
           echo "home=$HOME" >> $GITHUB_ENV
           echo "VAULT_URI=${{ env.VAULT_URI }}"  >> $GITHUB_ENV
           echo "VAULT_TOKEN=${{ env.VAULT_TOKEN }}"  >> $GITHUB_ENV
+          echo "SECRETS_APP_PATH=${{ inputs.secretPath }}"  >> $GITHUB_ENV
           java --version
       
       - uses: getong/elasticsearch-action@v1.2
@@ -79,12 +81,38 @@ jobs:
       - run: |
           mvn spring-boot:build-image  -DskipTests -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml         
         
+      - run: |
+          docker tag ${{inputs.module}}:${{inputs.version}} ${{inputs.module}}:${{ github.event.inputs.ref || github.head_ref || github.ref_name }}
+        continue-on-error: true 
+  
       - name: Push To quay
         uses: redhat-actions/push-to-registry@v2.7
         with:
           image: ${{ inputs.module }}
           registry: quay.io/elpsykongroo
-          tags: ${{ inputs.version }}
+          tags: ${{ github.ref_name	}}
+          username:  ${{ secrets.QUAY_REGISTRY_NAME }}
+          password:  ${{ secrets.QUAY_REGISTRY_PASS }} 
+        continue-on-error: true 
+      
+      - run: |
+          docker tag ${{inputs.module}}:${{inputs.version}} ${{inputs.module}}:${{github.sha}}
+          
+      - name: Push To quay ref
+        uses: redhat-actions/push-to-registry@v2.7
+        with:
+          image: ${{ inputs.module }}
+          registry: quay.io/elpsykongroo
+          tags: ${{github.sha}}
+          username:  ${{ secrets.QUAY_REGISTRY_NAME }}
+          password:  ${{ secrets.QUAY_REGISTRY_PASS }} 
+
+      - if:  ${{ github.ref_name == 'main' }}
+        uses: redhat-actions/push-to-registry@v2.7
+        with:
+          image: ${{ inputs.module }}
+          registry: quay.io/elpsykongroo
+          tags: ${{inputs.version }}
           username:  ${{ secrets.QUAY_REGISTRY_NAME }}
           password:  ${{ secrets.QUAY_REGISTRY_PASS }} 
           
@@ -141,14 +169,41 @@ jobs:
       - run: |
           mvn -P native spring-boot:build-image  -DskipTests -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml     
        
-      - name: Push To quay
+      - run: |
+          docker tag ${{inputs.module}}:native ${{inputs.module}}:${{ github.event.inputs.ref || github.head_ref || github.ref_name }}-native
+        continue-on-error: true 
+        
+      - run: |
+          docker tag ${{inputs.module}}:native ${{inputs.module}}:${{ github.sha }}-native
+        continue-on-error: true 
+        
+      - if: inputs.native
+        name: Push To quay
         uses: redhat-actions/push-to-registry@v2.7
         with:
           image: ${{ inputs.module }}
           registry: quay.io/elpsykongroo
-          tags: native
+          tags: ${{github.ref_name }}-native
           username:  ${{ secrets.QUAY_REGISTRY_NAME }}
           password:  ${{ secrets.QUAY_REGISTRY_PASS }}     
+          
+      - if: inputs.native
+        uses: redhat-actions/push-to-registry@v2.7
+        with:
+          image: ${{ inputs.module }}
+          registry: quay.io/elpsykongroo
+          tags: ${{ github.sha }}-native
+          username:  ${{ secrets.QUAY_REGISTRY_NAME }}
+          password:  ${{ secrets.QUAY_REGISTRY_PASS }}     
+
+      - if: ${{inputs.native  && github.ref_name == 'main' }}
+        uses: redhat-actions/push-to-registry@v2.7
+        with:
+          image: ${{ inputs.module }}
+          registry: quay.io/elpsykongroo
+          tags: ${{ inputs.version }}-native
+          username:  ${{ secrets.QUAY_REGISTRY_NAME }}
+          password:  ${{ secrets.QUAY_REGISTRY_PASS }} 
           
       - id: cpr
         uses: peter-evans/create-pull-request@v5.0.2
