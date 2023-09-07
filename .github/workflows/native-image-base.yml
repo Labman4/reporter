@@ -83,7 +83,7 @@ jobs:
         with:
           image: ${{ inputs.module }}
           registry: quay.io/elpsykongroo
-          tags: ${{ github.ref_name	 }}
+          tags: ${{ github.ref_name	}}
           username:  ${{ secrets.QUAY_REGISTRY_NAME }}
           password:  ${{ secrets.QUAY_REGISTRY_PASS }} 
         continue-on-error: true 
@@ -164,17 +164,43 @@ jobs:
         
       - if: inputs.native
         run: |
-          mvn -P native spring-boot:build-image  -DskipTests -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml     
-       
+          mvn -P native spring-boot:build-image  -DskipTests -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml
+          
+      - run: |
+          docker tag ${{inputs.module}}:native ${{inputs.module}}:${{ github.event.inputs.ref || github.head_ref || github.ref_name }}-native
+        continue-on-error: true 
+        
+      - run: |
+          docker tag ${{inputs.module}}:native ${{inputs.module}}:${{ github.sha }}-native
+        continue-on-error: true 
+        
       - if: inputs.native
         name: Push To quay
         uses: redhat-actions/push-to-registry@v2.7
         with:
           image: ${{ inputs.module }}
           registry: quay.io/elpsykongroo
-          tags: native
+          tags: ${{github.ref_name }}-native
           username:  ${{ secrets.QUAY_REGISTRY_NAME }}
           password:  ${{ secrets.QUAY_REGISTRY_PASS }}     
+          
+      - if: inputs.native
+        uses: redhat-actions/push-to-registry@v2.7
+        with:
+          image: ${{ inputs.module }}
+          registry: quay.io/elpsykongroo
+          tags: ${{ github.sha }}-native
+          username:  ${{ secrets.QUAY_REGISTRY_NAME }}
+          password:  ${{ secrets.QUAY_REGISTRY_PASS }}     
+
+      - if: ${{inputs.native  && github.ref_name == 'main' }}
+        uses: redhat-actions/push-to-registry@v2.7
+        with:
+          image: ${{ inputs.module }}
+          registry: quay.io/elpsykongroo
+          tags: ${{ inputs.version }}-native
+          username:  ${{ secrets.QUAY_REGISTRY_NAME }}
+          password:  ${{ secrets.QUAY_REGISTRY_PASS }} 
           
       - id: cpr
         uses: peter-evans/create-pull-request@v5.0.2
