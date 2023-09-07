@@ -57,6 +57,7 @@ jobs:
     with:
       module: elasticsearch
       version: 1.0.0
+      secretPath: kv/app/native/es
 #   elasticsearch-native:
 #     needs: elasticsearch
 #     uses: Labman4/workflow/.github/workflows/native-image-elasticsearch.yml@native-image
@@ -73,6 +74,7 @@ jobs:
       module: storage
       version: 1.0.0
       native: false
+      secretPath: kv/app/native/storage
       
   kafka:
     needs: gateway
