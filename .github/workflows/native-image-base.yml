@@ -102,7 +102,7 @@ jobs:
         with:
           image: ${{ inputs.module }}
           registry: quay.io/elpsykongroo
-          tags: ${{input.version }}
+          tags: ${{inputs.version }}
           username:  ${{ secrets.QUAY_REGISTRY_NAME }}
           password:  ${{ secrets.QUAY_REGISTRY_PASS }} 
           
