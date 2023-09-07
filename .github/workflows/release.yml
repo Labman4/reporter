@@ -12,6 +12,7 @@ jobs:
     with:
       module: auth
       version: 0.0.2
+      secretPath: kv/app/native/auth
 #   auth-native:
 #     needs: auth
 #     uses: Labman4/workflow/.github/workflows/native-image-base.yml@native-image
@@ -27,6 +28,7 @@ jobs:
     with:
       module: gateway
       version: 0.0.2
+      secretPath: kv/app/native/gateway
 #   gateway-native:
 #     needs: gateway
 #     uses: Labman4/workflow/.github/workflows/native-image.yml@native-image
@@ -41,6 +43,7 @@ jobs:
     with:
       module: redis
       version: 0.0.1
+      secretPath: kv/app/native/redis
       
 #   redis-native:
 #     needs: storage
@@ -83,3 +86,4 @@ jobs:
     with:
       module: kafka
       version: 0.0.1
+      secretPath: kv/app/native/kafka
