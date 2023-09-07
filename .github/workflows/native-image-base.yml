@@ -86,7 +86,7 @@ jobs:
         with:
           image: ${{ inputs.module }}
           registry: quay.io/elpsykongroo
-          tags: ${{ github.head_ref	 }}
+          tags: ${{ github.ref_name	 }}
           username:  ${{ secrets.QUAY_REGISTRY_NAME }}
           password:  ${{ secrets.QUAY_REGISTRY_PASS }} 
         continue-on-error: true 
