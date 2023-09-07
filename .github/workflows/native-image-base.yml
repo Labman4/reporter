@@ -72,7 +72,7 @@ jobs:
           mvn spring-boot:build-image  -DskipTests -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml         
 
       - run: |
-          podman tag ${{inputs.module}}:${{inputs.version}} ${{inputs.module}}:${{ github.event.inputs.ref || github.head_ref }}}
+          podman tag docker.io/library/${{inputs.module}}:${{inputs.version}} docker.io/library/${{inputs.module}}:${{ github.event.inputs.ref || github.head_ref || github.ref_name	 }}}
         continue-on-error: true 
   
       - name: Push To quay
@@ -86,7 +86,7 @@ jobs:
         continue-on-error: true 
 
       - run: |
-          podman tag ${{inputs.module}}:${{inputs.version}} ${{inputs.module}}:${{github.sha}}
+          podman tag docker.io/library/${{inputs.module}}:${{inputs.version}} docker.io/library/${{inputs.module}}:${{github.sha}}
           
       - name: Push To quay ref
         uses: redhat-actions/push-to-registry@v2.7
