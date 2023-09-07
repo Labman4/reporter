@@ -73,11 +73,12 @@ jobs:
           
       - run: |
           podman images
-          docker images
-        continue-on-error: true 
-        
+          
       - run: |
-          podman tag ${{inputs.module}}:${{inputs.version}} ${{inputs.module}}:${{ github.event.inputs.ref || github.head_ref || github.ref_name }}
+          docker images
+          
+      - run: |
+          docker tag ${{inputs.module}}:${{inputs.version}} ${{inputs.module}}:${{ github.event.inputs.ref || github.head_ref || github.ref_name }}
         continue-on-error: true 
   
       - name: Push To quay
@@ -91,7 +92,7 @@ jobs:
         continue-on-error: true 
       
       - run: |
-          podman tag ${{inputs.module}}:${{inputs.version}} ${{inputs.module}}:${{github.sha}}
+          docker tag ${{inputs.module}}:${{inputs.version}} ${{inputs.module}}:${{github.sha}}
           
       - name: Push To quay ref
         uses: redhat-actions/push-to-registry@v2.7
