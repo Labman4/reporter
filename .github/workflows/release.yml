@@ -12,7 +12,6 @@ jobs:
     with:
       module: auth
       version: 0.0.2
-      secretPath: kv/app/native/auth
 #   auth-native:
 #     needs: auth
 #     uses: Labman4/workflow/.github/workflows/native-image-base.yml@native-image
