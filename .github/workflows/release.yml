@@ -67,12 +67,11 @@ jobs:
   
   storage:
     needs: elasticsearch
-    uses: Labman4/workflow/.github/workflows/native-image-base.yml@native-image
+    uses: Labman4/workflow/.github/workflows/buildpacks.yml@buildpacks
     secrets: inherit
     with:
       module: storage
       version: 1.0.0
-      native: false
       
   kafka:
     needs: gateway
