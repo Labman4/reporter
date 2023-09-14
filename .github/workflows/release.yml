@@ -36,6 +36,13 @@ jobs:
 #     with: 
 #       module: gateway
 #       version: 0.0.2
+  message: 
+    needs: gateway
+    uses: Labman4/workflow/.github/workflows/buildpacks.yml@buildpacks
+    secrets: inherit
+    with:
+      module: message
+      version: 0.0.1     
       
   redis:
     uses: Labman4/workflow/.github/workflows/buildpacks.yml@buildpacks
