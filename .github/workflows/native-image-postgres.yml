@@ -110,7 +110,18 @@ jobs:
           tags: ${{inputs.version }}
           username:  ${{ secrets.QUAY_REGISTRY_NAME }}
           password:  ${{ secrets.QUAY_REGISTRY_PASS }} 
-    
+          
+      - if:  ${{ github.ref_name == 'main' }}
+        name: Push To harbor
+        uses: redhat-actions/push-to-registry@v2.7
+        continue-on-error: true
+        with:
+          image: ${{ inputs.module }}
+          registry: registry.elpsykongroo.com/library
+          tags: ${{ inputs.version }}
+          username:  ${{ secrets.REGISTRY_PRIVATE_NAME }}
+          password:  ${{ secrets.REGISTRY_PRIVATE_PASS }}
+          
       - name: Setup PostgreSQL
         uses: Harmon758/postgresql-action@v1.0.0
         with:
