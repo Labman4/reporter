@@ -48,8 +48,9 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
           native-image-pr-reports: 'true'
-     
-      - name: Import Secrets
+          
+      - if: inputs.native
+        name: Import Secrets
         id: import-secrets
         uses: hashicorp/vault-action@v2.7.3
         with:
