@@ -91,6 +91,7 @@ jobs:
     - name: Push To harbor
       uses: redhat-actions/push-to-registry@v2.7
       continue-on-error: true
+      timeout-minutes: 10     
       with:
         image: ${{ inputs.module }}
         registry: registry.elpsykongroo.com/library
