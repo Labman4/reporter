@@ -90,8 +90,6 @@ jobs:
           password:  ${{ secrets.QUAY_REGISTRY_PASS }} 
         continue-on-error: true 
       
-  
-          
       - name: Push To quay ref
         uses: redhat-actions/push-to-registry@v2.7
         with:
@@ -158,20 +156,19 @@ jobs:
     
       - run: | 
          ps -ef |grep ${{ env.pid }}
-        continue-on-error: true 
-
-      - run: |
-          mvn -P native spring-boot:build-image  -DskipTests -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml     
+        continue-on-error: true  
        
       - if: inputs.native
         run: |
           mvn -P native spring-boot:build-image  -DskipTests -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml
           
-      - run: |
+      - if: inputs.native
+        run: |
           docker tag ${{inputs.module}}:native ${{inputs.module}}:${{ github.event.inputs.ref || github.head_ref || github.ref_name }}-native
         continue-on-error: true 
-        
-      - run: |
+
+      - if: inputs.native
+        run: |
           docker tag ${{inputs.module}}:native ${{inputs.module}}:${{ github.sha }}-native
         continue-on-error: true 
         
