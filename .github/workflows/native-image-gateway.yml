@@ -109,12 +109,14 @@ jobs:
           password:  ${{ secrets.QUAY_REGISTRY_PASS }} 
 
       - run: |
-          mvn -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml                
-       
-      - run: |
+          mvn -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml     
+          
+      - if: inputs.native
+        run: |
           native-image --macro:native-image-configure-launcher
-      
-      - run: |
+
+      - if: inputs.native
+        run: |
           native-image-configure generate --input-dir=${{ env.path }}/${{ env.modulePath}}/target/native/agent-output/test --output-dir=${{ env.path }}/${{ env.modulePath}}/src/main/resources/META-INF/native-image
           #--input-dir=target/native/agent-output/main 
       
@@ -126,7 +128,8 @@ jobs:
       - run: |
           git status
 
-      - run: |
+      - if: inputs.native
+        run: |
           nohup java -agentlib:native-image-agent=config-merge-dir=${{ env.path }}/${{ env.modulePath }}/src/main/resources/META-INF/native-image/ -jar ${{ env.modulePath }}/target/${{ inputs.module }}-${{ inputs.version }}.jar > /dev/null 2>&1  & echo "pid=$!" >> $GITHUB_ENV  
           #echo "stopMarker=$(uuidgen)" >> $GITHUB_ENV
         #continue-on-error: true 
