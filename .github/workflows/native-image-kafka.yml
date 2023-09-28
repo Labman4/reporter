@@ -61,6 +61,7 @@ jobs:
           secrets: |
             kv/data/app/test/vault VAULT_TOKEN | VAULT_TOKEN;
             kv/data/app/test/vault VAULT_URI | VAULT_URI;            
+            kv/data/app/test/vault SECRETS_BASE_PATH | SECRETS_BASE_PATH
             
       - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
