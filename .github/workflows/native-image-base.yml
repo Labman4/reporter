@@ -49,9 +49,8 @@ jobs:
 #           native-image-job-reports: 'true'
 #           native-image-pr-reports: 'true'
 
-      - if: inputs.native
+      - if: ${{inputs.native  && github.ref_name == 'main' }}
         name: Import Secrets
-        id: import-secrets
         uses: hashicorp/vault-action@v2.7.3
         with:
           url: https://vault.elpsykongroo.com:443
@@ -61,6 +60,18 @@ jobs:
             kv/data/app/test/vault VAULT_TOKEN | VAULT_TOKEN;
             kv/data/app/test/vault VAULT_URI | VAULT_URI;
             kv/data/app/test/vault SECRETS_APP_BASE_PATH | SECRETS_APP_BASE_PATH;            
+
+      - if: ${{inputs.native  && github.ref_name == 'develop' }}
+        name: Import Secrets
+        uses: hashicorp/vault-action@v2.7.3
+        with:
+          url: https://vault.elpsykongroo.com:443
+          method: github
+          githubToken: ${{ secrets.VAULT_GITHUB_TOKEN }}
+          secrets: |
+            kv/data/app/test/vault VAULT_TOKEN | VAULT_TOKEN;
+            kv/data/app/test/vault VAULT_URI | VAULT_URI;
+            kv/data/app/test/vault SECRETS_APP_NATIVE_BASE_PATH | SECRETS_APP_BASE_PATH;
             
       - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
