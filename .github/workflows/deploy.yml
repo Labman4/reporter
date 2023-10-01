@@ -14,25 +14,22 @@ jobs:
     runs-on: [self-hosted]
     continue-on-error: true 
     steps:
-      - if: inputs.env == 0
+      - if: ${{inputs.env == 0 || github.ref_name == 'main' }}
         run: |
           helm uninstall -n demo ${{ inputs.module }}
         continue-on-error: false 
-
-          
-      - if: inputs.env != 0
+       
+      - if: ${{ inputs.env != 0 || github.ref_name == 'develop' }}
         run: |
-          helm uninstall -n demo ${{ inputs.module }}-${{ inputs.env }}
+          helm uninstall -n native ${{ inputs.module }}
         continue-on-error: false 
 
-          
-      - if: inputs.env == 0
+      - if: ${{inputs.env == 0 || github.ref_name == 'main' }}
         run: |
           helm install -n demo ${{ inputs.module }} ~/code/helm/charts/demo/${{ inputs.module }}
         continue-on-error: true 
 
-      
-      - if: inputs.env != 0
+      - if: ${{ inputs.env != 0 || github.ref_name == 'develop' }}
         run: |
-          helm install -n demo ${{ inputs.module }}-${{ inputs.env }} ~/code/helm/charts/demo/${{ inputs.module }} -f ~/code/helm/charts/demo/${{ inputs.module }}/values-${{ inputs.env }}.yaml
+          helm install -n native ${{ inputs.module }} ~/code/helm/charts/demo/${{ inputs.module }} -f ~/code/helm/charts/demo/${{ inputs.module }}/values-${{ inputs.env || native }}.yaml
         continue-on-error: true 
