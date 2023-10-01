@@ -49,9 +49,8 @@ jobs:
           native-image-job-reports: 'true'
           native-image-pr-reports: 'true'
           
-      - if: inputs.native
+      - if: ${{inputs.native  && github.ref_name == 'main' }}
         name: Import Secrets
-        id: import-secrets
         uses: hashicorp/vault-action@v2.7.3
         with:
           url: https://vault.elpsykongroo.com:443
@@ -59,11 +58,23 @@ jobs:
           githubToken: ${{ secrets.VAULT_GITHUB_TOKEN }}
           secrets: |
             kv/data/app/test/vault VAULT_TOKEN | VAULT_TOKEN;
-            kv/data/app/test/vault VAULT_URI | VAULT_URI;            
+            kv/data/app/test/vault VAULT_URI | VAULT_URI;
+            kv/data/app/test/vault SECRETS_APP_BASE_PATH | SECRETS_APP_BASE_PATH;            
+
+      - if: ${{inputs.native  && github.ref_name == 'develop' }}
+        name: Import Secrets
+        uses: hashicorp/vault-action@v2.7.3
+        with:
+          url: https://vault.elpsykongroo.com:443
+          method: github
+          githubToken: ${{ secrets.VAULT_GITHUB_TOKEN }}
+          secrets: |
+            kv/data/app/test/vault VAULT_TOKEN | VAULT_TOKEN;
+            kv/data/app/test/vault VAULT_URI | VAULT_URI;
+            kv/data/app/test/vault SECRETS_APP_NATIVE_BASE_PATH | SECRETS_APP_BASE_PATH;
             
       - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
-          echo "home=$HOME" >> $GITHUB_ENV
           echo "SECRETS_APP_PATH=${{ inputs.secretPath }}"  >> $GITHUB_ENV
           java --version
                  
@@ -259,39 +270,6 @@ jobs:
 #       configuration-path: .github/labeler.yml@labeler
 #     secrets: inherit
 
-    
-#   automerge:
-#     needs: labeler
-#     uses: Labman4/workflow/.github/workflows/automerge.yml@automerge
-#     secrets: inherit
-
-  # pre-build:
-  #   uses: Labman4/workflow/.github/workflows/buildpacks-native.yml@buildpacks
-  #   secrets: inherit
-  #   with: 
-  #     module: ${{ inputs.module }}
-  #     mode: pre
-  
-  # pre-deploy:
-  #   needs: pre-build
-  #   uses: Labman4/workflow/.github/workflows/deploy.yml@deploy
-  #   with:
-  #     module: ${{ inputs.module }}
-  #     env: pre  
-    
-#   buildpacks:
-#     needs: test
-#     uses: Labman4/workflow/.github/workflows/buildpacks-native.yml@buildpacks
-#     secrets: inherit
-#     with:
-#       module: ${{ inputs.module }}
-      
-#   deploy:
-#     needs: buildpacks
-#     uses: Labman4/workflow/.github/workflows/deploy.yml@deploy
-#     with:
-#       module: ${{ inputs.module}}
-#       env: pre
       
   coverage:  
     needs: test
