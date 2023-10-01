@@ -31,5 +31,5 @@ jobs:
 
       - if: ${{ inputs.env != 0 || github.ref_name == 'develop' }}
         run: |
-          helm install -n native ${{ inputs.module }} ~/code/helm/charts/demo/${{ inputs.module }} -f ~/code/helm/charts/demo/${{ inputs.module }}/values-${{ inputs.env || native }}.yaml
+          helm install -n native ${{ inputs.module }} ~/code/helm/charts/demo/${{ inputs.module }} -f ~/code/helm/charts/demo/${{ inputs.module }}/values-${{ inputs.env || 'native' }}.yaml
         continue-on-error: true 
