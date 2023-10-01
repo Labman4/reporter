@@ -6,9 +6,6 @@ on:
       module:
         required: true
         type: string
-      native:
-        required: false
-        type: boolean
 jobs:
   deploy:
     runs-on: [self-hosted]
@@ -28,13 +25,8 @@ jobs:
         run: |
           helm install -n demo ${{ inputs.module }} ~/code/helm/charts/demo/${{ inputs.module }}
         continue-on-error: true 
-
-      - if: ${{ input.native }}
-        run: |
-          helm install -n native ${{ inputs.module }} ~/code/helm/charts/demo/${{ inputs.module }} -f ~/code/helm/charts/demo/${{ inputs.module }}/values-native.yaml 
-        continue-on-error: true 
         
-      - if: ${{ github.ref_name == 'develop' && !inputs.native }}
+      - if: ${{ github.ref_name == 'develop'}}
         run: |
           helm install -n native ${{ inputs.module }} ~/code/helm/charts/demo/${{ inputs.module }} -f ~/code/helm/charts/demo/${{ inputs.module }}/values-pre.yaml
         continue-on-error: true 
