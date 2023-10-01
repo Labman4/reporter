@@ -45,13 +45,12 @@ jobs:
           set-java-home: 'true'
           cache: maven
           github-token: ${{ secrets.GITHUB_TOKEN }}
-#           components: 'native-image'
-#           native-image-job-reports: 'true'
-#           native-image-pr-reports: 'true'
+          components: 'native-image'
+          native-image-job-reports: 'true'
+          native-image-pr-reports: 'true'
 
-      - if: inputs.native         
+      - if: ${{inputs.native  && github.ref_name == 'main' }}
         name: Import Secrets
-        id: import-secrets
         uses: hashicorp/vault-action@v2.7.3
         with:
           url: https://vault.elpsykongroo.com:443
@@ -59,13 +58,23 @@ jobs:
           githubToken: ${{ secrets.VAULT_GITHUB_TOKEN }}
           secrets: |
             kv/data/app/test/vault VAULT_TOKEN | VAULT_TOKEN;
-            kv/data/app/test/vault VAULT_URI | VAULT_URI;            
+            kv/data/app/test/vault VAULT_URI | VAULT_URI;
+            kv/data/app/test/vault SECRETS_APP_BASE_PATH | SECRETS_APP_BASE_PATH;            
+
+      - if: ${{inputs.native  && github.ref_name == 'develop' }}
+        name: Import Secrets
+        uses: hashicorp/vault-action@v2.7.3
+        with:
+          url: https://vault.elpsykongroo.com:443
+          method: github
+          githubToken: ${{ secrets.VAULT_GITHUB_TOKEN }}
+          secrets: |
+            kv/data/app/test/vault VAULT_TOKEN | VAULT_TOKEN;
+            kv/data/app/test/vault VAULT_URI | VAULT_URI;
+            kv/data/app/test/vault SECRETS_APP_NATIVE_BASE_PATH | SECRETS_APP_BASE_PATH;  
             
       - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
-          echo "home=$HOME" >> $GITHUB_ENV
-          echo "VAULT_URI=${{ env.VAULT_URI }}"  >> $GITHUB_ENV
-          echo "VAULT_TOKEN=${{ env.VAULT_TOKEN }}"  >> $GITHUB_ENV
           echo "SECRETS_APP_PATH=${{ inputs.secretPath }}"  >> $GITHUB_ENV
           java --version
           
@@ -153,6 +162,7 @@ jobs:
 #         with:
 #           name: test
 #           path: '**/target/surefire-reports/TEST-*.xml'
+
       - run: | 
          ps -ef |grep ${{ env.pid }}
          
@@ -212,40 +222,4 @@ jobs:
           
       - id: cpr
         uses: peter-evans/create-pull-request@v5.0.2
-      
-      - run: |
-          git status
-          
-#       - run: |
-#           mvn -P native package -DskipTests -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml 
-        
-#       - run: |
-#           git status
-          
-#       - uses: actions/upload-artifact@v3.1.2
-#         with:
-#           name: package
-#           path: |
-#             ${{ env.path }}
-#             !${{ env.path }}/**/*.jar
-#           retention-days: 3  
 
-#   pre-build:
-#     needs: test
-#     uses: Labman4/workflow/.github/workflows/buildpacks-native.yml@buildpacks
-#     secrets: inherit
-#     with:
-#       module: ${{ inputs.module }}
-#       moduleName: ${{ inputs.moduleName }}
-      
-    
-#   deploy:
-#     needs: test
-#     uses: Labman4/workflow/.github/workflows/deploy.yml@deploy
-#     with: 
-#       module: ${{ inputs.module }}
-      
-    
-  
-    
-  
