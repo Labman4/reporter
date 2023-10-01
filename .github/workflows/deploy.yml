@@ -6,30 +6,27 @@ on:
       module:
         required: true
         type: string
-      env:
-        required: false
-        type: string
 jobs:
   deploy:
     runs-on: [self-hosted]
     continue-on-error: true 
     steps:
-      - if: ${{inputs.env == 0 || github.ref_name == 'main' }}
+      - if: ${{ github.ref_name == 'main' }}
         run: |
           helm uninstall -n demo ${{ inputs.module }}
         continue-on-error: false 
        
-      - if: ${{ inputs.env != 0 || github.ref_name == 'develop' }}
+      - if: ${{ github.ref_name == 'develop' }}
         run: |
           helm uninstall -n native ${{ inputs.module }}
         continue-on-error: false 
 
-      - if: ${{inputs.env == 0 || github.ref_name == 'main' }}
+      - if: ${{ github.ref_name == 'main' }}
         run: |
           helm install -n demo ${{ inputs.module }} ~/code/helm/charts/demo/${{ inputs.module }}
         continue-on-error: true 
 
-      - if: ${{ inputs.env != 0 || github.ref_name == 'develop' }}
+      - if: ${{ github.ref_name == 'develop' }}
         run: |
           helm install -n native ${{ inputs.module }} ~/code/helm/charts/demo/${{ inputs.module }} -f ~/code/helm/charts/demo/${{ inputs.module }}/values-${{ inputs.env || 'native' }}.yaml
         continue-on-error: true 
