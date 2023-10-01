@@ -242,7 +242,8 @@ jobs:
       - run: | 
          ps -ef |grep ${{ env.pid }}
          #cat ${{ env.path }}//${{ env.modulePath}}/src/main/resources/META-INF/native-image/.lock
-      
+        continue-on-error: true 
+     
 #       - run: |
 #           echo ${{ github.context.payload.pull_request }}
 #           echo ${{ steps.cpr.outputs.pull-request-number }}
