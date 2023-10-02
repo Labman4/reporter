@@ -131,10 +131,10 @@ jobs:
           native-image-configure generate --input-dir=${{ env.path }}/${{ env.modulePath}}/target/native/agent-output/test --output-dir=${{ env.path }}/${{ env.modulePath}}/src/main/resources/META-INF/native-image
           #--input-dir=target/native/agent-output/main 
       
-      - run: |
-          git status
+      # - run: |
+      #     git status
       
-      - uses: peter-evans/create-pull-request@v5.0.2
+      # - uses: peter-evans/create-pull-request@v5.0.2
     
       - run: |
           git status
