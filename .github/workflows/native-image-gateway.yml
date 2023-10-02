@@ -224,9 +224,9 @@ jobs:
 #           username:  ${{ secrets.REGISTRY_PRIVATE_NAME }}
 #           password:  ${{ secrets.REGISTRY_PRIVATE_PASS }}
 
-      - id: cpr
-        uses: peter-evans/create-pull-request@v5.0.2
-        continue-on-error: true 
+      # - id: cpr
+      #   uses: peter-evans/create-pull-request@v5.0.2
+      #   continue-on-error: true 
         
       - run: |
           git status
