@@ -37,9 +37,6 @@ jobs:
           key: docker-${{ runner.os }}-${{ github.workflow_ref }}
           
       - uses: actions/checkout@v3.5.3
-
-      - run: |
-          rm -rf ~/.m2/repository
           
       - uses: graalvm/setup-graalvm@v1
         with:
@@ -82,7 +79,7 @@ jobs:
           java --version
           
       - run: | 
-          mvn package install -DskipTests 
+          mvn clean package install -DskipTests 
           
       - run: |
           mvn spring-boot:build-image  -DskipTests -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml  
