@@ -220,6 +220,6 @@ jobs:
           username:  ${{ secrets.QUAY_REGISTRY_NAME }}
           password:  ${{ secrets.QUAY_REGISTRY_PASS }} 
           
-      - id: cpr
-        uses: peter-evans/create-pull-request@v5.0.2
+      # - id: cpr
+      #   uses: peter-evans/create-pull-request@v5.0.2
 
