@@ -180,7 +180,11 @@ jobs:
         run: |
           docker tag ${{inputs.module}}:native ${{inputs.module}}:${{ github.event.inputs.ref || github.head_ref || github.ref_name }}-native
         continue-on-error: true 
-
+        
+      - run: |
+          docker tag ${{inputs.module}}:native ${{inputs.module}}:${{ inputs.version }}-native
+        continue-on-error: true
+        
       - if: inputs.native
         run: |
           docker tag ${{inputs.module}}:native ${{inputs.module}}:${{ github.sha }}-native
