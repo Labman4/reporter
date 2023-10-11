@@ -200,6 +200,10 @@ jobs:
         continue-on-error: true 
         
       - run: |
+          docker tag ${{inputs.module}}:native ${{inputs.module}}:${{ inputs.version }}-native
+        continue-on-error: true
+        
+      - run: |
           docker tag ${{inputs.module}}:native ${{inputs.module}}:${{ github.sha }}-native
         continue-on-error: true 
         
