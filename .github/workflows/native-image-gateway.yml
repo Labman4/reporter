@@ -100,7 +100,7 @@ jobs:
           username:  ${{ secrets.QUAY_REGISTRY_NAME }}
           password:  ${{ secrets.QUAY_REGISTRY_PASS }} 
         continue-on-error: true 
-      
+   
       - name: Push To quay ref
         uses: redhat-actions/push-to-registry@v2.7
         with:
@@ -118,7 +118,18 @@ jobs:
           tags: ${{inputs.version }}
           username:  ${{ secrets.QUAY_REGISTRY_NAME }}
           password:  ${{ secrets.QUAY_REGISTRY_PASS }} 
-
+          
+      - name: Push To harbor
+        uses: redhat-actions/push-to-registry@v2.7
+        continue-on-error: true 
+        with:
+          image: ${{ inputs.module }}
+          registry: registry.elpsykongroo.com/library
+          tags: ${{ github.ref_name	}}
+          username:  ${{ secrets.REGISTRY_PRIVATE_NAME }}
+          password:  ${{ secrets.REGISTRY_PRIVATE_PASS }}
+          continue-on-error: true
+          
       - run: |
           mvn -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/${{ env.modulePath}}/pom.xml     
           
