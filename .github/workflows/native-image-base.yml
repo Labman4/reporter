@@ -76,6 +76,8 @@ jobs:
       - run: |
           echo "path=$(pwd)" >> $GITHUB_ENV
           echo "SECRETS_APP_PATH=${{ inputs.secretPath }}"  >> $GITHUB_ENV
+          lsmod | grep ipv6
+          ip -6 addr
           java --version
           
       - run: | 
