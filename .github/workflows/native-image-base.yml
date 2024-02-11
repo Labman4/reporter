@@ -121,16 +121,16 @@ jobs:
           username:  ${{ secrets.QUAY_REGISTRY_NAME }}
           password:  ${{ secrets.QUAY_REGISTRY_PASS }} 
 
-      - name: Push To harbor
-        uses: redhat-actions/push-to-registry@v2.7
-        continue-on-error: true
-        timeout-minutes: 10     
-        with:
-          image: ${{ inputs.module }}
-          registry: registry.elpsykongroo.com/library
-          tags: ${{ github.ref_name	}}
-          username:  ${{ secrets.REGISTRY_PRIVATE_NAME }}
-          password:  ${{ secrets.REGISTRY_PRIVATE_PASS }}
+      # - name: Push To harbor
+      #   uses: redhat-actions/push-to-registry@v2.7
+      #   continue-on-error: true
+      #   timeout-minutes: 10     
+      #   with:
+      #     image: ${{ inputs.module }}
+      #     registry: registry.elpsykongroo.com/library
+      #     tags: ${{ github.ref_name	}}
+      #     username:  ${{ secrets.REGISTRY_PRIVATE_NAME }}
+      #     password:  ${{ secrets.REGISTRY_PRIVATE_PASS }}
           
 #       - run: |
 #           mvn -P native,nativeTest -Dagent=true test -f  ${{ env.path }}/${{ env.modulePath }}/pom.xml                
